@@ -5,9 +5,18 @@
 <body>
 <h2><center>History For AdvanceSCAN</center></h2>
 <h2>1 
-AdvanceSCAN Version 1.13 2004/11
+AdvanceSCAN Version 1.13 2004/12
 </h2>
 <ul>
+<li>
+New rom zip are now created only if at least one unique
+rom of this set is found. Roms shared with other
+games don't trigger the zip creation. For example,
+galaga88 and pacmania share the rom ns1-mcu.bin. This
+functionality prevents the creation of the galaga88
+zip from a correct copy of pacmania using only the
+ns1-mcu.bin rom.
+</li>
 <li>
 Relaxed a consistency check for the local header in zip files.
 The crc and size entries are allowed to contain the real

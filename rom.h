@@ -84,6 +84,7 @@ protected:
 public:
 	gamerom();
 	gamerom(const std::string& Agame, const std::string& Aname, unsigned Asize, crc_t Acrc, bool Anodump);
+	gamerom(const std::string& Agame, const rom& Arom);
 	gamerom(const gamerom&);
 	~gamerom();
 

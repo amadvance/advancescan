@@ -100,7 +100,7 @@ void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_er
 }
 
 // ---------------------------------------------------------------------------
-// stat
+// statistics
 
 // Association for a rom and wrong crc
 struct rom_bad {
@@ -266,26 +266,40 @@ void disk_stat(
 }
 
 // ----------------------------------------------------------------------------
-// add
+// add a new rom set
 
-// return:
-//   true  success
-//   false error
 void rom_add(
 	const operation& oper,
 	ziprom& z,
 	const game& g, 
 	const ziparchive& zar,
+	gamerom_by_crc_multiset& rcb,
 	output& out) 
 {
 	bool title = false; // true if is printed the zip file name
 
 	rom_by_name_set good;
-	rom_by_name_set miss = g.rs_get();
+	rom_by_name_set miss_unique;
+	rom_by_name_set miss_shared;
 
-	// for any rom/nodump
+	// split the roms in shared and unique
+	for(rom_by_name_set::iterator i=g.rs_get().begin();i!=g.rs_get().end();++i) {
+		pair<gamerom_by_crc_multiset::iterator,gamerom_by_crc_multiset::iterator> range;
+
+		range = rcb.equal_range(gamerom("",*i));
+
+		if (range.first != range.second)
+			++range.first; // one element is always present and it's the rom itself
+
+		if (range.first != range.second)
+			miss_shared.insert(*i);
+		else
+			miss_unique.insert(*i);
+	}
+
+	// for any unique missig rom
 	rom_by_name_set tmp_miss;
-	for(rom_by_name_set::iterator i=miss.begin();i!=miss.end();++i) {
+	for(rom_by_name_set::iterator i=miss_unique.begin();i!=miss_unique.end();++i) {
 		bool found = false;
 		bool added = false;
 
@@ -315,14 +329,51 @@ void rom_add(
 			// if not found insert in missing rom
 			tmp_miss.insert(*i);
 	}
-	miss = tmp_miss;
+	miss_unique = tmp_miss;
+
+	// if all the roms are shared or at least one unique rom was found
+	if (miss_unique.empty() || !good.empty()) {
+
+		// for any shared missig rom
+		rom_by_name_set tmp_miss;
+		for(rom_by_name_set::iterator i=miss_shared.begin();i!=miss_shared.end();++i) {
+			bool found = false;
+			bool added = false;
+
+			// skip nodump
+			if (i->nodump_get())
+				continue;
+
+			// check if is in another zip
+			if (!found) {
+				ziprom::const_iterator k;
+				ziparchive::const_iterator j = zar.find_exclude(z, i->size_get(), i->crc_get(), k);
+				if (j!=zar.end()) {
+					if (oper.active_add() && !z.is_readonly()) {
+						z.add(k, i->name_get());
+						good.insert(*i);
+						added = true;
+					}
+					if (oper.output_add()) {
+						out.title("rom_zip", title, z.file_get());
+						out.cmd_rom("rom_good", "add", *i) << " " << k->parentname_get() << "/" << k->name_get() << "\n";
+					}
+					found = true;
+				}
+			}
+
+			if (!added)
+				// if not found insert in missing rom
+				tmp_miss.insert(*i);
+		}
+		miss_shared = tmp_miss;
+	}
 
 	if (title)
 		out() << "\n";
 
 	// if zip created with almost one good rom
 	if (!good.empty()) {
-
 		// update the zip
 		z.save();
 		z.unload();
@@ -335,7 +386,7 @@ void rom_add(
 				throw error() << "Failed stat file " << z.file_get();
 
 			// if no rom is missing
-			if (miss.empty()) {
+			if (miss_unique.empty() && miss_shared.empty()) {
 				// add zip to directory list of game as good
 				g.rzs_add(infopath(z.file_get(), true, fst.st_size, z.is_readonly()));
 			} else {
@@ -347,7 +398,7 @@ void rom_add(
 }
 
 // ----------------------------------------------------------------------------
-// scan
+// scan an existing rom set
 
 bool rom_scan_add(
 	const operation& oper,
@@ -513,7 +564,7 @@ void rom_scan(
 	}
 	st.rom_miss = tmp_rom_miss;
 
-	// for any wrong rom (rom with corret name bat bad crc or size)
+	// for any wrong rom (rom with corret name but bad crc or size)
 	rom_bad_container tmp_rom_bad;
 	for(rom_bad_container::iterator i=st.rom_bad.begin();i!=st.rom_bad.end();++i) {
 		bool found = false;
@@ -753,7 +804,7 @@ void unknown_scan(
 }
 
 // ----------------------------------------------------------------------------
-// move
+// move a rom set
 
 void rom_move(
 	const operation& oper,
@@ -1085,7 +1136,7 @@ void set_disk_load(filepath_container& zar, const config& cfg)
 // ----------------------------------------------------------------------------
 // scan
 
-void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, const config& cfg, output& out, const analyze& ana)
+void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, gamerom_by_crc_multiset& rcb, const config& cfg, output& out, const analyze& ana)
 {
 	filepath_container unknown; // container of unknown zip
 
@@ -1129,7 +1180,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 				}
 
 				try {
-					rom_add(oper, *j, *i, zar, out);
+					rom_add(oper, *j, *i, zar, rcb, out);
 				} catch (error& e) {
 					throw e << " scanning rom " << j->file_get();
 				}
@@ -1758,17 +1809,8 @@ void filt(gamearchive& gar, const string& filter)
 // ----------------------------------------------------------------------------
 // command
 
-void equal(const gamearchive& gar, ostream& out)
+void equal(const gamearchive& gar, gamerom_by_crc_multiset& rcb, ostream& out)
 {
-	gamerom_by_crc_multiset rcb;
-
-	// insert rom
-	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		for(rom_by_name_set::const_iterator j=i->rs_get().begin();j!=i->rs_get().end();++j) {
-			rcb.insert(gamerom(i->name_get(), j->name_get(), j->size_get(), j->crc_get(), j->nodump_get()));
-		}
-	}
-
 	unsigned equal = 0;
 	
 	gamerom_by_crc_multiset::const_iterator start = rcb.begin();
@@ -2100,15 +2142,25 @@ void run(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	// set of all game
+	// set of all game and roms
 	gamearchive gar;
 
+	// load the rom set
 	gar.load(cin);
 
+	// filter the rom set
 	filt(gar, filter);
 
 	if (gar.begin() == gar.end())
 		throw error() << "Empty information file";
+
+	// build the crc/size rom set used to detect unique roms
+	gamerom_by_crc_multiset rcb;
+	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
+		for(rom_by_name_set::const_iterator j=i->rs_get().begin();j!=i->rs_get().end();++j) {
+			rcb.insert(gamerom(i->name_get(), j->name_get(), j->size_get(), j->crc_get(), j->nodump_get()));
+		}
+	}
 
 	if (flag_ident) {
 		for(int i=optind;i<argc;++i)
@@ -2116,7 +2168,7 @@ void run(int argc, char* argv[])
 	}
 
 	if (flag_equal)
-		equal(gar, cout);
+		equal(gar, rcb, cout);
 
 	if (flag_bbs)
 		bbs(gar, cout);
@@ -2132,7 +2184,7 @@ void run(int argc, char* argv[])
 
 			if (flag_operation) {
 				all_rom_load(zar, cfg);
-				all_rom_scan(oper, zar, gar, cfg, out, ana);
+				all_rom_scan(oper, zar, gar, rcb, cfg, out, ana);
 			} else {
 				set_rom_load(zar, cfg);
 				set_rom_scan(oper, zar, gar, cfg, out, ana);

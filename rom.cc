@@ -82,6 +82,11 @@ gamerom::gamerom(const string& Agame, const string& Aname, const unsigned Asize,
 {
 }
 
+gamerom::gamerom(const std::string& Agame, const rom& Arom)
+	: rom(Arom), game(Agame)
+{
+}
+
 gamerom::gamerom(const gamerom& A)
 	: rom(A), game(A.game)
 {
