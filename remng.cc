@@ -298,6 +298,8 @@ void analyze_f(FZ* f, struct scroll* sc) {
 	data_ptr data;
 	unsigned counter;
 	void* mng;
+	int dx = 0;
+	int dy = 0;
 
 	mng = mng_init(f);
 
@@ -343,7 +345,13 @@ void analyze_f(FZ* f, struct scroll* sc) {
 
 		++counter;
 		if (!opt_quiet) {
-			cout << "Analyzing frame " << counter << ", delta " << sc->map[sc->mac-1].x << "x" << sc->map[sc->mac-1].y << "    \r";
+			int x = sc->map[sc->mac-1].x;
+			int y = sc->map[sc->mac-1].y;
+			if (dx < abs(x))
+				dx = abs(x);
+			if (dy < abs(y))
+				dy = abs(y);
+			cout << "Analyzing frame " << counter << ", delta " << x << "x" << y << " [" << dx << "x" << dy << "]    \r";
 			cout.flush();
 		}
 	}
@@ -934,7 +942,7 @@ void write_image(FZ* f, unsigned* fc, unsigned width, unsigned height, unsigned 
 				if (WRITE.first) {
 					write_image_raw(f, fc, width, height, pixel, img_ptr, img_scanline, 0, 0, shift_x, shift_y);
 				} else {
-					throw error_ignore() << "Color reduction failed not at the first frame. Don't use the -r switch.";
+					throw error_ignore() << "Color reduction failed";
 				}
 			} else {
 				write_image_raw(f, fc, width, height, 1, new_ptr, new_scanline, ovr_ptr, 256*3, shift_x, shift_y);
@@ -1062,7 +1070,7 @@ void convert_f(FZ* f_in, FZ* f_out, unsigned* filec, unsigned* framec, struct sc
 
 		++counter;
 		if (!opt_quiet) {
-			cout << "Compressing frame " << counter << ", size " << *filec / counter << "    \r";
+			cout << "Compressing frame " << counter << ", size " << *filec / counter << " [" << *filec << "]    \r";
 			cout.flush();
 		}
 	}
@@ -1140,15 +1148,15 @@ void convert_inplace(const string& path) {
 		throw;
 	}
 
-	// prevent external signal
-	sig_auto_lock sal;
-
 	unsigned dst_size = file_size(path_dst);
 	if (!opt_force && file_size(path) < dst_size) {
 		// delete the new file
 		remove(path_dst.c_str());
-		throw error_ignore() << "The resulting file is bigger " << dst_size;
+		throw error_ignore() << "Bigger " << dst_size;
 	} else {
+		// prevent external signal
+		sig_auto_lock sal;
+
 		// delete the old file
 		if (remove(path.c_str()) != 0) {
 			remove(path_dst.c_str());

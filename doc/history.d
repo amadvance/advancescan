@@ -19,8 +19,7 @@ AdvanceSCAN Version 1.0 2002/05
 	) Added the --pedantic option at the advzip utility. These
 		tests are only done if requested.
 	) Renamed all the "unknow" options in "unknown".
-	) Fixed the reading of configuration file containing the
-		\r char.
+	) Fixed the reading of configuration file containing the \r char.
 	) Documentation fixes.
 	) Other minor fixes.
 

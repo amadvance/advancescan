@@ -215,15 +215,15 @@ void convert_inplace(const string& path) {
 	fzclose(f_in);
 	fzclose(f_out);
 
-	// prevent external signal
-	sig_auto_lock sal;
-
 	unsigned dst_size = file_size(path_dst);
 	if (!opt_force && file_size(path) < dst_size) {
 		// delete the new file
 		remove(path_dst.c_str());
-		throw error_ignore() << "The resulting file is bigger " << dst_size;
+		throw error_ignore() << "Bigger " << dst_size;
 	} else {
+		// prevent external signal
+		sig_auto_lock sal;
+
 		// delete the old file
 		if (remove(path.c_str()) != 0) {
 			remove(path_dst.c_str());

@@ -236,14 +236,10 @@ bool gamearchive::load_internal(FILE* f) {
 	info_t token = info_token_get(f);
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
-		if (strcmp(info_text_get(),"game")==0 || strcmp(info_text_get(),"resource")==0)	{
-			if (strcmp(info_text_get(),"resource")==0) {
-				int i = info_open;
-				++i;
-			}
+		if (strcmp(info_text_get(),"game")==0 || strcmp(info_text_get(),"resource")==0 || strcmp(info_text_get(),"machine")==0) {
 			if (info_token_get(f) != info_open) return false;
 			game g;
-			token =	info_token_get(f);
+			token = info_token_get(f);
 			while (token != info_close) {
 				if (token != info_symbol)
 					return false;

@@ -138,6 +138,7 @@ noinst_HEADERS = \
 	output.h \
 	operatio.h \
 	analyze.h \
+	analyze.dat \
 	siglock.h \
 	portable.h \
 	7z/7z.h \
@@ -246,35 +247,44 @@ check-local: advzip check.lst
 	@cmp new.lst $(srcdir)/check.lst
 	@echo Success!
 
-DISTDOS = \
+DISTDOS_ROOT = \
 	doc/readme.txt doc/authors.txt doc/history.txt doc/copying.txt \
-	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt \
 	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
 	advscan.rc
 
-distdos: $(DISTDOS)
+DISTDOS_DOC = \
+	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt \
+	doc/readme.txt doc/authors.txt doc/history.txt \
+	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html \
+	doc/readme.html doc/authors.html doc/history.html 
+
+distdos: $(DISTDOS_ROOT) $(DISTDOS_DOC)
 	-upx -q -q advscan.exe
 	-upx -q -q advdiff.exe
 	-upx -q -q advzip.exe
 	-upx -q -q advpng.exe
 	-upx -q -q advmng.exe
 	rm -f $(PACKAGE)-$(VERSION)-dos-i586.zip
-	zip $(PACKAGE)-$(VERSION)-dos-i586.zip $(DISTDOS)
+	mkdir tmp
+	cp $(DISTDOS_ROOT) tmp
+	mkdir tmp/doc
+	cp $(DISTDOS_DOC) tmp/doc
+	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-dos-i586.zip *
+	rm -r tmp
 
-DISTWINDOWS = \
-	doc/readme.html doc/authors.html doc/history.html doc/copying.txt \
-	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html \
-	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
-	advscan.rc
-
-distwindows: $(DISTWINDOWS)
+distwindows: $(DISTDOS_ROOT) $(DISTDOS_DOC)
 	-upx -q -q advscan.exe
 	-upx -q -q advdiff.exe
 	-upx -q -q advzip.exe
 	-upx -q -q advpng.exe
 	-upx -q -q advmng.exe
 	rm -f $(PACKAGE)-$(VERSION)-windows-i586.zip
-	zip $(PACKAGE)-$(VERSION)-windows-i586.zip $(DISTWINDOWS)
+	mkdir tmp
+	cp $(DISTDOS_ROOT) tmp
+	mkdir tmp/doc
+	cp $(DISTDOS_DOC) tmp/doc
+	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-windows-i586.zip *
+	rm -r tmp
 
 DISTWEB = \
 	doc/advscan.hh doc/advdiff.hh doc/advzip.hh doc/advpng.hh doc/advmng.hh doc/history.hh
