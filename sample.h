@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,48 +18,30 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __ANALYZE_H
-#define __ANALYZE_H
+#ifndef __SAMPLE_H
+#define __SAMPLE_H
 
-#include "game.h"
+#include "file.h"
 
 #include <set>
-#include <string>
 
-struct analyze_entry_static {
-	const char* name;
-	unsigned size;
-	unsigned crc;
-};
-
-struct analyze_entry {
+class sample {
 	std::string name;
-	unsigned size;
-	unsigned crc;
-
-	analyze_entry(const std::string& Aname, unsigned size, unsigned crc);
-	analyze_entry(const analyze_entry& A);
-	analyze_entry(const analyze_entry_static& A);
-	~analyze_entry();
-};
-
-bool operator<(const analyze_entry& A, const analyze_entry& B);
-
-enum analyze_type {
-	analyze_text,
-	analyze_binary,
-	analyze_garbage
-};
-
-typedef std::set<analyze_entry> analyze_set;
-
-class analyze {
-	analyze_set garbage;
 public:
-	analyze(const gamearchive& gar);
+	sample(const std::string& Aname);
+	sample(const sample&);
+	~sample();
 
-	analyze_type operator()(const std::string& name, unsigned size, unsigned crc) const;
+	const std::string& name_get() const { return name; }
 };
+
+struct sample_by_name_less : std::binary_function<sample, sample, bool> {
+	bool operator()(const sample& A, const sample& B) const {
+		return file_compare(A.name_get(), B.name_get()) < 0;
+	}
+};
+
+typedef std::set<sample, sample_by_name_less> sample_by_name_set;
 
 #endif
 

@@ -24,9 +24,6 @@
 
 using namespace std;
 
-// ------------------------------------------------------------------------
-// ziprom
-
 ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly)
 {
 }
@@ -41,7 +38,6 @@ ziprom::~ziprom()
 
 void ziprom::open()
 {
-
 	try {
 		zip::open();
 	} catch (error& e) {
@@ -60,7 +56,6 @@ void ziprom::open()
 
 ziprom::iterator ziprom::find(const string& name)
 {
-
 	for(ziprom::iterator i=begin();i!=end();++i) {
 		if (file_compare(i->name_get(), name)==0) {
 			return i;
@@ -129,7 +124,6 @@ void ziprom::remove(const string& zipintname)
 		erase(i);
 	}
 }
-
 
 void ziprom::remove(const string& zipintname, ziprom& reject)
 {
@@ -249,9 +243,6 @@ void ziprom::swap(const string& zipintname, ziprom& reject, ziprom::iterator& re
 	}
 }
 
-// ------------------------------------------------------------------------
-// ziparchive
-
 ziparchive_crcsize::ziparchive_crcsize()
 {
 }
@@ -352,7 +343,8 @@ void ziparchive::erase(ziparchive::iterator A)
 	data.erase(A);
 }
 
-ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, ziprom::const_iterator& k) const
+{
 	for(const_iterator i=begin();i!=end();++i) {
 		for(ziprom::const_iterator j=i->begin();j!=i->end();++j) {
 			if (crc==j->crc_get() && size==j->uncompressed_size_get()) {
@@ -364,7 +356,8 @@ ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, zipro
 	return end();
 }
 
-ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, zip_type type, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, zip_type type, ziprom::const_iterator& k) const
+{
 	for(const_iterator i=begin();i!=end();++i) {
 		if (type==i->type_get()) {
 			for(ziprom::const_iterator j=i->begin();j!=i->end();++j) {
@@ -378,19 +371,21 @@ ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, zip_t
 	return end();
 }
 
-ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, ziprom::const_iterator& k) const
+{
 	ziparchive_crcsizeset::const_iterator i = index.find(ziparchive_crcsize(size, crc));
 	if (i!=index.end())
 		return find_iter(size, crc, k);
 	return end();
-
 }
 
-ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, zip_type type, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, zip_type type, ziprom::const_iterator& k) const
+{
 	return find_iter(size, crc, type, k);
 }
 
-ziparchive::const_iterator ziparchive::find_exclude_iter(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find_exclude_iter(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const
+{
 	for(const_iterator i=begin();i!=end();++i) {
 		if (&*i != &exclude) {
 			for(ziprom::const_iterator j=i->begin();j!=i->end();++j) {
@@ -404,7 +399,8 @@ ziparchive::const_iterator ziparchive::find_exclude_iter(const ziprom& exclude, 
 	return end();
 }
 
-ziparchive::const_iterator ziparchive::find_exclude(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const {
+ziparchive::const_iterator ziparchive::find_exclude(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const
+{
 	ziparchive_crcsizeset::const_iterator i = index.find(ziparchive_crcsize(size, crc));
 	if (i!=index.end())
 		return find_exclude_iter(exclude, size, crc, k);

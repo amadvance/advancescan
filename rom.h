@@ -21,14 +21,11 @@
 #ifndef __ROM_H
 #define __ROM_H
 
-#include "utility.h"
+#include "file.h"
 
 #include <set>
 #include <vector>
 #include <list>
-
-// ------------------------------------------------------------------------
-// rom
 
 class rom {
 protected:
@@ -80,9 +77,6 @@ inline bool operator==(const rom_by_name_set& A, const rom_by_name_set& B)
 {
 	return A.size()==B.size() && equal(A.begin(), A.end(), B.begin());
 }
-
-// ------------------------------------------------------------------------
-// gamerom
 
 class gamerom : public rom {
 protected:

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998, 1999, 2000, 2001, 2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2004 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 
 #include "zip.h"
 #include "siglock.h"
-#include "utility.h"
+#include "file.h"
+#include "data.h"
 #include "lib/endianrw.h"
 
 #include <zlib.h>
@@ -35,20 +36,19 @@
 
 using namespace std;
 
-// -------------------------------------------------------------------------
-
 bool ecd_compare_sig(const unsigned char *buffer)
 {
 	static char ecdsig[] = { 'P', 'K', 0x05, 0x06 };
 	return memcmp(buffer, ecdsig, 4) == 0;
 }
 
-// Locate end-of-central-dir sig in buffer and return offset
-// out:
-//   offset offset of cent dir start in buffer
-// return:
-//   true found;
-bool ecd_find_sig (const unsigned char *buffer, unsigned buflen, unsigned& offset) {
+/**
+ * Locate end-of-central-dir sig in buffer and return offset
+ * \param offset Resulting offset of cent dir start in buffer.
+ * \reutn If the end-of-central-dir is found.
+ */
+bool ecd_find_sig (const unsigned char *buffer, unsigned buflen, unsigned& offset)
+{
 	for (int i=buflen-22; i>=0; i--) {
 		if (ecd_compare_sig(buffer+i)) {
 			offset = i;
@@ -58,13 +58,13 @@ bool ecd_find_sig (const unsigned char *buffer, unsigned buflen, unsigned& offse
 	return false;
 }
 
-// Read cent dir and end cent dir data
-// in:
-//   f file
-//   length length of file
-
 #define ECD_READ_BUFFER_SIZE 4096
 
+/**
+ * Read cent dir and end cent dir data
+ * \param f File to read.
+ * \param length Length of the file.
+ */
 bool cent_read(FILE* f, unsigned length, unsigned char*& data, unsigned& size)
 {
 	unsigned buf_length;
@@ -132,20 +132,21 @@ bool cent_read(FILE* f, unsigned length, unsigned char*& data, unsigned& size)
 		data_free(buf);
 
 		if (buf_length < 8 * ECD_READ_BUFFER_SIZE && buf_length < length) {
-			/* grow buffer */
+			// grow buffer
 			buf_length += ECD_READ_BUFFER_SIZE;
 		} else {
-			/* aborting */
+			// aborting
 			return false;
 		}
 	}
 }
 
-// Code used for disk entry
+/** Code used for disk entry. */
 #define ZIP_UNIQUE_DISK 0
 
-// Convert time_t to zip format
-void time2zip(time_t tod, unsigned& date, unsigned& time) {
+/** Convert time_t to zip format. */
+void time2zip(time_t tod, unsigned& date, unsigned& time)
+{
 	struct tm* tm = gmtime(&tod);
 	assert(tm);
 	unsigned day = tm->tm_mday; // 1-31
@@ -158,8 +159,9 @@ void time2zip(time_t tod, unsigned& date, unsigned& time) {
 	time = (sec & 0x1F) | ((min & 0x3F) << 5) | ((hour & 0x1F) << 11);
 }
 
-// Convert zip time to to time_t
-time_t zip2time(unsigned date, unsigned time) {
+/** Convert zip time to to time_t. */
+time_t zip2time(unsigned date, unsigned time)
+{
 	struct tm tm;
 	// reset all entry
 	memset(&tm, 0, sizeof(tm));
@@ -172,9 +174,6 @@ time_t zip2time(unsigned date, unsigned time) {
 	tm.tm_hour = (time >> 11) & 0x1F; // 0-23
 	return mktime(&tm);
 }
-
-// -------------------------------------------------------------------------
-// zip_entry
 
 zip_entry::zip_entry(const zip& Aparent)
 {
@@ -218,7 +217,8 @@ zip_entry::~zip_entry()
 	data_free(data);
 }
 
-zip_entry::method_t zip_entry::method_get() const {
+zip_entry::method_t zip_entry::method_get() const
+{
 	switch (info.compression_method) {
 		case ZIP_METHOD_STORE :
 			return store;
@@ -265,12 +265,13 @@ zip_entry::method_t zip_entry::method_get() const {
 	return unknown;
 }
 
-bool zip_entry::is_text() const {
+bool zip_entry::is_text() const
+{
 	return (info.internal_file_attrib & ZIP_INT_ATTR_TEXT) != 0;
 }
 
-void zip_entry::compressed_seek(FILE* f) const {
-
+void zip_entry::compressed_seek(FILE* f) const
+{
 	// seek to local header
 	if (fseek(f, offset_get(), SEEK_SET)!=0) {
 		throw error_invalid() << "Failed seek " << parentname_get();
@@ -294,8 +295,8 @@ void zip_entry::compressed_seek(FILE* f) const {
 	}
 }
 
-void zip_entry::compressed_read(unsigned char* outdata) const {
-
+void zip_entry::compressed_read(unsigned char* outdata) const
+{
 	if (data) {
 		memcpy(outdata, data, compressed_size_get());
 	} else {
@@ -322,7 +323,8 @@ void zip_entry::compressed_read(unsigned char* outdata) const {
 	}
 }
 
-time_t zip_entry::time_get() const {
+time_t zip_entry::time_get() const
+{
 	return zip2time(info.last_mod_file_date, info.last_mod_file_time);
 }
 
@@ -443,12 +445,14 @@ void zip_entry::name_set(const string& Aname)
 	memcpy(file_name, Aname.c_str(), info.filename_length);
 }
 
-string zip_entry::name_get() const {
+string zip_entry::name_get() const
+{
 	return string(file_name, file_name + info.filename_length);
 }
 
-// Check central directory entry
-void zip_entry::check_cent(const unsigned char* buf) const {
+/** Check central directory entry. */
+void zip_entry::check_cent(const unsigned char* buf) const
+{
 	// check signature
 	if (le_uint32_read(buf+ZIP_CO_central_file_header_signature) != ZIP_C_signature) {
 		throw error_invalid() << "Invalid central directory signature";
@@ -460,8 +464,9 @@ void zip_entry::check_cent(const unsigned char* buf) const {
 	}
 }
 
-// Check local file header comparing with internal information
-void zip_entry::check_local(const unsigned char* buf) const {
+/** Check local file header comparing with internal information. */
+void zip_entry::check_local(const unsigned char* buf) const
+{
 	if (le_uint32_read(buf+ZIP_LO_local_file_header_signature) != ZIP_L_signature) {
 		throw error_invalid() << "Invalid signature in local header";
 	}
@@ -502,7 +507,8 @@ void zip_entry::check_local(const unsigned char* buf) const {
 	}
 }
 
-void zip_entry::check_descriptor(const unsigned char* buf) const {
+void zip_entry::check_descriptor(const unsigned char* buf) const
+{
 	if (info.crc32 != le_uint32_read(buf+ZIP_DO_crc32)) {
 		throw error_invalid() << "Invalid crc on data descriptor " << info.crc32 << "/" << le_uint32_read(buf+ZIP_DO_crc32);
 	}
@@ -514,14 +520,16 @@ void zip_entry::check_descriptor(const unsigned char* buf) const {
 	}
 }
 
-// Unload compressed/uncomressed data
-void zip_entry::unload() {
+/** Unload compressed/uncomressed data. */
+void zip_entry::unload()
+{
 	data_free(data);
 	data = 0;
 }
 
-// Skip local file header and data
-void zip::skip_local(const unsigned char* buf, FILE* f) {
+/** Skip local file header and data. */
+void zip::skip_local(const unsigned char* buf, FILE* f)
+{
 	unsigned local_extra_field_length = le_uint16_read(buf+ZIP_LO_extra_field_length);
 	unsigned filename_length = le_uint16_read(buf+ZIP_LO_filename_length);
 	unsigned compressed_size = le_uint32_read(buf+ZIP_LO_compressed_size);
@@ -546,12 +554,11 @@ void zip::skip_local(const unsigned char* buf, FILE* f) {
 	}
 }
 
-// Load local file header
-// in:
-//   buf fixed size local header, sig not valid
-//   f file seeked after the fixed size local header
-// return:
-//   true ok
+/**
+ * Load local file header.
+ * \param buf Fixed size local header.
+ * \param f File seeked after the fixed size local header.
+ */
 void zip_entry::load_local(const unsigned char* buf, FILE* f)
 {
 	check_local(buf);
@@ -592,12 +599,12 @@ void zip_entry::load_local(const unsigned char* buf, FILE* f)
 	}
 }
 
-// Save local file header
-// in:
-//   f file seeked at correct position
-// return:
-//   true ok
-void zip_entry::save_local(FILE* f) {
+/**
+ * Save local file header.
+ * \param f File seeked at correct position.
+ */
+void zip_entry::save_local(FILE* f)
+{
 	long offset = ftell(f);
 
 	if (offset<0)
@@ -645,15 +652,14 @@ void zip_entry::save_local(FILE* f) {
 	}
 }
 
-// Load cent dir
-// in:
-//   buf fixed size cent dir
-//   f file seeked after the fixed size cent dir
-// return:
-//   true ok
-//   false the object MUST be destroyed
-void zip_entry::load_cent(const unsigned char* _buf, unsigned& skip) {
-	const unsigned char* buf = _buf;
+/**
+ * Load cent dir.
+ * \param buf Fixed size cent dir.
+ * \param f File seeked after the fixed size cent dir.
+ */
+void zip_entry::load_cent(const unsigned char* buf, unsigned& skip)
+{
+	const unsigned char* o_buf = buf;
 
 	check_cent(buf);
 
@@ -693,15 +699,15 @@ void zip_entry::load_cent(const unsigned char* _buf, unsigned& skip) {
 	file_comment = data_dup(buf, info.file_comment_length);
 	buf += info.file_comment_length;
 
-	skip = buf - _buf;
+	skip = buf - o_buf;
 }
 
-// Save cent dir
-// in:
-//   f file seeked at correct position
-// return:
-//   true ok
-void zip_entry::save_cent(FILE* f) {
+/**
+ * Save cent dir.
+ * \param f File seeked at correct position.
+ */
+void zip_entry::save_cent(FILE* f)
+{
 	unsigned char buf[ZIP_CO_FIXED];
 
 	le_uint32_write(buf+ZIP_CO_central_file_header_signature, ZIP_C_signature);
@@ -745,12 +751,13 @@ void zip_entry::save_cent(FILE* f) {
 	}
 }
 
-// -------------------------------------------------------------------------
-// Zip
-
+/**
+ * Enable pendantic checks on the zip integrity.
+ */
 bool zip::pedantic = false;
 
-zip::zip(const std::string& Apath) : path(Apath)  {
+zip::zip(const std::string& Apath) : path(Apath)
+{
 	flag.open = false;
 	flag.read = false;
 	flag.modify = false;
@@ -794,7 +801,6 @@ void zip::open()
 			throw error() << "Failed stat";
 
 		// create the file if it's missing
-
 		create();
 		return;
 	}
@@ -874,9 +880,11 @@ void zip::open()
 	flag.modify = false;
 }
 
-// Close a zip file
-void zip::close() {
-
+/**
+ * Close a zip file.
+ */
+void zip::close()
+{
 	// deinizialize
 	flag.open = false;
 	flag.read = false;
@@ -887,10 +895,12 @@ void zip::close() {
 	map.erase(map.begin(), map.end());
 }
 
-// Discarge compressed data read
-// note:
-//   you cannot call unload() if zip is modified, you must call reopen()
-void zip::unload() {
+/**
+ * Discarge compressed data read.
+ * \note You cannot call unload() if zip is modified, you must call reopen().
+ */
+void zip::unload()
+{
 	assert(flag.open && flag.read && !flag.modify);
 
 	for(iterator i=begin();i!=end();++i)
@@ -899,20 +909,23 @@ void zip::unload() {
 	flag.read = false;
 }
 
-// Reopen from zip on disk, lose any modify
-// note:
-//   equivalent close and open
-void zip::reopen() {
+/**
+ * Reopen from zip on disk, lose any modify.
+ * \note Equivalent close and open.
+ */
+void zip::reopen()
+{
 	assert(flag.open);
 
 	close();
 	open();
 }
 
-// Load a zip file
-// return:
-//   true ok
-void zip::load() {
+/**
+ * Load a zip file.
+ */
+void zip::load()
+{
 	assert(flag.open && !flag.read);
 
 	flag.modify = false;
@@ -992,7 +1005,8 @@ void zip::load() {
 	flag.read = true;
 }
 
-unsigned zip::size_not_zero() const {
+unsigned zip::size_not_zero() const
+{
 	unsigned count = 0;
 
 	// check if it contains at least one file with size > 0 (directories are excluded)
@@ -1005,10 +1019,11 @@ unsigned zip::size_not_zero() const {
 	return count;
 }
 
-// Save a zip file
-// return:
-//   true ok
-void zip::save() {
+/**
+ * Save a zip file.
+ */
+void zip::save()
+{
 	assert(flag.open && flag.read);
 
 	flag.modify = false;
@@ -1095,8 +1110,11 @@ void zip::save() {
 	}
 }
 
-// Remove a file
-void zip::erase(iterator i) {
+/**
+ * Remove a compressed file.
+ */
+void zip::erase(iterator i)
+{
 	assert(flag.read);
 
 	flag.modify = true;
@@ -1104,12 +1122,12 @@ void zip::erase(iterator i) {
 	map.erase(i);
 }
 
-// Rename a file
-// return:
-//   true ok
-// note:
-//   no filename overwrite check
-void zip::rename(iterator i, const string& Aname) {
+/**
+ * Rename a compressed file.
+ * \note No filename overwrite check.
+ */
+void zip::rename(iterator i, const string& Aname)
+{
 	assert(flag.read);
 
 	flag.modify = true;
@@ -1117,8 +1135,11 @@ void zip::rename(iterator i, const string& Aname) {
 	i->name_set(Aname);
 }
 
-/// Insert a zip entry.
-zip::iterator zip::insert(const zip_entry& A, const string& Aname) {
+/**
+ * Insert a zip entry.
+ */
+zip::iterator zip::insert(const zip_entry& A, const string& Aname)
+{
 	iterator i;
 
 	assert(flag.read);
@@ -1150,13 +1171,12 @@ zip::iterator zip::insert(const zip_entry& A, const string& Aname) {
 	return i;
 }
 
-/// Add data to a zip file
-// return:
-//   !=end() ok
-// note:
-//   data is deflated or stored
-//   no filename overwrite check
-zip::iterator zip::insert_uncompressed(const string& Aname, const unsigned char* data, unsigned size, unsigned crc, time_t tod, bool is_text) {
+/**
+ * Add data to a zip file.
+ * The data is deflated or stored. No filename overwrite check.
+ */
+zip::iterator zip::insert_uncompressed(const string& Aname, const unsigned char* data, unsigned size, unsigned crc, time_t tod, bool is_text)
+{
 	iterator i;
 
 	assert(flag.read);

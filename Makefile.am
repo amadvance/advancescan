@@ -7,7 +7,9 @@ advdiff_SOURCES = \
 	rom.cc \
 	disk.cc \
 	sample.cc \
-	utility.cc \
+	data.cc \
+	strcov.c \
+	file.cc \
 	ziprom.cc \
 	game.cc \
 	gameinfo.cc \
@@ -27,7 +29,10 @@ advscan_SOURCES =  \
 	disk.cc \
 	sample.cc \
 	conf.cc \
-	utility.cc \
+	data.cc \
+	token.cc \
+	strcov.c \
+	file.cc \
 	ziprom.cc \
 	game.cc \
 	gameinfo.cc \
@@ -60,7 +65,10 @@ noinst_HEADERS = \
 	rom.h \
 	sample.h \
 	disk.h \
-	utility.h \
+	data.h \
+	token.h \
+	strcov.h \
+	file.h \
 	conf.h \
 	ziprom.h \
 	game.h \

@@ -25,9 +25,6 @@
 #include "sample.h"
 #include "disk.h"
 
-// ------------------------------------------------------------------------
-// Game
-
 #include <list>
 
 class game;
@@ -147,10 +144,6 @@ struct game_by_output_less : std::binary_function<game, game, bool> {
 
 typedef std::set<game, game_by_name_less> game_by_name_set;
 typedef std::set<game, game_by_output_less> game_by_output_set;
-
-
-// ------------------------------------------------------------------------
-// Game archive
 
 class gamearchive;
 

@@ -34,10 +34,6 @@
 
 using namespace std;
 
-// ------------------------------------------------------------------------
-// Scan
-
-// Read all file in a directory
 void read_dir(const string& path, filepath_container& ds, bool recursive, const string& ext) {
 	DIR* dir = opendir(path.c_str());
 	if (!dir)
@@ -68,7 +64,6 @@ void read_dir(const string& path, filepath_container& ds, bool recursive, const 
 	closedir(dir);
 }
 
-// Read all zip in zipset
 void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_error, bool rename_error) {
 	filepath_container ds;
 
@@ -1339,7 +1334,7 @@ void all_unknown_scan(ziparchive& zar, const config& cfg, output& out)
 }
 
 // ----------------------------------------------------------------------------
-// zip_report
+// report_zip
 
 void report_rom_zip(const ziparchive& zar, gamearchive& gar, output& out, bool verbose, const analyze& ana)
 {
@@ -1396,7 +1391,7 @@ void report_disk_zip(const filepath_container& zar, gamearchive& gar, output& ou
 }
 
 // ----------------------------------------------------------------------------
-// set_report
+// report_set
 
 void report_rom_set(const gamearchive& gar, output& out)
 {
@@ -2192,7 +2187,6 @@ void run(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-
 	try {
 		run(argc, argv);
 	} catch (error& e) {

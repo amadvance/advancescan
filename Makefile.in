@@ -57,20 +57,22 @@ am__installdirs = $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_advdiff_OBJECTS = diff.$(OBJEXT) rom.$(OBJEXT) disk.$(OBJEXT) \
-	sample.$(OBJEXT) utility.$(OBJEXT) ziprom.$(OBJEXT) \
-	game.$(OBJEXT) gameinfo.$(OBJEXT) gamexml.$(OBJEXT) \
-	zip.$(OBJEXT) siglock.$(OBJEXT) getopt.$(OBJEXT) \
-	snprintf.$(OBJEXT) readinfo.$(OBJEXT) xmlrole.$(OBJEXT) \
-	xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
+	sample.$(OBJEXT) data.$(OBJEXT) strcov.$(OBJEXT) \
+	file.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) \
+	gameinfo.$(OBJEXT) gamexml.$(OBJEXT) zip.$(OBJEXT) \
+	siglock.$(OBJEXT) getopt.$(OBJEXT) snprintf.$(OBJEXT) \
+	readinfo.$(OBJEXT) xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) \
+	xmltok.$(OBJEXT)
 advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
 am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) disk.$(OBJEXT) \
-	sample.$(OBJEXT) conf.$(OBJEXT) utility.$(OBJEXT) \
-	ziprom.$(OBJEXT) game.$(OBJEXT) gameinfo.$(OBJEXT) \
-	gamexml.$(OBJEXT) zip.$(OBJEXT) output.$(OBJEXT) \
-	analyze.$(OBJEXT) siglock.$(OBJEXT) getopt.$(OBJEXT) \
-	snprintf.$(OBJEXT) readinfo.$(OBJEXT) xmlrole.$(OBJEXT) \
-	xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
+	sample.$(OBJEXT) conf.$(OBJEXT) data.$(OBJEXT) token.$(OBJEXT) \
+	strcov.$(OBJEXT) file.$(OBJEXT) ziprom.$(OBJEXT) \
+	game.$(OBJEXT) gameinfo.$(OBJEXT) gamexml.$(OBJEXT) \
+	zip.$(OBJEXT) output.$(OBJEXT) analyze.$(OBJEXT) \
+	siglock.$(OBJEXT) getopt.$(OBJEXT) snprintf.$(OBJEXT) \
+	readinfo.$(OBJEXT) xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) \
+	xmltok.$(OBJEXT)
 advscan_OBJECTS = $(am_advscan_OBJECTS)
 advscan_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -185,7 +187,9 @@ advdiff_SOURCES = \
 	rom.cc \
 	disk.cc \
 	sample.cc \
-	utility.cc \
+	data.cc \
+	strcov.c \
+	file.cc \
 	ziprom.cc \
 	game.cc \
 	gameinfo.cc \
@@ -205,7 +209,10 @@ advscan_SOURCES = \
 	disk.cc \
 	sample.cc \
 	conf.cc \
-	utility.cc \
+	data.cc \
+	token.cc \
+	strcov.c \
+	file.cc \
 	ziprom.cc \
 	game.cc \
 	gameinfo.cc \
@@ -238,7 +245,10 @@ noinst_HEADERS = \
 	rom.h \
 	sample.h \
 	disk.h \
-	utility.h \
+	data.h \
+	token.h \
+	strcov.h \
+	file.h \
 	conf.h \
 	ziprom.h \
 	game.h \

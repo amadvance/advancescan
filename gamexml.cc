@@ -21,15 +21,13 @@
 #include "portable.h"
 
 #include "game.h"
+#include "strcov.h"
 #include "expat/expat.h"
 
 #include <string>
 #include <iostream>
 
 using namespace std;
-
-/****************************************************************************/
-/* Parser */
 
 /**
  * Max depth checked.
@@ -71,9 +69,6 @@ struct state_t {
 	game_by_name_set* a; /**< Game archive. */
 
 };
-
-/****************************************************************************/
-/* Processing */
 
 static void process_error(struct state_t* state, const char* tag, const char* msg)
 {

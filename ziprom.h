@@ -24,23 +24,18 @@
 #include "zip.h"
 #include "rom.h"
 
-// ------------------------------------------------------------------------
-// Zip archive
-
 enum zip_type {
 	zip_own, // roms part of the set
 	zip_import, // roms of other sets used for importing
 	zip_unknown // roms unknown
 };
 
-// Zip with readonly flag
 class ziprom : public zip {
 	zip_type type;
 	bool readonly;
 
 	void move(const std::string& zipintname_src, ziprom& dst, const std::string& zipintname_dst);
 
-	// abstract;
 	ziprom();
 public:
 	ziprom(const std::string& Apath, zip_type Atype, bool Areadonly);
@@ -78,7 +73,6 @@ struct ziprom_by_file_less : std::binary_function<ziprom, ziprom, bool> {
 
 typedef std::list<ziprom> zipromcontainer;
 
-// Store crc and size pair
 class ziparchive_crcsize {
 	crc_t crc;
 	unsigned size;
@@ -100,10 +94,9 @@ public:
 	typedef zipromcontainer::iterator iterator;
 
 private:
-	zipromcontainer data; // std::list of zip
+	zipromcontainer data; // list of zip
 	mutable ziparchive_crcsizeset index; // fast exist test in data
 
-	// abstract
 	ziparchive(const ziparchive&);
 
 	const_iterator find_iter(unsigned size, crc_t crc, ziprom::const_iterator& k) const;

@@ -18,16 +18,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __GAME_H
-#define __GAME_H
+#ifndef __GAMEDIFF_H
+#define __GAMEDIFF_H
 
 #include <set>
 #include <list>
 #include <vector>
 #include <string>
-
-// ------------------------------------------------------------------------
-// Game
 
 class rom {
 	std::string name;
@@ -84,3 +81,4 @@ public:
 };
 
 #endif
+

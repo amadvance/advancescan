@@ -18,13 +18,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __CONFIG_H
-#define __CONFIG_H
+#ifndef __CONF_H
+#define __CONF_H
 
-#include "utility.h"
-
-// ------------------------------------------------------------------------
-// Config
+#include "file.h"
 
 class config {
 	filepath_container rompath;
@@ -52,3 +49,4 @@ public:
 };
 
 #endif
+

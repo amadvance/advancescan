@@ -21,7 +21,8 @@
 #include "portable.h"
 
 #include "analyze.h"
-#include "utility.h"
+#include "strcov.h"
+#include "file.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ analyze_entry_static GARBAGE[] = {
 { 0, 0, 0 }
 };
 
-unsigned char MAMEDK_DATA[] = {
+char MAMEDK_DATA[] = {
 	0x2e, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d,
 	0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d,
 	0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d, 0x2d,
@@ -575,7 +576,7 @@ static bool heuristic_is_text(const string& name, unsigned size, unsigned crc)
 	return true;
 }
 
-static void sset(unsigned char* dst, unsigned w, const char* s)
+static void sset(char* dst, unsigned w, const char* s)
 {
 	unsigned l = strlen(s);
 	if (l > w)
@@ -614,13 +615,14 @@ analyze::analyze(const gamearchive& gar)
 
 		e.name = name;
 		e.size = MAMEDK_SIZE;
-		e.crc = crc32(0, MAMEDK_DATA, MAMEDK_SIZE);
+		e.crc = crc_compute(MAMEDK_DATA, MAMEDK_SIZE);
 
 		garbage.insert(e);
 	}
 }
 
-analyze_type analyze::operator()(const string& name, unsigned size, unsigned crc) const {
+analyze_type analyze::operator()(const string& name, unsigned size, unsigned crc) const
+{
 	if (!heuristic_is_text(name, size, crc))
 		return analyze_binary;
 

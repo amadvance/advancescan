@@ -24,9 +24,6 @@
 
 using namespace std;
 
-// ------------------------------------------------------------------------
-// Game
-
 game::game()
 {
 	resource = false;
@@ -35,16 +32,17 @@ game::game()
 	working_parent_subset = false;
 }
 
-game::game(const string& Aname) :
-	name(Aname) {
+game::game(const string& Aname)
+	: name(Aname)
+{
 	resource = false;
 	working = true;
 	working_subset = false;
 	working_parent_subset = false;
 }
 
-game::game(const game& A) : 
-	rs(A.rs), 
+game::game(const game& A)
+	: rs(A.rs),
 	ss(A.ss),
 	ds(A.ds),
 	rzs(A.rzs), 
@@ -61,14 +59,16 @@ game::game(const game& A) :
 	working(A.working),
 	working_subset(A.working_subset),
 	working_parent_subset(A.working_parent_subset),
-	rom_son(A.rom_son) {
+	rom_son(A.rom_son)
+{
 }
 
 game::~game()
 {
 }
 
-unsigned game::good_rom_size() const {
+unsigned game::good_rom_size() const
+{
 	unsigned size = 0;
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get() && (!size || i->size_get() < size))
@@ -76,28 +76,32 @@ unsigned game::good_rom_size() const {
 	return size;
 }
 
-bool game::has_good_rom() const {
+bool game::has_good_rom() const
+{
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get())
 			return true;
 	return false;
 }
 
-string game::good_rom_get() const {
+string game::good_rom_get() const
+{
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get())
 			return i->file_get();
 	return "";
 }
 
-bool game::has_bad_rom() const {
+bool game::has_bad_rom() const
+{
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (!i->good_get())
 			return true;
 	return false;
 }
 
-bool game::has_usable_rom() const {
+bool game::has_usable_rom() const
+{
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i) {
 		if (i->good_get())
 			return true;
@@ -107,14 +111,16 @@ bool game::has_usable_rom() const {
 	return false;
 }
 
-bool game::has_good_sample() const {
+bool game::has_good_sample() const
+{
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (i->good_get())
 			return true;
 	return false;
 }
 
-unsigned game::good_sample_size() const {
+unsigned game::good_sample_size() const
+{
 	unsigned size = 0;
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (i->good_get() && (!size || i->size_get() < size))
@@ -122,14 +128,16 @@ unsigned game::good_sample_size() const {
 	return size;
 }
 
-bool game::has_bad_sample() const {
+bool game::has_bad_sample() const
+{
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (!i->good_get())
 			return true;
 	return false;
 }
 
-bool game::has_good_disk() const {
+bool game::has_good_disk() const
+{
 	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
 		zippath_container::const_iterator j;
 		for(j=dzs_get().begin();j!=dzs_get().end();++j) {
@@ -147,7 +155,8 @@ bool game::has_good_disk() const {
 	return true;
 }
 
-unsigned game::good_disk_size() const {
+unsigned game::good_disk_size() const
+{
 	unsigned size = 0;
 
 	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
@@ -164,34 +173,41 @@ unsigned game::good_disk_size() const {
 	return size;
 }
 
-bool game::has_bad_disk() const {
+bool game::has_bad_disk() const
+{
 	for(zippath_container::const_iterator i=dzs_get().begin();i!=dzs_get().end();++i)
 		if (!i->good_get())
 			return true;
 	return false;
 }
 
-void game::rzs_add(const infopath& Azip) const {
+void game::rzs_add(const infopath& Azip) const
+{
 	rzs.insert(rzs.end(), Azip);
 }
 
-void game::szs_add(const infopath& Azip) const {
+void game::szs_add(const infopath& Azip) const
+{
 	szs.insert(szs.end(), Azip);
 }
 
-void game::dzs_add(const infopath& Azip) const {
+void game::dzs_add(const infopath& Azip) const
+{
 	dzs.insert(dzs.end(), Azip);
 }
 
-void game::working_set(bool Aworking) const {
+void game::working_set(bool Aworking) const
+{
 	working = Aworking;
 }
 
-void game::working_subset_set(bool Aworking) const {
+void game::working_subset_set(bool Aworking) const
+{
 	working_subset = Aworking;
 }
 
-void game::working_parent_subset_set(bool Aworking) const {
+void game::working_parent_subset_set(bool Aworking) const
+{
 	working_parent_subset = Aworking;
 }
 
@@ -235,7 +251,9 @@ void game::resource_set(bool Aresource)
 	resource = Aresource;
 }
 
-// Remove roms by name
+/**
+ * Remove roms by name.
+ */
 void game::rs_remove_name(const rom_by_name_set& A) const {
 	rom_by_name_set B;
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i) {
@@ -247,7 +265,9 @@ void game::rs_remove_name(const rom_by_name_set& A) const {
 	rs = B;
 }
 
-// Remove roms by crc
+/**
+ * Remove roms by crc.
+ */
 void game::rs_remove_crc(const rom_by_crc_set& A) const {
 	rom_by_name_set B;
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i) {
@@ -259,7 +279,9 @@ void game::rs_remove_crc(const rom_by_crc_set& A) const {
 	rs = B;
 }
 
-// Remove sample by name
+/**
+ * Remove sample by name.
+ */
 void game::ss_remove_name(const sample_by_name_set& A) const {
 	sample_by_name_set B;
 	for(sample_by_name_set::const_iterator i=ss_get().begin();i!=ss_get().end();++i) {
@@ -271,7 +293,9 @@ void game::ss_remove_name(const sample_by_name_set& A) const {
 	ss = B;
 }
 
-// Remove disk by name
+/**
+ * Remove disk by name.
+ */
 void game::ds_remove_name(const disk_by_name_set& A) const {
 	disk_by_name_set B;
 	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
@@ -283,7 +307,9 @@ void game::ds_remove_name(const disk_by_name_set& A) const {
 	ds = B;
 }
 
-// Return the size of the romlist
+/**
+ * Return the size of the romlist.
+ */
 unsigned game::size_get() const {
 	unsigned size = 0;
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i) {
@@ -291,9 +317,6 @@ unsigned game::size_get() const {
 	}
 	return size;
 }
-
-// ------------------------------------------------------------------------
-// Game archive
 
 gamearchive::gamearchive()
 {
@@ -303,7 +326,8 @@ gamearchive::~gamearchive()
 {
 }
 
-gamearchive::const_iterator gamearchive::find(const game& A) const {
+gamearchive::const_iterator gamearchive::find(const game& A) const
+{
 	return map.find(A);
 }
 
@@ -313,10 +337,13 @@ bool gamearchive::is_game_parent(const game& g)
 	return j == end() || j->resource_get();
 }
 
-// Compute for the subtree the "working" relationship.
-// Assume to have all the "working" flags set to false and
-// to be called only for parents and not for resources or sons.
-bool gamearchive::game_working_subset_compute(const game& g) {
+/**
+ * Compute for the subtree the "working" relationship.
+ * Assume to have all the "working" flags set to false and
+ * to be called only for parents and not for resources or sons.
+ */
+bool gamearchive::game_working_subset_compute(const game& g)
+{
 	bool result = false;
 
 	if (g.working_get())
@@ -336,10 +363,13 @@ bool gamearchive::game_working_subset_compute(const game& g) {
 	return result;
 }
 
-// Compute for the subtree the "working_parent" relationship.
-// Assume to have all the "working_parent" flags set to false and
-// to be called only for parents and not for resources or sons.
-bool gamearchive::game_working_parent_subset_compute(const game& g) {
+/**
+ * Compute for the subtree the "working_parent" relationship.
+ * Assume to have all the "working_parent" flags set to false and
+ * to be called only for parents and not for resources or sons.
+ */
+bool gamearchive::game_working_parent_subset_compute(const game& g)
+{
 	bool result = false;
 
 	if (g.working_get()) {

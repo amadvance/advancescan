@@ -203,7 +203,6 @@ void process(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-
 	try {
 		process(argc, argv);
 	} catch (error& e) {

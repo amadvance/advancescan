@@ -18,33 +18,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __UTILITY_H
-#define __UTILITY_H
+#ifndef __FILE_H
+#define __FILE_H
 
 #include "except.h"
 
-#include <iostream>
 #include <string>
 #include <list>
-
-#include <zlib.h>
-
-// ------------------------------------------------------------------------
-// String
-
-int striwildcmp(const char* pattern, const char* str);
-unsigned strdec(const char* s, const char** e);
-unsigned strhex(const char* s, const char** e);
-void strvhex(unsigned char* dst, const char* s, const char** e);
-
-std::string token_get(const std::string& s, unsigned& ptr, const char* sep);
-void token_skip(const std::string& s, unsigned& ptr, const char* sep);
-std::string token_get(const std::string& s, unsigned& ptr, char sep);
-void token_skip(const std::string& s, unsigned& ptr, char sep);
-std::string strip_space(const std::string& s);
-
-// ------------------------------------------------------------------------
-// Path
 
 class filepath {
 	std::string file;
@@ -82,23 +62,10 @@ public:
 
 typedef std::list<infopath> zippath_container;
 
-// ------------------------------------------------------------------------
-// Crc
-
 typedef unsigned crc_t;
 
-inline crc_t crc_compute(const char* data, unsigned len)
-{
-	return crc32(0, (unsigned char*)data, len);
-}
-
-inline crc_t crc_compute(crc_t pred, const char* data, unsigned len)
-{
-	return crc32(pred, (unsigned char*)data, len);
-}
-
-// ------------------------------------------------------------------------
-// File
+crc_t crc_compute(const char* data, unsigned len);
+crc_t crc_compute(crc_t pred, const char* data, unsigned len);
 
 bool file_exists(const std::string& file) throw (error);
 void file_write(const std::string& path, const char* data, unsigned size) throw (error);
@@ -122,46 +89,5 @@ std::string file_ext(const std::string& file) throw ();
 int file_compare(const std::string& path1, const std::string& path2) throw ();
 std::string file_adjust(const std::string& path) throw ();
 
-// ------------------------------------------------------------------------
-// Data
-
-unsigned char* data_dup(const unsigned char* Adata, unsigned Asize);
-unsigned char* data_alloc(unsigned size);
-void data_free(unsigned char* data);
-
-class data_ptr {
-	unsigned char* data;
-	bool own;
-public:
-	data_ptr() : data(0), own(false) { }
-
-	data_ptr(data_ptr& A)
-	{
-		data = A.data;
-		own = A.own;
-		A.own = false;
-	}
-
-	data_ptr(unsigned char* Adata, bool Aown = true) : data(Adata), own(Aown) { }
-
-	~data_ptr() { if (own) data_free(data); }
-
-	void operator=(data_ptr& A)
-	{
-		if (own) data_free(data);
-		data = A.data;
-		own = A.own;
-		A.own = false;
-	}
-
-	void operator=(unsigned char* Adata)
-	{
-		if (own) data_free(data);
-		data = Adata;
-		own = true;
-	}
-
-	operator unsigned char*() { return data; }
-};
-
 #endif
+

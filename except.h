@@ -79,32 +79,6 @@ public:
 		desc += s.str();
 		return *this;
 	}
-
-};
-
-class error_ignore : public error {
-public:
-	error_ignore() : error()
-	{
-	}
-
-	error_ignore& operator<<(const char* A)
-	{
-		error::operator<<(A);
-		return *this;
-	}
-
-	error_ignore& operator<<(const std::string& A)
-	{
-		error::operator<<(A);
-		return *this;
-	}
-
-	error_ignore& operator<<(const unsigned A)
-	{
-		error::operator<<(A);
-		return *this;
-	}
 };
 
 class error_invalid : public error {
@@ -132,6 +106,31 @@ public:
 	}
 };
 
+class error_unsupported : public error {
+public:
+	error_unsupported() : error()
+	{
+	}
+
+	error_unsupported& operator<<(const char* A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_unsupported& operator<<(const std::string& A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_unsupported& operator<<(const unsigned A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+};
+
 #define error() \
 	error(__PRETTY_FUNCTION__, __FILE__, __LINE__)
 
@@ -146,3 +145,4 @@ static inline std::ostream& operator<<(std::ostream& os, const error& e)
 }
 
 #endif
+

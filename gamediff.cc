@@ -25,9 +25,6 @@
 
 #include <iomanip>
 
-// ------------------------------------------------------------------------
-// rom
-
 rom::rom()
 {
 }
@@ -36,7 +33,8 @@ rom::rom(const rom& A)
 	: name(A.name), size(A.size), crc(A.crc) {
 }
 
-bool rom::operator<(const rom& A) const {
+bool rom::operator<(const rom& A) const
+{
 	if (crc_get() < A.crc_get())
 		return true;
 	if (crc_get() > A.crc_get())
@@ -44,7 +42,8 @@ bool rom::operator<(const rom& A) const {
 	return size_get() < A.size_get();
 }
 
-bool rom::operator==(const rom& A) const {
+bool rom::operator==(const rom& A) const
+{
 	return crc_get() == A.crc_get() && size_get() == A.size_get();
 }
 
@@ -76,18 +75,17 @@ bool equal(const rom_set& A, const rom_set& B)
 	return true;
 }
 
-// ------------------------------------------------------------------------
-// game
-
 game::game()
 {
 }
 
 game::game(const game& A)
-	: name(A.name), roms(A.roms) {
+	: name(A.name), roms(A.roms)
+{
 }
 
-bool game::operator<(const game& A) const {
+bool game::operator<(const game& A) const
+{
 	return name_get() < A.name_get();
 }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 2002 Andrea Mazzoleni
+ * Copyright (C) 2002, 2004 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __SIGLOCK_H
-#define __SIGLOCK_H
+#ifndef __TOKEN_H
+#define __TOKEN_H
 
-void sig_lock();
-void sig_unlock();
+#include <string>
 
-class sig_auto_lock {
-public:
-	sig_auto_lock() { sig_lock(); }
-	~sig_auto_lock() { sig_unlock(); }
-};
+std::string token_get(const std::string& s, unsigned& ptr, const char* sep);
+void token_skip(const std::string& s, unsigned& ptr, const char* sep);
+std::string token_get(const std::string& s, unsigned& ptr, char sep);
+void token_skip(const std::string& s, unsigned& ptr, char sep);
+std::string strip_space(const std::string& s);
 
 #endif
-

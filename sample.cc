@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,52 +20,21 @@
 
 #include "portable.h"
 
-#include "siglock.h"
+#include "sample.h"
 
 using namespace std;
 
-#if HAVE_SIGHUP
-static void (*sig_hup)(int);
-#endif
-#if HAVE_SIGQUIT
-static void (*sig_quit)(int);
-#endif
-static void (*sig_int)(int);
-static void (*sig_term)(int);
-
-static int sig_ignore_sig;
-
-void sig_ignore(int sig)
+sample::sample(const string& Aname)
 {
-	if (sig_ignore_sig == 0)
-		sig_ignore_sig = sig;
+	name = Aname;
 }
 
-void sig_lock()
+sample::sample(const sample& A)
 {
-	sig_ignore_sig = 0;
-#if HAVE_SIGHUP
-	sig_hup = signal(SIGHUP, sig_ignore);
-#endif
-#if HAVE_SIGQUIT
-	sig_quit = signal(SIGQUIT, sig_ignore);
-#endif
-	sig_int = signal(SIGINT, sig_ignore);
-	sig_term = signal(SIGTERM, sig_ignore);
+	name = A.name;
 }
 
-void sig_unlock()
+sample::~sample()
 {
-#if HAVE_SIGHUP
-	signal(SIGHUP, sig_hup);
-#endif
-#if HAVE_SIGQUIT
-	signal(SIGQUIT, sig_quit);
-#endif
-	signal(SIGINT, sig_int);
-	signal(SIGTERM, sig_term);
-
-	if (sig_ignore_sig)
-		raise(sig_ignore_sig);
 }
 

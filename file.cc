@@ -20,178 +20,21 @@
 
 #include "portable.h"
 
-#include "utility.h"
+#include "file.h"
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <new>
+#include <zlib.h>
 
 using namespace std;
 
-// ------------------------------------------------------------------------
-// String
-
-string strip_space(const string& s)
+crc_t crc_compute(const char* data, unsigned len)
 {
-	string r = s;
-	while (r.length() && isspace(r[0]))
-		r.erase(0, 1);
-	while (r.length() && isspace(r[r.length()-1]))
-		r.erase(r.length()-1, 1);
-	return r;
+	return crc32(0, (unsigned char*)data, len);
 }
 
-string token_get(const string& s, unsigned& ptr, const char* sep)
+crc_t crc_compute(crc_t pred, const char* data, unsigned len)
 {
-	unsigned start = ptr;
-	while (ptr < s.length() && strchr(sep, s[ptr])==0)
-		++ptr;
-	return string(s, start, ptr-start);
+	return crc32(pred, (unsigned char*)data, len);
 }
-
-void token_skip(const string& s, unsigned& ptr, const char* sep)
-{
-	while (ptr < s.length() && strchr(sep, s[ptr])!=0)
-		++ptr;
-}
-
-std::string token_get(const std::string& s, unsigned& ptr, char sep)
-{
-	char sep_string[2];
-	sep_string[0] = sep;
-	sep_string[1] = 0;
-	return token_get(s, ptr, sep_string);
-}
-
-void token_skip(const std::string& s, unsigned& ptr, char sep)
-{
-	char sep_string[2];
-	sep_string[0] = sep;
-	sep_string[1] = 0;
-	token_skip(s, ptr, sep_string);
-}
-
-/**
- * Match one string with a shell pattern expression.
- * \param pattern Pattern with with the globbing * and ? chars.
- * \param str String to compare,
- * \return
- *  - ==0 match
- *  - !=0 don't match
- */
-int striwildcmp(const char* pattern, const char* str)
-{
-	while (*str && *pattern) {
-		if (*pattern == '*') {
-			++pattern;
-			while (*str) {
-				if (striwildcmp(pattern, str)==0) return 0;
-				++str;
-			}
-		} else if (*pattern == '?') {
-			++str;
-			++pattern;
-		} else {
-			if (toupper(*str) != toupper(*pattern))
-				return 1;
-			++str;
-			++pattern;
-		}
-	}
-	while (*pattern == '*')
-		++pattern;
-	if (!*str && !*pattern)
-		return 0;
-	return 1;
-}
-
-/**
- * Convert a string to a unsigned.
- * \param s String to convert.
- * \param e First not numerical char detected.
- * \return 0 if string contains a non digit char.
- */
-unsigned strdec(const char* s, const char** e)
-{
-	unsigned v = 0;
-	while (*s) {
-		if (!isdigit(*s)) {
-			*e = s;
-			return 0;
-		}
-		v *= 10;
-		v += *s - '0';
-		++s;
-	}
-	*e = s;
-	return v;
-}
-
-/**
- * Convert a hex string to a unsigned.
- * \param s String to convert.
- * \param e First not numerical char detected.
- * \return converted value.
- */
-unsigned strhex(const char* s, const char** e)
-{
-	unsigned v = 0;
-	while (*s) {
-		if (!isxdigit(*s)) {
-			break;
-		}
-		v *= 16;
-		if (*s>='0' && *s<='9')
-			v += *s - '0';
-		else
-			v += toupper(*s) - 'A' + 10;
-		++s;
-	}
-	if (e)
-		*e = s;
-	return v;
-}
-
-/**
- * Convert a hex string to a vector of bytes.
- * \param dst Destination vector.
- * \param s String to convert.
- * \param e First not numerical char detected.
- */
-void strvhex(unsigned char* dst, const char* s, const char** e)
-{
-	unsigned i;
-	i = 0;
-	while (*s) {
-		unsigned v;
-		if (!isxdigit(*s)) {
-			break;
-		}
-		if (*s>='0' && *s<='9')
-			v = *s - '0';
-		else
-			v = toupper(*s) - 'A' + 10;
-		dst[i] = v * 16;
-		++s;
-
-		if (!isxdigit(*s)) {
-			break;
-		}
-		if (*s>='0' && *s<='9')
-			v = *s - '0';
-		else
-			v = toupper(*s) - 'A' + 10;
-		dst[i] += v;
-		++i;
-		++s;
-	}
-	if (e)
-		*e = s;
-}
-
-// ------------------------------------------------------------------------
-// Path
 
 filepath::filepath()
 {
@@ -251,9 +94,6 @@ void infopath::readonly_set(bool Areadonly)
 {
 	readonly = Areadonly;
 }
-
-// ------------------------------------------------------------------------
-// File
 
 /**
  * Check if a file exists.
@@ -588,42 +428,4 @@ void file_mktree(const std::string& path) throw (error)
 	}
 }
 
-// ------------------------------------------------------------------------
-// Data
-
-/**
- * Duplicate a memory buffer.
- */
-unsigned char* data_dup(const unsigned char* Adata, unsigned Asize)
-{
-	if (Adata) {
-		unsigned char* data = (unsigned char*)malloc(Asize);
-		if (!data)
-			throw std::bad_alloc();
-		if (Asize)
-			memcpy(data, Adata, Asize);
-		return data;
-	} else {
-		return 0;
-	}
-}
-
-/**
- * Allocate a memory buffer.
- */
-unsigned char* data_alloc(unsigned size)
-{
-	unsigned char* data = (unsigned char*)malloc(size);
-	if (!data)
-		throw std::bad_alloc();
-	return data;
-}
-
-/**
- * Free a memory buffer.
- */
-void data_free(unsigned char* data)
-{
-	free(data);
-}
 

@@ -21,6 +21,7 @@
 #include "portable.h"
 
 #include "conf.h"
+#include "token.h"
 
 #include <iostream>
 #include <fstream>
@@ -53,9 +54,6 @@ static void expand_tree(const string& path, filepath_container& ds) throw (error
 
 	closedir(dir);
 }
-
-// ------------------------------------------------------------------------
-// Config
 
 config::config(const string& file, bool need_rom, bool need_sample, bool need_disk, bool need_change)
 {

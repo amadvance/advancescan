@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 2002 Andrea Mazzoleni
+ * Copyright (C) 2002, 2004 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,21 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __SIGLOCK_H
-#define __SIGLOCK_H
+#ifndef __STRCOV_H
+#define __STRCOV_H
 
-void sig_lock();
-void sig_unlock();
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class sig_auto_lock {
-public:
-	sig_auto_lock() { sig_lock(); }
-	~sig_auto_lock() { sig_unlock(); }
-};
+int striwildcmp(const char* pattern, const char* str);
+unsigned strdec(const char* s, const char** e);
+unsigned strhex(const char* s, const char** e);
+void strvhex(unsigned char* dst, const char* s, const char** e);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
