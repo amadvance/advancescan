@@ -1,6 +1,9 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.6 2003/03
+	) Updated with autoconf 2.57 and automake 1.7.2
+
 AdvanceSCAN Version 1.5 2003/02
 	) Removed the recompression utilities. Now they are in the
 		AdvanceCOMP package.

@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([AdvanceSCAN],[1.5])
+AC_INIT([AdvanceSCAN],[1.6])
 AC_CONFIG_SRCDIR([scan.cc])
 AM_INIT_AUTOMAKE([foreign no-dependencies])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 
 # Checks for programs.
