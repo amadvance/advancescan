@@ -9,15 +9,17 @@ Synopsis
 </h2>
 <pre>
 advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
-&nbsp;&nbsp;&nbsp;&nbsp;[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
-&nbsp;&nbsp;&nbsp;&nbsp;[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
+&nbsp;&nbsp;&nbsp;&nbsp;[-k, --disk] [-a, --add-zip] [-b, --add-bin]
+&nbsp;&nbsp;&nbsp;&nbsp;[-d, --del-zip] [-u, --del-unknown]
+&nbsp;&nbsp;&nbsp;&nbsp;[-g, --del-garbage] [-t,--del-text]
 &nbsp;&nbsp;&nbsp;&nbsp;[-n, --print-only] [-p, --report]
 &nbsp;&nbsp;&nbsp;&nbsp;[-f, --filter FILTER]
 &nbsp;&nbsp;&nbsp;&nbsp;[-v, --verbose] &lt; info.lst/xml
 </pre>
 <p>
 <pre>
-advscan [-R, --rom-std] [-S, --sample-std] &lt; info.lst/xml
+advscan [-R, --rom-std] [-S, --sample-std]
+&nbsp;&nbsp;&nbsp;&nbsp;[-K, --disk-std]&lt; info.lst/xml
 </pre>
 <p>
 <pre>
@@ -43,6 +45,7 @@ archive of roms and sample zip archive for the MAME, MESS,
 xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
 The goal of advscan is to obtain a complete and perfect rom
 and sample zip archive with differential merging.
+<p>
 Differential merging means that any game has its zip archive,
 which contains all the rom files, which are not already in
 the parent zip archive (if exists).
@@ -50,7 +53,7 @@ the parent zip archive (if exists).
 advscan has these features:
 <ul>
 <li>
-Directly read, write zip archives without decompressing
+Directly read, writes zip archives without decompressing
 and recompressing them for best performance.
 </li>
 <li>
@@ -59,11 +62,11 @@ archives. Any rom that you have is placed
 automatically in the correct zip.
 </li>
 <li>
-Recognize the text files added by rom sites and
+Recognizes the text files added by rom sites and
 delete them.
 </li>
 <li>
-Recognize the text files added by the rom dumpers
+Recognizes the text files added by the rom dumpers
 and keep or delete them as your choice.
 </li>
 <li>
@@ -78,13 +81,13 @@ remove operation.
 but also has these misfeatures:
 <ul>
 <li>
-Support only rom and sample archives zipped.
+Supports only rom and sample archives zipped.
 </li>
 <li>
-Support only differential merging.
+Supports only rom organized with differential merging.
 </li>
 <li>
-Doesn't support .chd files.
+Doesn't support .chd files in subdirectories.
 </li>
 </ul>
 <h2>3 
@@ -115,8 +118,8 @@ xml, otherwise it's assumed to be the old listing format.
 <tr valign="top" align="left"><td><strong>
 -r, --rom
 </strong></td></tr><tr><td>
-Operates on roms. All the next commands will
-operate on your romset.
+Operates on roms (.zip files). All the next commands
+will operate on your romset.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -125,6 +128,14 @@ operate on your romset.
 </strong></td></tr><tr><td>
 Operates on samples. All the next commands will
 operate on your sampleset.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
+-k, --disk
+</strong></td></tr><tr><td>
+Operates on disks (.chd files). All the next commands
+will operate on your diskset.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -153,9 +164,9 @@ one.
 <tr valign="top" align="left"><td><strong>
 -d, --del-zip
 </strong></td></tr><tr><td>
-Remove any unknown zip archive. Any archive
-removed is saved in the `rom_unknown' or
-`sample_unknown' directory.
+Remove any unknown zip or chd archive. Any archive
+removed is saved in the `rom_unknown',
+`sample_unknown' or `disk_unknown' directory.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -210,6 +221,14 @@ files.
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
+-K, --disk-std
+</strong></td></tr><tr><td>
+Shortcut for the options -kd. It moves any unknown
+disk file in the disk_unknown directory.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
 -n, --print-only
 </strong></td></tr><tr><td>
 Don't modify anything, it only shows operations.
@@ -231,10 +250,10 @@ options.
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
--P, --report-zip
+-P, --report-file
 </strong></td></tr><tr><td>
 Write a small text report with information on the
-present roms, listing incomplete, duplicate or
+present files, listing incomplete, duplicate or
 missing required zips.
 </td></tr>
 </table>
@@ -370,7 +389,7 @@ directories structure. You can use absolute path or
 relative path. Relative path is relative to the current
 directory from where you run advscan.
 <p>
-On Unix the PATH separator is `:'. On DOS the PATH
+In Unix the PATH separator is `:'. In DOS and Windows the PATH
 separator is `;'. The following options are expressed with the
 Unix format.
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -433,6 +452,22 @@ be moved. In this directory is inserted any sample
 file removed from the sample zip archives.
 </td></tr>
 </table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
+disk PATH:PATH...
+</strong></td></tr><tr><td>
+List of paths where the disks are placed. These
+are the chd archives.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
+disk_unknown PATH
+</strong></td></tr><tr><td>
+Single path where unknown disk chd archives will
+be moved.
+</td></tr>
+</table>
 <p>
 If the -c option is not specified the configuration file
 is read from ./advscan.rc.
@@ -440,6 +475,18 @@ is read from ./advscan.rc.
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
 <h2>7 
+Damaged Files
+</h2>
+If a damaged .zip or .chd file is detected, it's renamed
+with a new name appending the extension ".damaged".
+For .chd file it may happen that the file is a disk image
+with an old format.
+<p>
+If the rename operation isn't possible the program aborts.
+<p>
+Please note that the program doesn't execute an
+extensive test to detect damaged files.
+<h2>8 
 Filters
 </h2>
 As default advscan uses all the rom definitions, including also
@@ -515,8 +562,8 @@ advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 advscan -R -c advscan-pre.rc -f preliminary &lt; advmame.xml &gt; rom_pre.log
 advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 </td></tr></table>
-<h2>8 
-Report
+<h2>9 
+Report Format
 </h2>
 The report generated with the -p option contains some text
 tag explained here:
@@ -545,10 +592,18 @@ A missing rom.
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
+disk_bad
+</strong></td></tr><tr><td>
+A recognized bad disk with an incorrect hash.
+The disk is recognized by its name.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
 nodump_good
 </strong></td></tr><tr><td>
 A fake "NO GOOD DUMP KNOWN" rom. The rom is
-recognized by its name, size and 0 crc.
+recognized by its name, size and crc.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -606,7 +661,7 @@ site. The file is recognized by its name, size and
 crc.
 </td></tr>
 </table>
-<h2>9 
+<h2>10 
 Examples
 </h2>
 For the generic use you need to run advscan with the
@@ -643,11 +698,11 @@ advscan -r -p &lt; info.xml &gt; report.txt
 <p>
 To increase the verbosity of the printed information you
 can add the -v switch.
-<h2>10 
+<h2>11 
 Copyright
 </h2>
 This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
-<h2>11 
+<h2>12 
 See Also
 </h2>
 advdiff(1)

@@ -37,7 +37,8 @@ using namespace std;
 #define BIGSIZE_WIDTH 12 // Big file size width
 #define COUNT_WIDTH 6 // Counter width
 
-ostream& output::op(const string& op) {
+ostream& output::op(const string& op)
+{
 	// .c_str() is required by g++ 2.95.3
 	os << setw(OP_WIDTH) << setfill(' ') << op.c_str();
 	os << " ";
@@ -45,7 +46,8 @@ ostream& output::op(const string& op) {
 	return os;
 }
 
-ostream& output::total(const string& op) {
+ostream& output::total(const string& op)
+{
 	// .c_str() is required by g++ 2.95.3
 	os << setw(TOTAL_WIDTH) << setfill(' ') << op.c_str();
 	os << " ";
@@ -53,14 +55,16 @@ ostream& output::total(const string& op) {
 	return os;
 }
 
-ostream& output::free(const string& op) {
+ostream& output::free(const string& op)
+{
 	os << op;
 	os << " ";
 
 	return os;
 }
 
-ostream& output::cmd(const string& op, const string& cmd) {
+ostream& output::cmd(const string& op, const string& cmd)
+{
 	string cmd_square = "[" + cmd + "]";
 
 	// .c_str() is required by g++ 2.95.3
@@ -73,7 +77,8 @@ ostream& output::cmd(const string& op, const string& cmd) {
 	return os;
 }
 
-ostream& output::zip(const string& op, const string& zip) {
+ostream& output::zip(const string& op, const string& zip)
+{
 	free(op);
 
 	os << zip << endl;
@@ -81,23 +86,26 @@ ostream& output::zip(const string& op, const string& zip) {
 	return os;
 }
 
-ostream& output::ziptag(const string& op, const string& zip, const string& tag) {
+ostream& output::ziptag(const string& op, const string& zip, const string& tag)
+{
 	free(op);
 	os << zip << " " << tag << endl;
 
 	return os;
 }
 
-ostream& output::title(const string& op, bool& title, const string& path) {
+ostream& output::title(const string& op, bool& title, const string& path)
+{
 	if (!title) {
 		title = true;
-		zip(op,path);
+		zip(op, path);
 	}
 
 	return os;
 }
 
-ostream& output::c(const string& tag, unsigned count) {
+ostream& output::c(const string& tag, unsigned count)
+{
 	total(tag);
 
 	os.setf(ios::right, ios::adjustfield);
@@ -111,7 +119,8 @@ ostream& output::c(const string& tag, unsigned count) {
 	return os;
 }
 
-ostream& output::cs(const string& tag, unsigned count, unsigned long long size) {
+ostream& output::cs(const string& tag, unsigned count, unsigned long long size)
+{
 	total(tag);
 
 	os.setf(ios::right, ios::adjustfield);
@@ -129,7 +138,8 @@ ostream& output::cs(const string& tag, unsigned count, unsigned long long size) 
 	return os;
 }
 
-ostream& output::cp(const string& tag, double v) {
+ostream& output::cp(const string& tag, double v)
+{
 	total(tag);
 
 	os.setf(ios::left, ios::adjustfield);
@@ -142,7 +152,8 @@ ostream& output::cp(const string& tag, double v) {
 }
 
 
-ostream& output::csz(const string& tag, unsigned count, unsigned long long size, unsigned long long sizezip) {
+ostream& output::csz(const string& tag, unsigned count, unsigned long long size, unsigned long long sizezip)
+{
 	total(tag);
 
 	os.setf(ios::right, ios::adjustfield);
@@ -164,7 +175,8 @@ ostream& output::csz(const string& tag, unsigned count, unsigned long long size,
 	return os;
 }
 
-ostream& output::cz(const string& tag, unsigned count, unsigned long long sizezip) {
+ostream& output::cz(const string& tag, unsigned count, unsigned long long sizezip)
+{
 	total(tag);
 
 	os.setf(ios::right, ios::adjustfield);
@@ -182,7 +194,8 @@ ostream& output::cz(const string& tag, unsigned count, unsigned long long sizezi
 	return os;
 }
 
-ostream& output::state_gamesample(const string& tag, const game& g) {
+ostream& output::state_gamesample(const string& tag, const game& g)
+{
 	free(tag);
 
 	// .c_str() is required by g++ 2.95.3
@@ -197,7 +210,30 @@ ostream& output::state_gamesample(const string& tag, const game& g) {
 	return os;
 }
 
-ostream& output::state_gamerom(const string& tag, const game& g, const gamearchive& gar, bool onecrc) {
+ostream& output::state_gamedisk(const string& tag, const game& g, bool name)
+{
+	free(tag);
+
+	// .c_str() is required by g++ 2.95.3
+	os << setw(NAME_WIDTH) << setfill(' ') << g.name_get().c_str();
+	
+	os << "  ";
+
+	os << g.description_get();
+
+	if (name && !g.ds_get().empty()) {
+		os << " [";
+		os << g.ds_get().begin()->name_get();
+		os << ".chd]";
+	}
+
+	os << "\n";
+
+	return os;
+}
+
+ostream& output::state_gamerom(const string& tag, const game& g, const gamearchive& gar, bool onecrc)
+{
 	free(tag);
 
 	// .c_str() is required by g++ 2.95.3
@@ -255,7 +291,8 @@ ostream& output::state_gamerom(const string& tag, const game& g, const gamearchi
 	return os;
 }
 
-ostream& output::pair(unsigned size, crc_t crc) {
+ostream& output::pair(unsigned size, crc_t crc)
+{
 	os.setf(ios::right, ios::adjustfield);
 
 	os << setw(SIZE_WIDTH) << dec << setfill(' ') << size << " " << setw(CRC_WIDTH) << hex << setfill('0') << crc;
@@ -265,8 +302,9 @@ ostream& output::pair(unsigned size, crc_t crc) {
 	return os;
 }
 
-ostream& output::cmd_rom(const string& tag, const string& c, const string& name, unsigned size, crc_t crc) {
-	cmd(tag,c);
+ostream& output::cmd_rom(const string& tag, const string& c, const string& name, unsigned size, crc_t crc)
+{
+	cmd(tag, c);
 
 	pair(size, crc);
 
@@ -278,14 +316,16 @@ ostream& output::cmd_rom(const string& tag, const string& c, const string& name,
 	return os;
 }
 
-ostream& output::cmd_rom(const string& tag, const string& cmd,const rom& r) {
+ostream& output::cmd_rom(const string& tag, const string& cmd, const rom& r)
+{
 
 	cmd_rom(tag, cmd, r.name_get(), r.size_get(), r.crc_get());
 
 	return os;
 }
 
-ostream& output::state_rom(const string& tag, const string& name, unsigned size, crc_t crc) {
+ostream& output::state_rom(const string& tag, const string& name, unsigned size, crc_t crc)
+{
 	op(tag);
 
 	pair(size, crc);
@@ -298,15 +338,17 @@ ostream& output::state_rom(const string& tag, const string& name, unsigned size,
 	return os;
 }
 
-ostream& output::state_rom(const string& tag, const rom& r) {
+ostream& output::state_rom(const string& tag, const rom& r)
+{
 
 	state_rom(tag, r.name_get(), r.size_get(), r.crc_get());
 
 	return os;
 }
 
-ostream& output::state_rom_real(const string& tag, const rom& r, unsigned real_size, unsigned real_crc) {
-	state_rom(tag,r);
+ostream& output::state_rom_real(const string& tag, const rom& r, unsigned real_size, unsigned real_crc)
+{
+	state_rom(tag, r);
 
 	os << " [";
 	pair(real_size, real_crc);
@@ -315,8 +357,9 @@ ostream& output::state_rom_real(const string& tag, const rom& r, unsigned real_s
 	return os;
 }
 
-ostream& output::cmd_sample(const string& tag, const string& c, const sample& s) {
-	cmd(tag,c);
+ostream& output::cmd_sample(const string& tag, const string& c, const sample& s)
+{
+	cmd(tag, c);
 
 	// .c_str() is required by g++ 2.95.3
 	os << setw(FILE_WIDTH) << setfill(' ') << s.name_get().c_str();
@@ -324,12 +367,47 @@ ostream& output::cmd_sample(const string& tag, const string& c, const sample& s)
 	return os;
 }
 
+std::ostream& output::cmd_disk(const std::string& tag, const std::string& c, const std::string& name)
+{
+	cmd(tag, c);
 
-ostream& output::state_sample(const string& tag, const sample& s) {
+	// .c_str() is required by g++ 2.95.3
+	os << name.c_str();
+
+	return os;
+}
+
+ostream& output::state_sample(const string& tag, const sample& s)
+{
 	op(tag);
 
 	// .c_str() is required by g++ 2.95.3
 	os << setw(FILE_WIDTH) << setfill(' ') << s.name_get().c_str();
+
+	return os;
+}
+
+ostream& output::state_disk(const string& tag, const disk& r)
+{
+	op(tag);
+
+	os << r.sha1_get();
+
+	os << " ";
+
+	// .c_str() is required by g++ 2.95.3
+	os << setw(FILE_WIDTH) << setfill(' ') << r.name_get().c_str();
+
+	return os;
+}
+
+ostream& output::state_disk_real(const string& tag, const disk& r, sha1 real_hash)
+{
+	state_disk(tag, r);
+
+	os << " [";
+	os << real_hash;
+	os << "]";
 
 	return os;
 }

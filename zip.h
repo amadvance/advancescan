@@ -283,12 +283,12 @@ public:
 	typedef zip_entry_list::iterator iterator;
 
 	// container
-	const_iterator begin() const { assert( flag.open ); return map.begin(); }
-	const_iterator end() const { assert( flag.open ); return map.end(); }
-	iterator begin() { assert( flag.open ); return map.begin(); }
-	iterator end() { assert( flag.open ); return map.end(); }
+	const_iterator begin() const { assert(flag.open); return map.begin(); }
+	const_iterator end() const { assert(flag.open); return map.end(); }
+	iterator begin() { assert(flag.open); return map.begin(); }
+	iterator end() { assert(flag.open); return map.end(); }
 
-	unsigned size() const { assert( flag.open ); return map.size(); }
+	unsigned size() const { assert(flag.open); return map.size(); }
 	unsigned size_not_zero() const;
 	bool empty() const { return size_not_zero() == 0; }
 
@@ -304,8 +304,8 @@ public:
 	void unload();
 
 	bool is_open() const { return flag.open; }
-	bool is_load() const { assert( flag.open ); return flag.read; }
-	bool is_modify() const { assert( flag.open && flag.read ); return flag.modify; }
+	bool is_load() const { assert(flag.open); return flag.read; }
+	bool is_modify() const { assert(flag.open && flag.read); return flag.modify; }
 
 	void erase(iterator i);
 	void rename(iterator i, const std::string& Aname);

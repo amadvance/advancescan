@@ -1,0 +1,19 @@
+<mame>
+	<game name="hng64">
+		<rom name="brom1.bin" size="524288" crc="aaaaaaaa"/>
+		<rom name="from1.bin" size="524288" crc="bbbbbbbb"/>
+		<rom name="rom1.bin" size="130866" crc="4a6832dc"/>
+	</game>
+	<game name="neogeo">
+		<rom name="000-lo.lo" size="22222" crc="e09e253c"/>
+		<rom name="asia-s3.rom" size="131072" crc="91b64be3"/>
+		<rom name="sfix.sfx" size="111111" crc="354029fc"/>
+		<rom name="sm1.sm1" size="333333" crc="97cf998b"/>
+		<rom name="sp-e.sp1" size="131072" crc="2723a5b5"/>
+		<rom name="sp-j2.rom" size="131072" crc="acede59c"/>
+		<rom name="sp-s.sp1" size="131072" crc="c7f2fa45"/>
+		<rom name="sp-s2.sp1" size="131072" crc="9036d879"/>
+		<rom name="usa_2slt.bin" size="131072" crc="e72943de"/>
+		<rom name="vs-bios.rom" size="131072" crc="f0e8f27d"/>
+	</game>
+</mame>

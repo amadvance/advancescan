@@ -5,6 +5,8 @@ bin_PROGRAMS = advscan advdiff
 advdiff_SOURCES = \
 	diff.cc \
 	rom.cc \
+	disk.cc \
+	sample.cc \
 	utility.cc \
 	ziprom.cc \
 	game.cc \
@@ -22,6 +24,8 @@ advdiff_SOURCES = \
 advscan_SOURCES =  \
 	scan.cc \
 	rom.cc \
+	disk.cc \
+	sample.cc \
 	conf.cc \
 	utility.cc \
 	ziprom.cc \
@@ -45,11 +49,17 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
 	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
 	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
-	configure.dos configure.windows configure.darwin autogen.sh noautomake.sh
+	configure.dos configure.windows configure.darwin autogen.sh noautomake.sh \
+	test/test.xml \
+	test/test.lst \
+	test/testd.xml \
+	test/testd.lst
 
 noinst_HEADERS = \
 	snprintf.c \
 	rom.h \
+	sample.h \
+	disk.h \
 	utility.h \
 	conf.h \
 	ziprom.h \
@@ -70,10 +80,11 @@ noinst_HEADERS = \
 	expat/README \
 	expat/ascii.h \
 	expat/asciitab.h \
-	expat/expat-1.95.7.diff \
+	expat/expat-1.95.8.diff \
 	expat/expat.h \
 	expat/iasciitab.h \
 	expat/expatcfg.h \
+	expat/expat_external.h \
 	expat/internal.h \
 	expat/latin1tab.h \
 	expat/nametab.h \
@@ -91,10 +102,19 @@ man_MANS = doc/advscan.1 doc/advdiff.1
 
 clean-local:
 	rm -f advscan.exe advscan.rc advdiff.exe
+	rm -f check.lst checkd.lst
 
 maintainer-clean-local:
 	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
 	rm -f doc/*.hh
+
+check-local:
+	rm -f check.lst checkd.lst
+	./advscan -e < $(srcdir)/test/test.xml > check.lst
+	cmp check.lst $(srcdir)/test/test.lst
+	./advdiff $(srcdir)/test/test.xml $(srcdir)/test/testd.xml > checkd.lst
+	cmp checkd.lst $(srcdir)/test/testd.lst
+	echo Success!
 
 # Docs
 

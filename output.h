@@ -47,18 +47,23 @@ public:
 	std::ostream& csz(const std::string& op, unsigned count, unsigned long long size, unsigned long long sizezip);
 	std::ostream& cz(const std::string& op, unsigned count, unsigned long long sizezip);
 	std::ostream& cp(const std::string& tag, double v);
-	
-	std::ostream& state_gamesample(const std::string& tag, const game& g);
+
 	std::ostream& state_gamerom(const std::string& tag, const game& g, const gamearchive& gar, bool onecrc);
+	std::ostream& state_gamesample(const std::string& tag, const game& g);
+	std::ostream& state_gamedisk(const std::string& tag, const game& g, bool name);
 
 	std::ostream& cmd_rom(const std::string& tag, const std::string& cmd, const rom& r);
 	std::ostream& cmd_rom(const std::string& tag, const std::string& cmd, const std::string& name, unsigned size, crc_t crc);
 	std::ostream& cmd_sample(const std::string& tag, const std::string& cmd, const sample& s);
+	std::ostream& cmd_disk(const std::string& tag, const std::string& cmd, const std::string& name);
 
 	std::ostream& state_rom(const std::string& tag, const rom& r);
 	std::ostream& state_rom(const std::string& tag, const std::string& name, unsigned size, crc_t crc);
 	std::ostream& state_rom_real(const std::string& tag, const rom& r, unsigned real_size, unsigned real_crc);
 	std::ostream& state_sample(const std::string& tag, const sample& s);
+
+	std::ostream& state_disk(const std::string& tag, const disk& d);
+	std::ostream& state_disk_real(const std::string& tag, const disk& d, sha1 real_hash);
 };
 
 #endif

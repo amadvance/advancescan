@@ -27,16 +27,20 @@ using namespace std;
 // ------------------------------------------------------------------------
 // ziprom
 
-ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly) {
+ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly)
+{
 }
 
-ziprom::ziprom(const ziprom& A) : zip(A), type(A.type), readonly(A.readonly) {
+ziprom::ziprom(const ziprom& A) : zip(A), type(A.type), readonly(A.readonly)
+{
 }
 
-ziprom::~ziprom() {
+ziprom::~ziprom()
+{
 }
 
-void ziprom::open() {
+void ziprom::open()
+{
 
 	try {
 		zip::open();
@@ -54,10 +58,11 @@ void ziprom::open() {
 	}
 }
 
-ziprom::iterator ziprom::find(const string& name) {
+ziprom::iterator ziprom::find(const string& name)
+{
 
 	for(ziprom::iterator i=begin();i!=end();++i) {
-		if (file_compare( i->name_get(), name)==0) {
+		if (file_compare(i->name_get(), name)==0) {
 			return i;
 		}
 	}
@@ -192,7 +197,7 @@ void ziprom::add(const string& zipintname_src, const string& zipintname_dst, zip
 	if (i==end())
 		throw error() << "File " << zipintname_src << " not found in zip " << file_get();
 
-	add(i,zipintname_dst,reject);
+	add(i, zipintname_dst, reject);
 }
 
 void ziprom::add(const string& zipintname_src, const string& zipintname_dst)
@@ -203,7 +208,7 @@ void ziprom::add(const string& zipintname_src, const string& zipintname_dst)
 	if (i==end())
 		throw error() << "File " << zipintname_src << " not found in zip " << file_get();
 
-	add(i,zipintname_dst);
+	add(i, zipintname_dst);
 }
 
 void ziprom::rename(const string& zipintname_src, const string& zipintname_dst, ziprom& reject)
@@ -247,22 +252,28 @@ void ziprom::swap(const string& zipintname, ziprom& reject, ziprom::iterator& re
 // ------------------------------------------------------------------------
 // ziparchive
 
-ziparchive_crcsize::ziparchive_crcsize() {
+ziparchive_crcsize::ziparchive_crcsize()
+{
 }
 
-ziparchive_crcsize::ziparchive_crcsize(const ziparchive_crcsize& A) : crc(A.crc), size(A.size) {
+ziparchive_crcsize::ziparchive_crcsize(const ziparchive_crcsize& A) : crc(A.crc), size(A.size)
+{
 }
 
-ziparchive_crcsize::ziparchive_crcsize(unsigned Asize, crc_t Acrc) : crc(Acrc), size(Asize) {
+ziparchive_crcsize::ziparchive_crcsize(unsigned Asize, crc_t Acrc) : crc(Acrc), size(Asize)
+{
 }
 
-ziparchive_crcsize::~ziparchive_crcsize() {
+ziparchive_crcsize::~ziparchive_crcsize()
+{
 }
 
-ziparchive::ziparchive() {
+ziparchive::ziparchive()
+{
 }
 
-ziparchive::~ziparchive() {
+ziparchive::~ziparchive()
+{
 	for(iterator i=begin();i!=end();++i) {
 		i->close();
 	}
@@ -278,7 +289,8 @@ ziparchive::const_iterator ziparchive::find(const string& zipfile) const {
 	return end();
 }
 
-ziparchive::iterator ziparchive::find(const string& zipfile) {
+ziparchive::iterator ziparchive::find(const string& zipfile)
+{
 	for(iterator i=begin();i!=end();++i) {
 		if (zipfile == i->file_get()) {
 			return i;
@@ -288,8 +300,9 @@ ziparchive::iterator ziparchive::find(const string& zipfile) {
 	return end();
 }
 
-ziparchive::iterator ziparchive::open_and_insert(const ziprom& A) {
-	assert( !A.is_open() );
+ziparchive::iterator ziparchive::open_and_insert(const ziprom& A)
+{
+	assert(!A.is_open());
 
 	ziparchive::iterator i = data.insert(data.end(), A);
 
@@ -300,21 +313,22 @@ ziparchive::iterator ziparchive::open_and_insert(const ziprom& A) {
 		throw;
 	}
 
-	assert( i->is_open() );
+	assert(i->is_open());
 
 	// update the index
 	for(ziprom::const_iterator j=i->begin();j!=i->end();++j) {
-		index.insert( ziparchive_crcsize( j->uncompressed_size_get(), j->crc_get() ) );
+		index.insert(ziparchive_crcsize(j->uncompressed_size_get(), j->crc_get()));
 	}
 
 	return i;
 }
 
-void ziparchive::update(const ziprom& A) {
-	assert( A.is_open() );
+void ziparchive::update(const ziprom& A)
+{
+	assert(A.is_open());
 
 	// remove if already present
-	ziparchive::iterator i = find( A.file_get() );
+	ziparchive::iterator i = find(A.file_get());
 	if (i != end()) {
 		i->close();
 		erase(i);
@@ -324,16 +338,17 @@ void ziparchive::update(const ziprom& A) {
 	if (!A.empty()) {
 		ziparchive::iterator i = data.insert(data.end(), A);
 
-		assert( i->is_open() );
+		assert(i->is_open());
 
 		// update the index
 		for(ziprom::const_iterator j=A.begin();j!=A.end();++j) {
-			index.insert( ziparchive_crcsize( j->uncompressed_size_get(), j->crc_get() ) );
+			index.insert(ziparchive_crcsize(j->uncompressed_size_get(), j->crc_get()));
 		}
 	}
 }
 
-void ziparchive::erase(ziparchive::iterator A) {
+void ziparchive::erase(ziparchive::iterator A)
+{
 	data.erase(A);
 }
 
@@ -364,15 +379,15 @@ ziparchive::const_iterator ziparchive::find_iter(unsigned size, crc_t crc, zip_t
 }
 
 ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, ziprom::const_iterator& k) const {
-	ziparchive_crcsizeset::const_iterator i = index.find( ziparchive_crcsize( size, crc ));
+	ziparchive_crcsizeset::const_iterator i = index.find(ziparchive_crcsize(size, crc));
 	if (i!=index.end())
-		return find_iter(size,crc,k);
+		return find_iter(size, crc, k);
 	return end();
 
 }
 
 ziparchive::const_iterator ziparchive::find(unsigned size, crc_t crc, zip_type type, ziprom::const_iterator& k) const {
-	return find_iter(size,crc,type,k);
+	return find_iter(size, crc, type, k);
 }
 
 ziparchive::const_iterator ziparchive::find_exclude_iter(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const {
@@ -390,9 +405,9 @@ ziparchive::const_iterator ziparchive::find_exclude_iter(const ziprom& exclude, 
 }
 
 ziparchive::const_iterator ziparchive::find_exclude(const ziprom& exclude, unsigned size, crc_t crc, ziprom::const_iterator& k) const {
-	ziparchive_crcsizeset::const_iterator i = index.find( ziparchive_crcsize( size, crc ));
+	ziparchive_crcsizeset::const_iterator i = index.find(ziparchive_crcsize(size, crc));
 	if (i!=index.end())
-		return find_exclude_iter(exclude,size,crc,k);
+		return find_exclude_iter(exclude, size, crc, k);
 	return end();
 }
 

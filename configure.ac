@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([AdvanceSCAN],[1.9])
+AC_INIT([AdvanceSCAN],[1.10])
 AC_CONFIG_SRCDIR([scan.cc])
 AM_INIT_AUTOMAKE([foreign no-dependencies])
 AC_CONFIG_HEADERS([config.h])
@@ -14,6 +14,19 @@ AC_CHECK_PROGS(TAR, tar)
 AC_CHECK_PROGS(GZIP, gzip)
 AC_CHECK_PROGS(GROFF, groff)
 AC_CHECK_PROGS(COL, col)
+
+# Checks for architecture
+AC_C_BIGENDIAN(
+	[ac_is_bigendian=yes],
+	[ac_is_bigendian=no]
+)
+if test $ac_is_bigendian = yes; then
+	CFLAGS="$CFLAGS -DUSE_MSB"
+	CXXFLAGS="$CXXFLAGS -DUSE_MSB"
+else
+	CFLAGS="$CFLAGS -DUSE_LSB"
+	CXXFLAGS="$CXXFLAGS -DUSE_LSB"
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB([z], [adler32])

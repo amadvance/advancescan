@@ -3,13 +3,15 @@ Name
 
 Synopsis
 	:advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
-	:	[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
-	:	[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
+	:	[-k, --disk] [-a, --add-zip] [-b, --add-bin]
+	:	[-d, --del-zip] [-u, --del-unknown]
+	:	[-g, --del-garbage] [-t,--del-text]
 	:	[-n, --print-only] [-p, --report]
 	:	[-f, --filter FILTER]
 	:	[-v, --verbose] < info.lst/xml
 
-	:advscan [-R, --rom-std] [-S, --sample-std] < info.lst/xml
+	:advscan [-R, --rom-std] [-S, --sample-std]
+	:	[-K, --disk-std]< info.lst/xml
 
 	:advscan [-i, --ident] files... < info.lst/xml
 
@@ -25,20 +27,21 @@ Description
 	xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
 	The goal of advscan is to obtain a complete and perfect rom
 	and sample zip archive with differential merging.
+
 	Differential merging means that any game has its zip archive,
 	which contains all the rom files, which are not already in
 	the parent zip archive (if exists).
 
 	advscan has these features:
 
-	* Directly read, write zip archives without decompressing
+	* Directly read, writes zip archives without decompressing
 		and recompressing them for best performance.
 	* Add, copy, move and rename files in the zip
 		archives. Any rom that you have is placed
 		automatically in the correct zip.
-	* Recognize the text files added by rom sites and
+	* Recognizes the text files added by rom sites and
 		delete them.
-	* Recognize the text files added by the rom dumpers
+	* Recognizes the text files added by the rom dumpers
 		and keep or delete them as your choice.
 	* It's safe. On all the zip operations any file
 		removed or overwritten is saved in the
@@ -48,9 +51,9 @@ Description
 
 	but also has these misfeatures:
 
-	* Support only rom and sample archives zipped.
-	* Support only differential merging.
-	* Doesn't support .chd files.
+	* Supports only rom and sample archives zipped.
+	* Supports only rom organized with differential merging.
+	* Doesn't support .chd files in subdirectories.
 
 Options
 	-c, --cfg CONFIG
@@ -67,12 +70,16 @@ Options
 		xml, otherwise it's assumed to be the old listing format.
 
 	-r, --rom
-		Operates on roms. All the next commands will
-		operate on your romset.
+		Operates on roms (.zip files). All the next commands
+		will operate on your romset.
 
 	-s, --sample
 		Operates on samples. All the next commands will
 		operate on your sampleset.
+
+	-k, --disk
+		Operates on disks (.chd files). All the next commands
+		will operate on your diskset.
 
 	-a, --add-zip
 		Add the missing rom zips. Any missing zip archive
@@ -89,9 +96,9 @@ Options
 		one.
 
 	-d, --del-zip
-		Remove any unknown zip archive. Any archive
-		removed is saved in the `rom_unknown' or
-		`sample_unknown' directory.
+		Remove any unknown zip or chd archive. Any archive
+		removed is saved in the `rom_unknown',
+		`sample_unknown' or `disk_unknown' directory.
 
 	-u, --del-unknown
 		Remove any unknown file from the existing zip
@@ -123,6 +130,10 @@ Options
 		previous operations on samples except removing text
 		files.
 
+	-K, --disk-std
+		Shortcut for the options -kd. It moves any unknown
+		disk file in the disk_unknown directory.
+
 	-n, --print-only
 		Don't modify anything, it only shows operations.
 		This option prevents any changes made by the
@@ -136,9 +147,9 @@ Options
 		printed. You must also specify the -r or/and -s
 		options.
 
-	-P, --report-zip
+	-P, --report-file
 		Write a small text report with information on the
-		present roms, listing incomplete, duplicate or
+		present files, listing incomplete, duplicate or
 		missing required zips.
 
 	-f, --filter FILTER
@@ -220,7 +231,7 @@ Configuration
 	relative path. Relative path is relative to the current
 	directory from where you run advscan.
 
-	On Unix the PATH separator is `:'. On DOS the PATH
+	In Unix the PATH separator is `:'. In DOS and Windows the PATH
 	separator is `;'. The following options are expressed with the
 	Unix format.
 
@@ -260,11 +271,30 @@ Configuration
 		be moved. In this directory is inserted any sample
 		file removed from the sample zip archives.
 
+	=disk PATH:PATH...
+		List of paths where the disks are placed. These
+		are the chd archives.
+
+	=disk_unknown PATH
+		Single path where unknown disk chd archives will
+		be moved.
+
 	If the -c option is not specified the configuration file
 	is read from ./advscan.rc.
 
 	The files advscan.rc.linux and advscan.rc.dos are two
 	examples of configuration files.
+
+Damaged Files
+	If a damaged .zip or .chd file is detected, it's renamed
+	with a new name appending the extension ".damaged".
+	For .chd file it may happen that the file is a disk image
+	with an old format.
+
+	If the rename operation isn't possible the program aborts.
+
+	Please note that the program doesn't execute an
+	extensive test to detect damaged files.
 
 Filters
 	As default advscan uses all the rom definitions, including also
@@ -308,7 +338,7 @@ Filters
 		advscan -R -c advscan-pre.rc -f preliminary < advmame.xml > rom_pre.log
 		advscan -R -c advscan-wrk.rc -f working < advmame.xml > rom_wrk.log
 
-Report
+Report Format
 	The report generated with the -p option contains some text
 	tag explained here:
 
@@ -323,9 +353,13 @@ Report
 	=rom_miss
 		A missing rom.
 
+	=disk_bad
+		A recognized bad disk with an incorrect hash.
+		The disk is recognized by its name.
+
 	=nodump_good
 		A fake "NO GOOD DUMP KNOWN" rom. The rom is
-		recognized by its name, size and 0 crc.
+		recognized by its name, size and crc.
 
 	=nodump_miss
 		A missing "NO GOOD DUMP KNOWN" rom. It's the normal

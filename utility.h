@@ -35,6 +35,7 @@
 int striwildcmp(const char* pattern, const char* str);
 unsigned strdec(const char* s, const char** e);
 unsigned strhex(const char* s, const char** e);
+void strvhex(unsigned char* dst, const char* s, const char** e);
 
 std::string token_get(const std::string& s, unsigned& ptr, const char* sep);
 void token_skip(const std::string& s, unsigned& ptr, const char* sep);
@@ -59,15 +60,15 @@ public:
 
 typedef std::list<filepath> filepath_container;
 
-class zippath : public filepath {
+class infopath : public filepath {
 	bool good;
 	unsigned size;
 	bool readonly;
 public:
-	zippath();
-	zippath(const zippath& A);
-	zippath(const std::string& Afile, bool Agood, unsigned Asize, bool Areadonly);
-	~zippath();
+	infopath();
+	infopath(const infopath& A);
+	infopath(const std::string& Afile, bool Agood, unsigned Asize, bool Areadonly);
+	~infopath();
 
 	bool good_get() const { return good; }
 	void good_set(bool Agood);
@@ -79,7 +80,7 @@ public:
 	void readonly_set(bool Areadonly);
 };
 
-typedef std::list<zippath> zippath_container;
+typedef std::list<infopath> zippath_container;
 
 // ------------------------------------------------------------------------
 // Crc

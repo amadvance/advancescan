@@ -27,7 +27,8 @@
 
 using namespace std;
 
-rom::rom() {
+rom::rom()
+{
 	size = 0;
 	crc = 0;
 	nodump = false;
@@ -41,82 +42,54 @@ rom::rom(const rom& A) :
 	name(A.name), size(A.size), crc(A.crc), nodump(A.nodump) {
 }
 
-rom::~rom() {
+rom::~rom()
+{
 }
 
-void rom::name_set(const string& Aname) {
+void rom::name_set(const string& Aname)
+{
 	name = Aname;
 }
 
-void rom::crc_set(crc_t Acrc) {
+void rom::crc_set(crc_t Acrc)
+{
 	crc = Acrc;
 }
 
-void rom::size_set(unsigned Asize) {
+void rom::size_set(unsigned Asize)
+{
 	size = Asize;
 }
 
-void rom::nodump_set(bool Anodump) {
+void rom::nodump_set(bool Anodump)
+{
 	nodump = Anodump;
 }
 
 bool rom::operator==(const rom& A) const {
-	return file_compare(name_get(),A.name_get())==0 && size_get()==A.size_get() && crc_get()==A.crc_get();
+	return file_compare(name_get(), A.name_get())==0 && size_get()==A.size_get() && crc_get()==A.crc_get();
 }
 
 // gamerom
 
-gamerom::gamerom() {
+gamerom::gamerom()
+{
 }
 
 gamerom::gamerom(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump) :
-	rom(Aname,Asize,Acrc,Anodump), game(Agame) {
+	rom(Aname, Asize, Acrc, Anodump), game(Agame) {
 }
 
 gamerom::gamerom(const gamerom& A) :
 	rom(A), game(A.game) {
 }
 
-gamerom::~gamerom() {
+gamerom::~gamerom()
+{
 }
 
-void gamerom::game_set(const string& Agame) {
+void gamerom::game_set(const string& Agame)
+{
 	game = Agame;
 }
-
-// gameromdata
-
-gameromdata::gameromdata(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump, void* Adata) :
-	gamerom(Agame,Aname,Asize,Acrc,Anodump), data(Adata) {
-}
-
-gameromdata::gameromdata(const gameromdata& A) :
-	gamerom(A),data(A.data) {
-	A.data = 0;
-}
-
-gameromdata::~gameromdata() {
-	if (data)
-		operator delete(data);
-}
-
-void gameromdata::data_set(void* Adata) const {
-	if (data)
-		operator delete(data);
-	data = Adata;
-}
-
-// sample
-
-sample::sample(const string& Aname) {
-	name = Aname;
-}
-
-sample::sample(const sample& A) {
-	name = A.name;
-}
-
-sample::~sample() {
-}
-
 

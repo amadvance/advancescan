@@ -505,10 +505,12 @@ analyze_entry::analyze_entry(const analyze_entry_static& A)
 	: name(A.name), size(A.size), crc(A.crc) {
 }
 
-analyze_entry::~analyze_entry() {
+analyze_entry::~analyze_entry()
+{
 }
 
-bool operator<(const analyze_entry& A, const analyze_entry& B) {
+bool operator<(const analyze_entry& A, const analyze_entry& B)
+{
 	if (A.size < B.size)
 		return true;
 	if (A.size > B.size)
@@ -539,16 +541,17 @@ const char* BIN_WILD[] = {
 0
 };
 
-static bool heuristic_is_text(const string& name, unsigned size, unsigned crc) {
+static bool heuristic_is_text(const string& name, unsigned size, unsigned crc)
+{
 	// check name for binary
 	for(unsigned i=0;BIN_WILD[i];++i) {
-		if (striwildcmp(BIN_WILD[i],name.c_str())==0)
+		if (striwildcmp(BIN_WILD[i], name.c_str())==0)
 			return false;
 	}
 
 	// check name for text
 	for(unsigned i=0;TEXT_WILD[i];++i) {
-		if (striwildcmp(TEXT_WILD[i],name.c_str())==0)
+		if (striwildcmp(TEXT_WILD[i], name.c_str())==0)
 			return true;
 	}
 
@@ -572,17 +575,19 @@ static bool heuristic_is_text(const string& name, unsigned size, unsigned crc) {
 	return true;
 }
 
-static void sset(unsigned char* dst, unsigned w, const char* s) {
+static void sset(unsigned char* dst, unsigned w, const char* s)
+{
 	unsigned l = strlen(s);
 	if (l > w)
 		l = w;
 	unsigned b = (w - l) / 2;
 
-	memset(dst,' ',w);
+	memset(dst, ' ', w);
 	memcpy(dst + b, s, l);
 }
 
-analyze::analyze(const gamearchive& gar) {
+analyze::analyze(const gamearchive& gar)
+{
 	// insert some standard crc
 	for(analyze_entry_static* i=GARBAGE;i->size;++i) {
 		garbage.insert(*i);
@@ -616,7 +621,7 @@ analyze::analyze(const gamearchive& gar) {
 }
 
 analyze_type analyze::operator()(const string& name, unsigned size, unsigned crc) const {
-	if (!heuristic_is_text(name,size,crc))
+	if (!heuristic_is_text(name, size, crc))
 		return analyze_binary;
 
 	analyze_entry_static t;

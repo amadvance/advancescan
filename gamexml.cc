@@ -66,6 +66,7 @@ struct state_t {
 	int error; /**< Error flag. */
 	string error_desc;
 	rom* r;
+	disk* d;
 	game* g; /**< Curren game in the loading process. */
 	game_by_name_set* a; /**< Game archive. */
 
@@ -92,7 +93,7 @@ static void process_game(struct state_t* state, enum token_t t, const char* s, u
 	if (t == token_open) {
 		state->g = new game;
 	} else if (t == token_close) {
-		state->a->insert( *state->g );
+		state->a->insert(*state->g);
 		delete state->g;
 		state->g = 0;
 	}
@@ -117,7 +118,7 @@ static void process_name(struct state_t* state, enum token_t t, const char* s, u
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->name_set( string(s, len) );
+		state->g->name_set(string(s, len));
 	}
 }
 
@@ -128,7 +129,7 @@ static void process_description(struct state_t* state, enum token_t t, const cha
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->description_set( string(s, len) );
+		state->g->description_set(string(s, len));
 	}
 }
 
@@ -139,7 +140,7 @@ static void process_manufacturer(struct state_t* state, enum token_t t, const ch
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->manufacturer_set( string(s, len) );
+		state->g->manufacturer_set(string(s, len));
 	}
 }
 
@@ -150,7 +151,7 @@ static void process_year(struct state_t* state, enum token_t t, const char* s, u
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->year_set( string(s, len) );
+		state->g->year_set(string(s, len));
 	}
 }
 
@@ -161,7 +162,7 @@ static void process_cloneof(struct state_t* state, enum token_t t, const char* s
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->cloneof_set( string(s, len) );
+		state->g->cloneof_set(string(s, len));
 	}
 }
 
@@ -172,7 +173,7 @@ static void process_romof(struct state_t* state, enum token_t t, const char* s, 
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->romof_set( string(s, len) );
+		state->g->romof_set(string(s, len));
 	}
 }
 
@@ -183,7 +184,7 @@ static void process_sampleof(struct state_t* state, enum token_t t, const char* 
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->sampleof_set( string(s, len) );
+		state->g->sampleof_set(string(s, len));
 	}
 }
 
@@ -280,8 +281,45 @@ static void process_samplename(struct state_t* state, enum token_t t, const char
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		sample s( string(s, len) );
-		state->g->ss_get().insert( s );
+		sample s(string(s, len));
+		state->g->ss_get().insert(s);
+	}
+}
+
+static void process_disk(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
+{
+	if (t == token_open) {
+		state->d = new disk;
+	} else if (t == token_close) {
+		if (!state->g) {
+			process_error(state, 0, "invalid state");
+			return;
+		}
+		state->g->ds_get().insert(*state->d);
+		delete state->d;
+		state->d = 0;
+	}
+}
+
+static void process_diskname(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
+{
+	if (t == token_data) {
+		if (!state->d) {
+			process_error(state, 0, "invalid state");
+			return;
+		}
+		state->d->name_set(string(s, len));
+	}
+}
+
+static void process_disksha1(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
+{
+	if (t == token_data) {
+		if (!state->d) {
+			process_error(state, 0, "invalid state");
+			return;
+		}
+		state->d->sha1_set(sha1(string(s, len)));
 	}
 }
 
@@ -313,6 +351,7 @@ static struct conversion_t CONV2[] = {
 	{ 2, { match_mamemessraine, match_gamemachine, "romof", 0, 0 }, process_romof },
 	{ 2, { match_mamemessraine, match_gamemachine, "sampleof", 0, 0 }, process_sampleof },
 	{ 2, { match_mamemessraine, match_gamemachine, "rom", 0, 0 }, process_rom },
+	{ 2, { match_mamemessraine, match_gamemachine, "disk", 0, 0 }, process_disk },
 	{ 0, { 0, 0, 0, 0, 0 }, 0 }
 };
 
@@ -323,6 +362,8 @@ static struct conversion_t CONV3[] = {
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "status", 0 }, process_romstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "driver", "status", 0 }, process_driverstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "sample", "name", 0 }, process_samplename },
+	{ 3, { match_mamemessraine, match_gamemachine, "disk", "name", 0 }, process_diskname },
+	{ 3, { match_mamemessraine, match_gamemachine, "disk", "sha1", 0 }, process_disksha1 },
 	{ 0, { 0, 0, 0, 0, 0 }, 0 }
 };
 
@@ -463,6 +504,7 @@ void gamearchive::load_xml(istream& is)
 	state.error = 0;
 	state.error_desc = "";
 	state.r = 0;
+	state.d = 0;
 	state.g = 0;
 	state.a = &map;
 

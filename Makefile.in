@@ -56,19 +56,21 @@ CONFIG_CLEAN_FILES =
 am__installdirs = $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_advdiff_OBJECTS = diff.$(OBJEXT) rom.$(OBJEXT) utility.$(OBJEXT) \
-	ziprom.$(OBJEXT) game.$(OBJEXT) gameinfo.$(OBJEXT) \
-	gamexml.$(OBJEXT) zip.$(OBJEXT) siglock.$(OBJEXT) \
-	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT) \
-	xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
+am_advdiff_OBJECTS = diff.$(OBJEXT) rom.$(OBJEXT) disk.$(OBJEXT) \
+	sample.$(OBJEXT) utility.$(OBJEXT) ziprom.$(OBJEXT) \
+	game.$(OBJEXT) gameinfo.$(OBJEXT) gamexml.$(OBJEXT) \
+	zip.$(OBJEXT) siglock.$(OBJEXT) getopt.$(OBJEXT) \
+	snprintf.$(OBJEXT) readinfo.$(OBJEXT) xmlrole.$(OBJEXT) \
+	xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
 advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
-am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) conf.$(OBJEXT) \
-	utility.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) \
-	gameinfo.$(OBJEXT) gamexml.$(OBJEXT) zip.$(OBJEXT) \
-	output.$(OBJEXT) analyze.$(OBJEXT) siglock.$(OBJEXT) \
-	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT) \
-	xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
+am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) disk.$(OBJEXT) \
+	sample.$(OBJEXT) conf.$(OBJEXT) utility.$(OBJEXT) \
+	ziprom.$(OBJEXT) game.$(OBJEXT) gameinfo.$(OBJEXT) \
+	gamexml.$(OBJEXT) zip.$(OBJEXT) output.$(OBJEXT) \
+	analyze.$(OBJEXT) siglock.$(OBJEXT) getopt.$(OBJEXT) \
+	snprintf.$(OBJEXT) readinfo.$(OBJEXT) xmlrole.$(OBJEXT) \
+	xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
 advscan_OBJECTS = $(am_advscan_OBJECTS)
 advscan_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
@@ -181,6 +183,8 @@ target_alias = @target_alias@
 advdiff_SOURCES = \
 	diff.cc \
 	rom.cc \
+	disk.cc \
+	sample.cc \
 	utility.cc \
 	ziprom.cc \
 	game.cc \
@@ -198,6 +202,8 @@ advdiff_SOURCES = \
 advscan_SOURCES = \
 	scan.cc \
 	rom.cc \
+	disk.cc \
+	sample.cc \
 	conf.cc \
 	utility.cc \
 	ziprom.cc \
@@ -221,11 +227,17 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
 	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
 	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
-	configure.dos configure.windows configure.darwin autogen.sh noautomake.sh
+	configure.dos configure.windows configure.darwin autogen.sh noautomake.sh \
+	test/test.xml \
+	test/test.lst \
+	test/testd.xml \
+	test/testd.lst
 
 noinst_HEADERS = \
 	snprintf.c \
 	rom.h \
+	sample.h \
+	disk.h \
 	utility.h \
 	conf.h \
 	ziprom.h \
@@ -246,10 +258,11 @@ noinst_HEADERS = \
 	expat/README \
 	expat/ascii.h \
 	expat/asciitab.h \
-	expat/expat-1.95.7.diff \
+	expat/expat-1.95.8.diff \
 	expat/expat.h \
 	expat/iasciitab.h \
 	expat/expatcfg.h \
+	expat/expat_external.h \
 	expat/internal.h \
 	expat/latin1tab.h \
 	expat/nametab.h \
@@ -500,7 +513,7 @@ distclean-tags:
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkdir_p) $(distdir)/doc $(distdir)/expat $(distdir)/lib
+	$(mkdir_p) $(distdir)/doc $(distdir)/expat $(distdir)/lib $(distdir)/test
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -625,6 +638,7 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
 all-am: Makefile $(PROGRAMS) $(MANS) $(HEADERS) config.h
 installdirs:
@@ -706,8 +720,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am uninstall-man
 
 uninstall-man: uninstall-man1
 
-.PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
-	clean-binPROGRAMS clean-generic clean-local ctags dist \
+.PHONY: CTAGS GTAGS all all-am am--refresh check check-am check-local \
+	clean clean-binPROGRAMS clean-generic clean-local ctags dist \
 	dist-all dist-bzip2 dist-gzip dist-shar dist-tarZ dist-zip \
 	distcheck distclean distclean-compile distclean-generic \
 	distclean-hdr distclean-tags distcleancheck distdir \
@@ -724,10 +738,19 @@ uninstall-man: uninstall-man1
 
 clean-local:
 	rm -f advscan.exe advscan.rc advdiff.exe
+	rm -f check.lst checkd.lst
 
 maintainer-clean-local:
 	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
 	rm -f doc/*.hh
+
+check-local:
+	rm -f check.lst checkd.lst
+	./advscan -e < $(srcdir)/test/test.xml > check.lst
+	cmp check.lst $(srcdir)/test/test.lst
+	./advdiff $(srcdir)/test/test.xml $(srcdir)/test/testd.xml > checkd.lst
+	cmp checkd.lst $(srcdir)/test/testd.lst
+	echo Success!
 
 # Docs
 

@@ -28,7 +28,8 @@
 // ------------------------------------------------------------------------
 // rom
 
-rom::rom() {
+rom::rom()
+{
 }
 
 rom::rom(const rom& A)
@@ -47,12 +48,14 @@ bool rom::operator==(const rom& A) const {
 	return crc_get() == A.crc_get() && size_get() == A.size_get();
 }
 
-std::ostream& operator<<(std::ostream& os, const rom& A) {
+std::ostream& operator<<(std::ostream& os, const rom& A)
+{
 	os << "rom ( name " << A.name_get() << " size " << std::dec << A.size_get() << " crc " << std::hex << A.crc_get() << " )";
 	return os;
 }
 
-bool include(const rom_set& A, const rom_set& B) {
+bool include(const rom_set& A, const rom_set& B)
+{
 	for(rom_set::const_iterator i=B.begin();i!=B.end();++i) {
 		rom_set::const_iterator j = A.find(*i);
 		if (j==A.end())
@@ -61,11 +64,12 @@ bool include(const rom_set& A, const rom_set& B) {
 	return true;
 }
 
-bool equal(const rom_set& A, const rom_set& B) {
+bool equal(const rom_set& A, const rom_set& B)
+{
 	if (A.size() != B.size())
 		return false;
-	rom_set::const_iterator i,j;
-	for(i=B.begin(),j=A.begin();i!=B.end();++i) {
+	rom_set::const_iterator i, j;
+	for(i=B.begin(), j=A.begin();i!=B.end();++i) {
 		if (*i != *j)
 			return false;
 	}
@@ -75,7 +79,8 @@ bool equal(const rom_set& A, const rom_set& B) {
 // ------------------------------------------------------------------------
 // game
 
-game::game() {
+game::game()
+{
 }
 
 game::game(const game& A)
@@ -86,7 +91,8 @@ bool game::operator<(const game& A) const {
 	return name_get() < A.name_get();
 }
 
-std::ostream& operator<<(std::ostream &os, const game& A) {
+std::ostream& operator<<(std::ostream &os, const game& A)
+{
 	os << "game (" << std::endl;
 	os << "\tname " << A.name_get() << std::endl;
 	for(rom_set::const_iterator i=A.roms_get().begin();i!=A.roms_get().end();++i) 
@@ -95,37 +101,38 @@ std::ostream& operator<<(std::ostream &os, const game& A) {
 	return os;
 }
 
-bool game_set_load::load(bool remove_merge) {
+bool game_set_load::load(bool remove_merge)
+{
 	info_t token = info_token_get();
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
-		if (strcmp(info_text_get(),"game")==0) {
+		if (strcmp(info_text_get(), "game")==0) {
 			if (info_token_get() != info_open) return false;
 			game g;
 			token = info_token_get();
 			while (token != info_close) {
 				if (token != info_symbol)
 					return false;
-				if (strcmp(info_text_get(),"name")==0) {
+				if (strcmp(info_text_get(), "name")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.name_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"rom")==0) {
+					g.name_set(info_text_get());
+				} else if (strcmp(info_text_get(), "rom")==0) {
 					if (info_token_get() != info_open) return false;
 					token = info_token_get();
 					rom r;
 					bool merge = false;
 					while (token != info_close) {
 						if (token != info_symbol) return false;
-						if (strcmp(info_text_get(),"size")==0) {
+						if (strcmp(info_text_get(), "size")==0) {
 							if (info_token_get() != info_symbol) return false;
-							r.size_set(atoi( info_text_get() ));
-						} else if (strcmp(info_text_get(),"crc")==0 || strcmp(info_text_get(),"crc32")==0) {
+							r.size_set(atoi(info_text_get()));
+						} else if (strcmp(info_text_get(), "crc")==0 || strcmp(info_text_get(), "crc32")==0) {
 							if (info_token_get() != info_symbol) return false;
 							r.crc_set(strtoul(info_text_get(), 0, 16));
-						} else if (strcmp(info_text_get(),"name")==0) {
+						} else if (strcmp(info_text_get(), "name")==0) {
 							if (info_token_get() != info_symbol) return false;
 							r.name_set(info_text_get());
-						} else if (strcmp(info_text_get(),"merge")==0) {
+						} else if (strcmp(info_text_get(), "merge")==0) {
 							if (info_token_get() != info_symbol) return false;
 							merge = true;
 						} else {
@@ -140,7 +147,7 @@ bool game_set_load::load(bool remove_merge) {
 				}
 				token = info_token_get();
 			}
-			insert( g );
+			insert(g);
 		} else {
 			if (info_skip_value() == info_error)
 				return false;

@@ -37,73 +37,74 @@ extern "C" void info_ext_unget(void* _arg, char c)
 	arg->putback(c);
 }
 
-bool gamearchive::load_info_internal() {
+bool gamearchive::load_info_internal()
+{
 	info_t token = info_token_get();
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
-		if (strcmp(info_text_get(),"game")==0 || strcmp(info_text_get(),"resource")==0 || strcmp(info_text_get(),"machine")==0) {
+		if (strcmp(info_text_get(), "game")==0 || strcmp(info_text_get(), "resource")==0 || strcmp(info_text_get(), "machine")==0) {
 			game g;
-			g.resource_set(strcmp(info_text_get(),"resource")==0);
+			g.resource_set(strcmp(info_text_get(), "resource")==0);
 			if (info_token_get() != info_open) return false;
 			token = info_token_get();
 			while (token != info_close) {
 				if (token != info_symbol)
 					return false;
-				if (strcmp(info_text_get(),"name")==0) {
+				if (strcmp(info_text_get(), "name")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.name_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"description")==0) {
+					g.name_set(info_text_get());
+				} else if (strcmp(info_text_get(), "description")==0) {
 					if (info_token_get() != info_string) return false;
-					g.description_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"manufacturer")==0) {
+					g.description_set(info_text_get());
+				} else if (strcmp(info_text_get(), "manufacturer")==0) {
 					if (info_token_get() != info_string) return false;
-					g.manufacturer_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"year")==0) {
+					g.manufacturer_set(info_text_get());
+				} else if (strcmp(info_text_get(), "year")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.year_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"cloneof")==0) {
+					g.year_set(info_text_get());
+				} else if (strcmp(info_text_get(), "cloneof")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.cloneof_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"romof")==0) {
+					g.cloneof_set(info_text_get());
+				} else if (strcmp(info_text_get(), "romof")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.romof_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"sampleof")==0) {
+					g.romof_set(info_text_get());
+				} else if (strcmp(info_text_get(), "sampleof")==0) {
 					if (info_token_get() != info_symbol) return false;
-					g.sampleof_set( info_text_get() );
-				} else if (strcmp(info_text_get(),"rom")==0) {
+					g.sampleof_set(info_text_get());
+				} else if (strcmp(info_text_get(), "rom")==0) {
 					if (info_token_get() != info_open)  return false;
 					rom r;
 					token = info_token_get();
 					while (token != info_close) {
 						if (token != info_symbol) return false;
-						if (strcmp(info_text_get(),"name")==0) {
+						if (strcmp(info_text_get(), "name")==0) {
 							if (info_token_get() != info_symbol) return false;
-							r.name_set( info_text_get() );
-						} else if (strcmp(info_text_get(),"size")==0) {
+							r.name_set(info_text_get());
+						} else if (strcmp(info_text_get(), "size")==0) {
 							const char* e;
 							if (info_token_get() != info_symbol) return false;
 							unsigned v = strdec(info_text_get(), &e);
 							if (*e != 0)
 								return false;
-							r.size_set( v );
-						} else if (strcmp(info_text_get(),"crc")==0) {
+							r.size_set(v);
+						} else if (strcmp(info_text_get(), "crc")==0) {
 							const char* e;
 							if (info_token_get() != info_symbol) return false;
 							unsigned v = strhex(info_text_get(), &e);
 							if (*e != 0)
 								return false;
-							r.crc_set( v );
-						} else if (strcmp(info_text_get(),"flags")==0) {
+							r.crc_set(v);
+						} else if (strcmp(info_text_get(), "flags")==0) {
 							if (info_token_get() != info_symbol) return false;
-							if (strcmp(info_text_get(),"nodump")==0)
+							if (strcmp(info_text_get(), "nodump")==0)
 								r.nodump_set(true);
 						} else {
 							if (info_skip_value() == info_error) return false;
 						}
 						token = info_token_get();
 					}
-					g.rs_get().insert( r );
-				} else if (strcmp(info_text_get(),"driver")==0) {
+					g.rs_get().insert(r);
+				} else if (strcmp(info_text_get(), "driver")==0) {
 					if (info_token_get() != info_open)  return false;
 					token = info_token_get();
 					while (token != info_close) {
@@ -111,22 +112,22 @@ bool gamearchive::load_info_internal() {
 						if (strcmp(info_text_get(), "status")==0) {
 							if (info_token_get() != info_symbol) return false;
 							if (strcmp(info_text_get(), "preliminary") == 0)
-								g.working_set( false );
+								g.working_set(false);
 						} else {
 							if (info_skip_value() == info_error) return false;
 						}
 						token = info_token_get();
 					}
-				} else if (strcmp(info_text_get(),"sample")==0) {
+				} else if (strcmp(info_text_get(), "sample")==0) {
 					if (info_token_get() != info_symbol) return false;
-					sample s( info_text_get() );
-					g.ss_get().insert( s );
+					sample s(info_text_get());
+					g.ss_get().insert(s);
 				} else {
 					if (info_skip_value() == info_error) return false;
 				}
 				token = info_token_get();
 			}
-			map.insert( g );
+			map.insert(g);
 		} else {
 			if (info_skip_value() == info_error) return false;
 		}
@@ -136,7 +137,8 @@ bool gamearchive::load_info_internal() {
 	return true;
 }
 
-void gamearchive::load_info(istream& f) {
+void gamearchive::load_info(istream& f)
+{
 	info_init(info_ext_get, info_ext_unget, &f);
 
 	bool r = load_info_internal();

@@ -6,11 +6,15 @@ advscan [\(hyc, \(hy\(hycfg CONFIG] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysample]
 .PD 0
 .PP
 .PD
-	[\(hya, \(hy\(hyadd\(hyzip] [\(hyb, \(hy\(hyadd\(hybin] [\(hyd, \(hy\(hydel\(hyzip]
+	[\(hyk, \(hy\(hydisk] [\(hya, \(hy\(hyadd\(hyzip] [\(hyb, \(hy\(hyadd\(hybin]
 .PD 0
 .PP
 .PD
-	[\(hyu, \(hy\(hydel\(hyunknown] [\(hyg, \(hy\(hydel\(hygarbage] [\(hyt,\(hy\(hydel\(hytext]
+	[\(hyd, \(hy\(hydel\(hyzip] [\(hyu, \(hy\(hydel\(hyunknown]
+.PD 0
+.PP
+.PD
+	[\(hyg, \(hy\(hydel\(hygarbage] [\(hyt,\(hy\(hydel\(hytext]
 .PD 0
 .PP
 .PD
@@ -27,7 +31,11 @@ advscan [\(hyc, \(hy\(hycfg CONFIG] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysample]
 .PP
 .PD
 .PP
-advscan [\(hyR, \(hy\(hyrom\(hystd] [\(hyS, \(hy\(hysample\(hystd] < info.lst/xml
+advscan [\(hyR, \(hy\(hyrom\(hystd] [\(hyS, \(hy\(hysample\(hystd]
+.PD 0
+.PP
+.PD
+	[\(hyK, \(hy\(hydisk\(hystd]< info.lst/xml
 .PD 0
 .PP
 .PD
@@ -57,6 +65,7 @@ archive of roms and sample zip archive for the MAME, MESS,
 xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
 The goal of advscan is to obtain a complete and perfect rom
 and sample zip archive with differential merging.
+.PP
 Differential merging means that any game has its zip archive,
 which contains all the rom files, which are not already in
 the parent zip archive (if exists).
@@ -64,17 +73,17 @@ the parent zip archive (if exists).
 advscan has these features:
 .PD 0
 .IP \(bu
-Directly read, write zip archives without decompressing
+Directly read, writes zip archives without decompressing
 and recompressing them for best performance.
 .IP \(bu
 Add, copy, move and rename files in the zip
 archives. Any rom that you have is placed
 automatically in the correct zip.
 .IP \(bu
-Recognize the text files added by rom sites and
+Recognizes the text files added by rom sites and
 delete them.
 .IP \(bu
-Recognize the text files added by the rom dumpers
+Recognizes the text files added by the rom dumpers
 and keep or delete them as your choice.
 .IP \(bu
 It\(cqs safe. On all the zip operations any file
@@ -87,11 +96,11 @@ remove operation.
 but also has these misfeatures:
 .PD 0
 .IP \(bu
-Support only rom and sample archives zipped.
+Supports only rom and sample archives zipped.
 .IP \(bu
-Support only differential merging.
+Supports only rom organized with differential merging.
 .IP \(bu
-Doesn\(cqt support .chd files.
+Doesn\(cqt support .chd files in subdirectories.
 .PD
 .SH OPTIONS 
 .TP
@@ -109,12 +118,16 @@ char of the file is a \(oq<\(cq, the file is assumed to be
 xml, otherwise it\(cqs assumed to be the old listing format.
 .TP
 .B \(hyr, \(hy\(hyrom
-Operates on roms. All the next commands will
-operate on your romset.
+Operates on roms (.zip files). All the next commands
+will operate on your romset.
 .TP
 .B \(hys, \(hy\(hysample
 Operates on samples. All the next commands will
 operate on your sampleset.
+.TP
+.B \(hyk, \(hy\(hydisk
+Operates on disks (.chd files). All the next commands
+will operate on your diskset.
 .TP
 .B \(hya, \(hy\(hyadd\(hyzip
 Add the missing rom zips. Any missing zip archive
@@ -131,9 +144,9 @@ a zip archive with the same name of the original
 one.
 .TP
 .B \(hyd, \(hy\(hydel\(hyzip
-Remove any unknown zip archive. Any archive
-removed is saved in the \(oqrom_unknown\(cq or
-\(oqsample_unknown\(cq directory.
+Remove any unknown zip or chd archive. Any archive
+removed is saved in the \(oqrom_unknown\(cq,
+\(oqsample_unknown\(cq or \(oqdisk_unknown\(cq directory.
 .TP
 .B \(hyu, \(hy\(hydel\(hyunknown
 Remove any unknown file from the existing zip
@@ -165,6 +178,10 @@ Shortcut for the options \(hysabdug. It does all the
 previous operations on samples except removing text
 files.
 .TP
+.B \(hyK, \(hy\(hydisk\(hystd
+Shortcut for the options \(hykd. It moves any unknown
+disk file in the disk_unknown directory.
+.TP
 .B \(hyn, \(hy\(hyprint\(hyonly
 Don\(cqt modify anything, it only shows operations.
 This option prevents any changes made by the
@@ -178,9 +195,9 @@ content of any zip archive with missing files is
 printed. You must also specify the \(hyr or/and \(hys
 options.
 .TP
-.B \(hyP, \(hy\(hyreport\(hyzip
+.B \(hyP, \(hy\(hyreport\(hyfile
 Write a small text report with information on the
-present roms, listing incomplete, duplicate or
+present files, listing incomplete, duplicate or
 missing required zips.
 .TP
 .B \(hyf, \(hy\(hyfilter FILTER
@@ -279,7 +296,7 @@ directories structure. You can use absolute path or
 relative path. Relative path is relative to the current
 directory from where you run advscan.
 .PP
-On Unix the PATH separator is \(oq:\(cq. On DOS the PATH
+In Unix the PATH separator is \(oq:\(cq. In DOS and Windows the PATH
 separator is \(oq;\(cq. The following options are expressed with the
 Unix format.
 .TP
@@ -318,12 +335,30 @@ are the zip archives, which are modified and fixed.
 Single path where unknown sample zip archives will
 be moved. In this directory is inserted any sample
 file removed from the sample zip archives.
+.TP
+.B disk PATH:PATH...
+List of paths where the disks are placed. These
+are the chd archives.
+.TP
+.B disk_unknown PATH
+Single path where unknown disk chd archives will
+be moved.
 .PP
 If the \(hyc option is not specified the configuration file
 is read from ./advscan.rc.
 .PP
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
+.SH DAMAGED FILES 
+If a damaged .zip or .chd file is detected, it\(cqs renamed
+with a new name appending the extension \(a".damaged\(a".
+For .chd file it may happen that the file is a disk image
+with an old format.
+.PP
+If the rename operation isn\(cqt possible the program aborts.
+.PP
+Please note that the program doesn\(cqt execute an
+extensive test to detect damaged files.
 .SH FILTERS 
 As default advscan uses all the rom definitions, including also
 unplayable games. If you prefere you can use only a subset
@@ -389,7 +424,7 @@ advscan \(hyR \(hyc advscan\(hywrk.rc \(hyf working < advmame.xml > rom_wrk.log
 advscan \(hyR \(hyc advscan\(hypre.rc \(hyf preliminary < advmame.xml > rom_pre.log
 advscan \(hyR \(hyc advscan\(hywrk.rc \(hyf working < advmame.xml > rom_wrk.log
 .RE
-.SH REPORT 
+.SH REPORT FORMAT 
 The report generated with the \(hyp option contains some text
 tag explained here:
 .TP
@@ -404,9 +439,13 @@ The rom is recognized by its name.
 .B rom_miss
 A missing rom.
 .TP
+.B disk_bad
+A recognized bad disk with an incorrect hash.
+The disk is recognized by its name.
+.TP
 .B nodump_good
 A fake \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
-recognized by its name, size and 0 crc.
+recognized by its name, size and crc.
 .TP
 .B nodump_miss
 A missing \(a"NO GOOD DUMP KNOWN\(a" rom. It\(cqs the normal

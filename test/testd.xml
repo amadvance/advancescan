@@ -1,0 +1,904 @@
+<?xml version="1.0"?>
+<!DOCTYPE mame [
+<!ELEMENT mame (game+)>
+	<!ELEMENT game (description, year?, manufacturer, history?, biosset*, rom*, disk*, sample*, chip*, video?, sound?, input?, dipswitch*, driver?)>
+		<!ATTLIST game name CDATA #REQUIRED>
+		<!ATTLIST game runnable (yes|no) "yes">
+		<!ATTLIST game cloneof CDATA #IMPLIED>
+		<!ATTLIST game romof CDATA #IMPLIED>
+		<!ATTLIST game sampleof CDATA #IMPLIED>
+		<!ELEMENT description (#PCDATA)>
+		<!ELEMENT year (#PCDATA)>
+		<!ELEMENT manufacturer (#PCDATA)>
+		<!ELEMENT history (#PCDATA)>
+		<!ELEMENT biosset EMPTY>
+			<!ATTLIST biosset name CDATA #REQUIRED>
+			<!ATTLIST biosset description CDATA #REQUIRED>
+			<!ATTLIST biosset default (yes|no) "no">
+		<!ELEMENT rom EMPTY>
+			<!ATTLIST rom name CDATA #REQUIRED>
+			<!ATTLIST rom bios CDATA #IMPLIED>
+			<!ATTLIST rom size CDATA #REQUIRED>
+			<!ATTLIST rom crc CDATA #IMPLIED>
+			<!ATTLIST rom md5 CDATA #IMPLIED>
+			<!ATTLIST rom sha1 CDATA #IMPLIED>
+			<!ATTLIST rom merge CDATA #IMPLIED>
+			<!ATTLIST rom region CDATA #IMPLIED>
+			<!ATTLIST rom offset CDATA #IMPLIED>
+			<!ATTLIST rom status (baddump|nodump|good) "good">
+			<!ATTLIST rom dispose (yes|no) "no">
+			<!ATTLIST rom soundonly (yes|no) "no">
+		<!ELEMENT disk EMPTY>
+			<!ATTLIST disk name CDATA #REQUIRED>
+			<!ATTLIST disk md5 CDATA #IMPLIED>
+			<!ATTLIST disk sha1 CDATA #IMPLIED>
+			<!ATTLIST disk region CDATA #IMPLIED>
+			<!ATTLIST disk index CDATA #IMPLIED>
+		<!ELEMENT sample EMPTY>
+			<!ATTLIST sample name CDATA #REQUIRED>
+		<!ELEMENT chip EMPTY>
+			<!ATTLIST chip name CDATA #REQUIRED>
+			<!ATTLIST chip type (cpu|audio) #REQUIRED>
+			<!ATTLIST chip soundonly (yes|no) "no">
+			<!ATTLIST chip clock CDATA #IMPLIED>
+		<!ELEMENT video EMPTY>
+			<!ATTLIST video screen (raster|vector) #REQUIRED>
+			<!ATTLIST video orientation (vertical|horizontal) #REQUIRED>
+			<!ATTLIST video width CDATA #IMPLIED>
+			<!ATTLIST video height CDATA #IMPLIED>
+			<!ATTLIST video aspectx CDATA #IMPLIED>
+			<!ATTLIST video aspecty CDATA #IMPLIED>
+			<!ATTLIST video refresh CDATA #REQUIRED>
+		<!ELEMENT sound EMPTY>
+			<!ATTLIST sound channels CDATA #REQUIRED>
+		<!ELEMENT input EMPTY>
+			<!ATTLIST input service (yes|no) "no">
+			<!ATTLIST input tilt (yes|no) "no">
+			<!ATTLIST input players CDATA #REQUIRED>
+			<!ATTLIST input control CDATA #IMPLIED>
+			<!ATTLIST input buttons CDATA #IMPLIED>
+			<!ATTLIST input coins CDATA #IMPLIED>
+		<!ELEMENT dipswitch (dipvalue*)>
+			<!ATTLIST dipswitch name CDATA #REQUIRED>
+			<!ELEMENT dipvalue EMPTY>
+				<!ATTLIST dipvalue name CDATA #REQUIRED>
+				<!ATTLIST dipvalue default (yes|no) "no">
+		<!ELEMENT driver EMPTY>
+			<!ATTLIST driver status (good|imperfect|preliminary) #REQUIRED>
+			<!ATTLIST driver emulation (good|imperfect|preliminary) #REQUIRED>
+			<!ATTLIST driver color (good|imperfect|preliminary) #REQUIRED>
+			<!ATTLIST driver sound (good|imperfect|preliminary) #REQUIRED>
+			<!ATTLIST driver graphic (good|imperfect|preliminary) #REQUIRED>
+			<!ATTLIST driver cocktail (good|imperfect|preliminary) #IMPLIED>
+			<!ATTLIST driver protection (good|imperfect|preliminary) #IMPLIED>
+			<!ATTLIST driver palettesize CDATA #REQUIRED>
+]>
+
+<mame>
+	<game name="cyberbal">
+		<description>Cyberball (rev 4)</description>
+		<year>1988</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="4123-1m.064" size="65536" crc="fb872740" sha1="15e6721d466fe56d7c97c6801e214b32803a0a0d" region="cpu1" offset="0"/>
+		<rom name="4124-1kl.064" size="65536" crc="87babad9" sha1="acdc6b5976445e203de19eb03697e307fe6da77d" region="cpu1" offset="1"/>
+		<rom name="2131-2f.064" size="65536" crc="bd7e3d84" sha1="f87878042fc79fa3883136b31ac15ddc22c6023c" region="cpu2" offset="10000"/>
+		<rom name="2127-3cd.064" size="65536" crc="3e5feb1f" sha1="9f92f496adbdf74e394e0d710d6471b9666ba5e5" region="cpu3" offset="0"/>
+		<rom name="2128-1b.064" size="65536" crc="4e642cc3" sha1="f708b6dd4360380bb10059d66df66b07966210b4" region="cpu3" offset="1"/>
+		<rom name="1129-1cd.064" size="65536" crc="db11d2f0" sha1="da9f49af533cbc732b17699040c7930070a90644" region="cpu3" offset="20000"/>
+		<rom name="1130-3b.064" size="65536" crc="fd86b8aa" sha1="46310efed762632ed176a08aaec41e48aad41cc1" region="cpu3" offset="20001"/>
+		<rom name="1132-3cd.064" size="65536" crc="ca5ce8d8" sha1="69dc83d43d8c9dc7ce3207e70f48fcfc5ddda0cc" region="cpu4" offset="0"/>
+		<rom name="1133-1b.064" size="65536" crc="ffeb8746" sha1="0d8d28b2d997ff3cf01b4ef25b75fa5a69754af4" region="cpu4" offset="1"/>
+		<rom name="1134-1cd.064" size="65536" crc="bcbd4c00" sha1="f0bfcdf0b5491e15872b543e99b834ae384cbf18" region="cpu4" offset="20000"/>
+		<rom name="1135-3b.064" size="65536" crc="d520f560" sha1="fb0b8d021458379188c424a343622c46ad74edaa" region="cpu4" offset="20001"/>
+		<rom name="1105-15a.064" size="65536" crc="e770eb3e" sha1="e9f9e9e05774005c8be3bbdc19985b59a0081ef4" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1109-16a.064" size="65536" crc="40db00da" sha1="d92d856b06f6ba11621ba7aab3d40653b3c70159" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="2113-18a.064" size="65536" crc="52bb08fb" sha1="08caa156923daf444e0caafb2cdff0704c90ef1f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1117-19a.064" size="65536" crc="0a11d877" sha1="876cbeffd815c084d7cbd937067d65c04aeebce5" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1106-11a.064" size="65536" crc="6f53c7c1" sha1="5856d714c3af338be58156b404fb1e5a89c24cf9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-12a.064" size="65536" crc="5de609e5" sha1="bbea36a4cbbfeab113925951ef097673eddf26a8" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="2114-13a.064" size="65536" crc="e6f95010" sha1="42b14cf0dadfab9ce1032385fd21339b46edcfc2" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1118-14a.064" size="65536" crc="47f56ced" sha1="62e80191e1879ffb6c736aec004bbc30a366363f" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1107-15c.064" size="65536" crc="c8f1f7ff" sha1="2e0374901871d66a243f87bc4b9cbdde5505f0ec" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1111-16c.064" size="65536" crc="6bf0bf98" sha1="7d2b3b61da3749b352a6bf3f1ae1cb736b5b8386" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="2115-18c.064" size="65536" crc="c3168603" sha1="43e00fc739d1b3dd6d925bad63058fe74c1efc74" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1119-19c.064" size="65536" crc="7ff29d09" sha1="81458b058f0b037778f255b5afe94a44aba74829" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1108-11c.064" size="65536" crc="99629412" sha1="53a91b2a1ac62259ec9f78421b22c7b22f4233d6" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1112-12c.064" size="65536" crc="aa198cb7" sha1="aad4a60210289d2e5a93aac336ba995ed6ac4886" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="2116-13c.064" size="65536" crc="6cf79a67" sha1="7f3271b575cf0b5033b5b19f0e71fae251040fc6" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1120-14c.064" size="65536" crc="40bdf767" sha1="c57aaea838abeaea1a0060c45c2f33c38a51edb3" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1101-9lm.064" size="65536" crc="a64b4da8" sha1="f68778adb56a1eb964acdbc7e9d690a8a83f170b" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1102-8lm.064" size="65536" crc="ca91ec1b" sha1="970c64e19893503cae796daee63b2d7d08eaf551" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="110311lm.064" size="65536" crc="ee29d1d1" sha1="2a7fea25728c66ce482de76299413ef5da01beef" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="110410lm.064" size="65536" crc="882649f8" sha1="fbaea597b6e318234e41df245023643f448a4938" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1121-15n.064" size="65536" crc="0ca1e3b3" sha1="d934bc9a1def4404fb86175878404cbb18127a11" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1122-16n.064" size="65536" crc="882f4e1c" sha1="f7517ff03502ff029fb375260a35e45414567433" region="gfx3" dispose="yes" offset="10000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789772"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="audio" name="YM2151" clock="3579545"/>
+		<chip type="audio" name="DAC"/>
+		<chip type="audio" name="DAC"/>
+		<video screen="raster" orientation="horizontal" width="1344" height="240" aspectx="8" aspecty="3" refresh="60.000000"/>
+		<sound channels="2"/>
+		<input players="4" control="joy8way" buttons="1" coins="4"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="4096"/>
+	</game>
+	<game name="cyberba2" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball (rev 2)</description>
+		<year>1988</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="2123-1m.064" size="65536" crc="502676e8" sha1="c0f1f1ce50d3df21cb81244268faef6c303cdfab" region="cpu1" offset="0"/>
+		<rom name="2124-1kl.064" size="65536" crc="30f55915" sha1="ab93ec46f282ab9a0cd47c989537a7e036975e3f" region="cpu1" offset="1"/>
+		<rom name="2131-2f.064" merge="2131-2f.064" size="65536" crc="bd7e3d84" sha1="f87878042fc79fa3883136b31ac15ddc22c6023c" region="cpu2" offset="10000"/>
+		<rom name="2127-3cd.064" merge="2127-3cd.064" size="65536" crc="3e5feb1f" sha1="9f92f496adbdf74e394e0d710d6471b9666ba5e5" region="cpu3" offset="0"/>
+		<rom name="2128-1b.064" merge="2128-1b.064" size="65536" crc="4e642cc3" sha1="f708b6dd4360380bb10059d66df66b07966210b4" region="cpu3" offset="1"/>
+		<rom name="1129-1cd.064" merge="1129-1cd.064" size="65536" crc="db11d2f0" sha1="da9f49af533cbc732b17699040c7930070a90644" region="cpu3" offset="20000"/>
+		<rom name="1130-3b.064" merge="1130-3b.064" size="65536" crc="fd86b8aa" sha1="46310efed762632ed176a08aaec41e48aad41cc1" region="cpu3" offset="20001"/>
+		<rom name="1132-3cd.064" merge="1132-3cd.064" size="65536" crc="ca5ce8d8" sha1="69dc83d43d8c9dc7ce3207e70f48fcfc5ddda0cc" region="cpu4" offset="0"/>
+		<rom name="1133-1b.064" merge="1133-1b.064" size="65536" crc="ffeb8746" sha1="0d8d28b2d997ff3cf01b4ef25b75fa5a69754af4" region="cpu4" offset="1"/>
+		<rom name="1134-1cd.064" merge="1134-1cd.064" size="65536" crc="bcbd4c00" sha1="f0bfcdf0b5491e15872b543e99b834ae384cbf18" region="cpu4" offset="20000"/>
+		<rom name="1135-3b.064" merge="1135-3b.064" size="65536" crc="d520f560" sha1="fb0b8d021458379188c424a343622c46ad74edaa" region="cpu4" offset="20001"/>
+		<rom name="1105-15a.064" merge="1105-15a.064" size="65536" crc="e770eb3e" sha1="e9f9e9e05774005c8be3bbdc19985b59a0081ef4" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1109-16a.064" merge="1109-16a.064" size="65536" crc="40db00da" sha1="d92d856b06f6ba11621ba7aab3d40653b3c70159" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="2113-18a.064" merge="2113-18a.064" size="65536" crc="52bb08fb" sha1="08caa156923daf444e0caafb2cdff0704c90ef1f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1117-19a.064" merge="1117-19a.064" size="65536" crc="0a11d877" sha1="876cbeffd815c084d7cbd937067d65c04aeebce5" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1106-11a.064" merge="1106-11a.064" size="65536" crc="6f53c7c1" sha1="5856d714c3af338be58156b404fb1e5a89c24cf9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-12a.064" merge="1110-12a.064" size="65536" crc="5de609e5" sha1="bbea36a4cbbfeab113925951ef097673eddf26a8" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="2114-13a.064" merge="2114-13a.064" size="65536" crc="e6f95010" sha1="42b14cf0dadfab9ce1032385fd21339b46edcfc2" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1118-14a.064" merge="1118-14a.064" size="65536" crc="47f56ced" sha1="62e80191e1879ffb6c736aec004bbc30a366363f" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1107-15c.064" merge="1107-15c.064" size="65536" crc="c8f1f7ff" sha1="2e0374901871d66a243f87bc4b9cbdde5505f0ec" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1111-16c.064" merge="1111-16c.064" size="65536" crc="6bf0bf98" sha1="7d2b3b61da3749b352a6bf3f1ae1cb736b5b8386" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="2115-18c.064" merge="2115-18c.064" size="65536" crc="c3168603" sha1="43e00fc739d1b3dd6d925bad63058fe74c1efc74" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1119-19c.064" merge="1119-19c.064" size="65536" crc="7ff29d09" sha1="81458b058f0b037778f255b5afe94a44aba74829" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1108-11c.064" merge="1108-11c.064" size="65536" crc="99629412" sha1="53a91b2a1ac62259ec9f78421b22c7b22f4233d6" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1112-12c.064" merge="1112-12c.064" size="65536" crc="aa198cb7" sha1="aad4a60210289d2e5a93aac336ba995ed6ac4886" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="2116-13c.064" merge="2116-13c.064" size="65536" crc="6cf79a67" sha1="7f3271b575cf0b5033b5b19f0e71fae251040fc6" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1120-14c.064" merge="1120-14c.064" size="65536" crc="40bdf767" sha1="c57aaea838abeaea1a0060c45c2f33c38a51edb3" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1101-9lm.064" merge="1101-9lm.064" size="65536" crc="a64b4da8" sha1="f68778adb56a1eb964acdbc7e9d690a8a83f170b" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1102-8lm.064" merge="1102-8lm.064" size="65536" crc="ca91ec1b" sha1="970c64e19893503cae796daee63b2d7d08eaf551" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="110311lm.064" merge="110311lm.064" size="65536" crc="ee29d1d1" sha1="2a7fea25728c66ce482de76299413ef5da01beef" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="110410lm.064" merge="110410lm.064" size="65536" crc="882649f8" sha1="fbaea597b6e318234e41df245023643f448a4938" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1121-15n.064" merge="1121-15n.064" size="65536" crc="0ca1e3b3" sha1="d934bc9a1def4404fb86175878404cbb18127a11" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1122-16n.064" merge="1122-16n.064" size="65536" crc="882f4e1c" sha1="f7517ff03502ff029fb375260a35e45414567433" region="gfx3" dispose="yes" offset="10000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789772"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="audio" name="YM2151" clock="3579545"/>
+		<chip type="audio" name="DAC"/>
+		<chip type="audio" name="DAC"/>
+		<video screen="raster" orientation="horizontal" width="1344" height="240" aspectx="8" aspecty="3" refresh="60.000000"/>
+		<sound channels="2"/>
+		<input players="4" control="joy8way" buttons="1" coins="4"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="4096"/>
+	</game>
+	<game name="cyberbap" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball (prototype)</description>
+		<year>1988</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="0123-1m.064" size="65536" crc="59bac810" sha1="d4742b2b554c2ad62a2ea7152db3f06a06cddd67" region="cpu1" offset="0"/>
+		<rom name="0124-1kl.064" size="65536" crc="e48e6dd3" sha1="4d45bc66c0a3eb1174db7f19c5dee54dabad68f3" region="cpu1" offset="1"/>
+		<rom name="0131-2f.064" size="65536" crc="c72b71ce" sha1="6d3d8f437cf55ccaaa4490daa69f402902944686" region="cpu2" offset="10000"/>
+		<rom name="0127-3cd.064" size="65536" crc="37ad3420" sha1="e9c1ea59f5f9a133822a49027b4abf02af855ca2" region="cpu3" offset="0"/>
+		<rom name="0128-1b.064" size="65536" crc="d89aa8af" sha1="b9faca1a775c1d699335a5ac0e1d25e8370c02a7" region="cpu3" offset="1"/>
+		<rom name="1129-1cd.064" merge="1129-1cd.064" size="65536" crc="db11d2f0" sha1="da9f49af533cbc732b17699040c7930070a90644" region="cpu3" offset="20000"/>
+		<rom name="1130-3b.064" merge="1130-3b.064" size="65536" crc="fd86b8aa" sha1="46310efed762632ed176a08aaec41e48aad41cc1" region="cpu3" offset="20001"/>
+		<rom name="0132-3cd.064" size="65536" crc="392a442c" sha1="e108456167f433808b452edb3351d283b5cf7a50" region="cpu4" offset="0"/>
+		<rom name="0133-1b.064" size="65536" crc="a0a11cf9" sha1="b28a379cb49d051b6ccff877255409e1231d3030" region="cpu4" offset="1"/>
+		<rom name="1134-1cd.064" merge="1134-1cd.064" size="65536" crc="bcbd4c00" sha1="f0bfcdf0b5491e15872b543e99b834ae384cbf18" region="cpu4" offset="20000"/>
+		<rom name="1135-3b.064" merge="1135-3b.064" size="65536" crc="d520f560" sha1="fb0b8d021458379188c424a343622c46ad74edaa" region="cpu4" offset="20001"/>
+		<rom name="1105-15a.064" merge="1105-15a.064" size="65536" crc="e770eb3e" sha1="e9f9e9e05774005c8be3bbdc19985b59a0081ef4" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1109-16a.064" merge="1109-16a.064" size="65536" crc="40db00da" sha1="d92d856b06f6ba11621ba7aab3d40653b3c70159" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="2113-18a.064" merge="2113-18a.064" size="65536" crc="52bb08fb" sha1="08caa156923daf444e0caafb2cdff0704c90ef1f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1117-19a.064" merge="1117-19a.064" size="65536" crc="0a11d877" sha1="876cbeffd815c084d7cbd937067d65c04aeebce5" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1106-11a.064" merge="1106-11a.064" size="65536" crc="6f53c7c1" sha1="5856d714c3af338be58156b404fb1e5a89c24cf9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-12a.064" merge="1110-12a.064" size="65536" crc="5de609e5" sha1="bbea36a4cbbfeab113925951ef097673eddf26a8" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="2114-13a.064" merge="2114-13a.064" size="65536" crc="e6f95010" sha1="42b14cf0dadfab9ce1032385fd21339b46edcfc2" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1118-14a.064" merge="1118-14a.064" size="65536" crc="47f56ced" sha1="62e80191e1879ffb6c736aec004bbc30a366363f" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1107-15c.064" merge="1107-15c.064" size="65536" crc="c8f1f7ff" sha1="2e0374901871d66a243f87bc4b9cbdde5505f0ec" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1111-16c.064" merge="1111-16c.064" size="65536" crc="6bf0bf98" sha1="7d2b3b61da3749b352a6bf3f1ae1cb736b5b8386" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="2115-18c.064" merge="2115-18c.064" size="65536" crc="c3168603" sha1="43e00fc739d1b3dd6d925bad63058fe74c1efc74" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1119-19c.064" merge="1119-19c.064" size="65536" crc="7ff29d09" sha1="81458b058f0b037778f255b5afe94a44aba74829" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1108-11c.064" merge="1108-11c.064" size="65536" crc="99629412" sha1="53a91b2a1ac62259ec9f78421b22c7b22f4233d6" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1112-12c.064" merge="1112-12c.064" size="65536" crc="aa198cb7" sha1="aad4a60210289d2e5a93aac336ba995ed6ac4886" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="2116-13c.064" merge="2116-13c.064" size="65536" crc="6cf79a67" sha1="7f3271b575cf0b5033b5b19f0e71fae251040fc6" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1120-14c.064" merge="1120-14c.064" size="65536" crc="40bdf767" sha1="c57aaea838abeaea1a0060c45c2f33c38a51edb3" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1101-9lm.064" merge="1101-9lm.064" size="65536" crc="a64b4da8" sha1="f68778adb56a1eb964acdbc7e9d690a8a83f170b" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1102-8lm.064" merge="1102-8lm.064" size="65536" crc="ca91ec1b" sha1="970c64e19893503cae796daee63b2d7d08eaf551" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="110311lm.064" merge="110311lm.064" size="65536" crc="ee29d1d1" sha1="2a7fea25728c66ce482de76299413ef5da01beef" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="110410lm.064" merge="110410lm.064" size="65536" crc="882649f8" sha1="fbaea597b6e318234e41df245023643f448a4938" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1121-15n.064" merge="1121-15n.064" size="65536" crc="0ca1e3b3" sha1="d934bc9a1def4404fb86175878404cbb18127a11" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1122-16n.064" merge="1122-16n.064" size="65536" crc="882f4e1c" sha1="f7517ff03502ff029fb375260a35e45414567433" region="gfx3" dispose="yes" offset="10000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789772"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="audio" name="YM2151" clock="3579545"/>
+		<chip type="audio" name="DAC"/>
+		<chip type="audio" name="DAC"/>
+		<video screen="raster" orientation="horizontal" width="1344" height="240" aspectx="8" aspecty="3" refresh="60.000000"/>
+		<sound channels="2"/>
+		<input players="4" control="joy8way" buttons="1" coins="4"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="4096"/>
+	</game>
+	<game name="cyberb2p" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball 2072 (2 player, rev 4)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="4019-10c.071" size="65536" crc="20c6b09c" sha1="b12f9247621fe0242171140256b7b92c996dcb19" region="cpu1" offset="0"/>
+		<rom name="4020-10d.071" size="65536" crc="eaa6c524" sha1="0bc48dca1f10fbb3dec441d06f447637b6c70356" region="cpu1" offset="1"/>
+		<rom name="4021-21c.071" size="65536" crc="89ffa885" sha1="d276209fd72c753d23571464e51d701a54cc3e0e" region="cpu1" offset="20000"/>
+		<rom name="4022-21d.071" size="65536" crc="35da3402" sha1="7b51e0fb202699457a3b8e2bd8a68fef0889435f" region="cpu1" offset="20001"/>
+		<rom name="2023-15c.071" size="65536" crc="e541b08f" sha1="345843209b02fb50cb08f55f80036046873b834f" region="cpu1" offset="40000"/>
+		<rom name="2024-15d.071" size="65536" crc="5a77ee95" sha1="441a45a358eb78cc140c96dc4c42b30e1929ad07" region="cpu1" offset="40001"/>
+		<rom name="1025-27c.071" size="65536" crc="95ff68c6" sha1="43f716a4c44fe1a38fcc6e2600bac948bb603504" region="cpu1" offset="60000"/>
+		<rom name="1026-27d.071" size="65536" crc="f61c4898" sha1="9e4a14eac6d197f63c3392af3d804e81c034cb09" region="cpu1" offset="60001"/>
+		<rom name="1042-1b.071" size="65536" crc="e63cf125" sha1="449880f561660ba67ac2d7f8ce6333768e0ae0be" region="cpu2" offset="10000"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1013-10k.071" size="65536" crc="cdf6e3d6" sha1="476644065b82e2ea553dfb51844c0bbf3313c481" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1014-16f.071" size="65536" crc="ec2fef3e" sha1="07ed472fa1723ebf82d608667df70511a50dca3e" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="1015-16k.071" size="65536" crc="e866848f" sha1="35b438dcc1947151a7aafe919b9adf33d7a8fb77" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="1016-10f.071" size="65536" crc="9b9a393c" sha1="db4ceb33756bab0ac7bea30e6c7345d06a0f4aa2" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1017-32n.071" size="65536" crc="a4c116f9" sha1="fc7becef35306ef99ffbd0cd9202759352eb6cbe" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1018-32l.071" size="65536" crc="e25d7847" sha1="3821c62f9bdc04eb774c2210a84e26b36f2e163d" region="gfx3" dispose="yes" offset="10000"/>
+		<rom name="1043-7k.071" size="65536" crc="94f24575" sha1="b93b326e15cd328362ce409b7c0cc42b8a28c701" region="sound1" offset="0"/>
+		<rom name="1044-7j.071" size="65536" crc="87208e1e" sha1="3647867ddc36df7633ed740c0b9365a979ef5621" region="sound1" offset="10000"/>
+		<rom name="1045-7e.071" size="65536" crc="f82558b9" sha1="afbecccc6203db9bdcf60638e0f4e95040d7aaf2" region="sound1" offset="20000"/>
+		<rom name="1046-7d.071" size="65536" crc="d96437ad" sha1="b0b5cd75de4048e54b9d7d09a75381eb73c22ee1" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="1" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="cyberb23" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball 2072 (2 player, rev 3)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="3019-10c.071" size="65536" crc="029f8cb6" sha1="528ab6357592313b41964102c14b90862c05f248" region="cpu1" offset="0"/>
+		<rom name="3020-10d.071" size="65536" crc="1871b344" sha1="2b6f2f4760af0f0e1e0b6cb34017dcdca7635e60" region="cpu1" offset="1"/>
+		<rom name="3021-21c.071" size="65536" crc="fd7ebead" sha1="4118c865897c7a9f73de200ea9766fe190547606" region="cpu1" offset="20000"/>
+		<rom name="3022-21d.071" size="65536" crc="173ccad4" sha1="4a8d2751b338dbb6dc556dfab13799561fee4836" region="cpu1" offset="20001"/>
+		<rom name="2023-15c.071" size="65536" crc="e541b08f" sha1="345843209b02fb50cb08f55f80036046873b834f" region="cpu1" offset="40000"/>
+		<rom name="2024-15d.071" size="65536" crc="5a77ee95" sha1="441a45a358eb78cc140c96dc4c42b30e1929ad07" region="cpu1" offset="40001"/>
+		<rom name="1025-27c.071" size="65536" crc="95ff68c6" sha1="43f716a4c44fe1a38fcc6e2600bac948bb603504" region="cpu1" offset="60000"/>
+		<rom name="1026-27d.071" size="65536" crc="f61c4898" sha1="9e4a14eac6d197f63c3392af3d804e81c034cb09" region="cpu1" offset="60001"/>
+		<rom name="1042-1b.071" size="65536" crc="e63cf125" sha1="449880f561660ba67ac2d7f8ce6333768e0ae0be" region="cpu2" offset="10000"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1013-10k.071" size="65536" crc="cdf6e3d6" sha1="476644065b82e2ea553dfb51844c0bbf3313c481" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1014-16f.071" size="65536" crc="ec2fef3e" sha1="07ed472fa1723ebf82d608667df70511a50dca3e" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="1015-16k.071" size="65536" crc="e866848f" sha1="35b438dcc1947151a7aafe919b9adf33d7a8fb77" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="1016-10f.071" size="65536" crc="9b9a393c" sha1="db4ceb33756bab0ac7bea30e6c7345d06a0f4aa2" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1017-32n.071" size="65536" crc="a4c116f9" sha1="fc7becef35306ef99ffbd0cd9202759352eb6cbe" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1018-32l.071" size="65536" crc="e25d7847" sha1="3821c62f9bdc04eb774c2210a84e26b36f2e163d" region="gfx3" dispose="yes" offset="10000"/>
+		<rom name="1043-7k.071" size="65536" crc="94f24575" sha1="b93b326e15cd328362ce409b7c0cc42b8a28c701" region="sound1" offset="0"/>
+		<rom name="1044-7j.071" size="65536" crc="87208e1e" sha1="3647867ddc36df7633ed740c0b9365a979ef5621" region="sound1" offset="10000"/>
+		<rom name="1045-7e.071" size="65536" crc="f82558b9" sha1="afbecccc6203db9bdcf60638e0f4e95040d7aaf2" region="sound1" offset="20000"/>
+		<rom name="1046-7d.071" size="65536" crc="d96437ad" sha1="b0b5cd75de4048e54b9d7d09a75381eb73c22ee1" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="1" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="cyberb22" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball 2072 (2 player, rev 2)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="2019-10c.071" size="65536" crc="acb1e18b" sha1="37a80f0c8d8b46ebb9660c7f038fc874d4817e93" region="cpu1" offset="0"/>
+		<rom name="2020-10d.071" size="65536" crc="fd6ec2fd" sha1="8b871e5e66acd26b8301ac35e3f42fba5b9fce2c" region="cpu1" offset="1"/>
+		<rom name="1021-21c.071" size="65536" crc="9b6cecc3" sha1="14291302ca6a35fc4c24d9f7d6a4ef7c88a95e5a" region="cpu1" offset="20000"/>
+		<rom name="1022-21d.071" size="65536" crc="24949cfa" sha1="283c1e2baf6774ebb7f4674b112bdb703fed5aa5" region="cpu1" offset="20001"/>
+		<rom name="2023-15c.071" size="65536" crc="e541b08f" sha1="345843209b02fb50cb08f55f80036046873b834f" region="cpu1" offset="40000"/>
+		<rom name="2024-15d.071" size="65536" crc="5a77ee95" sha1="441a45a358eb78cc140c96dc4c42b30e1929ad07" region="cpu1" offset="40001"/>
+		<rom name="1025-27c.071" size="65536" crc="95ff68c6" sha1="43f716a4c44fe1a38fcc6e2600bac948bb603504" region="cpu1" offset="60000"/>
+		<rom name="1026-27d.071" size="65536" crc="f61c4898" sha1="9e4a14eac6d197f63c3392af3d804e81c034cb09" region="cpu1" offset="60001"/>
+		<rom name="1042-1b.071" size="65536" crc="e63cf125" sha1="449880f561660ba67ac2d7f8ce6333768e0ae0be" region="cpu2" offset="10000"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1013-10k.071" size="65536" crc="cdf6e3d6" sha1="476644065b82e2ea553dfb51844c0bbf3313c481" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1014-16f.071" size="65536" crc="ec2fef3e" sha1="07ed472fa1723ebf82d608667df70511a50dca3e" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="1015-16k.071" size="65536" crc="e866848f" sha1="35b438dcc1947151a7aafe919b9adf33d7a8fb77" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="1016-10f.071" size="65536" crc="9b9a393c" sha1="db4ceb33756bab0ac7bea30e6c7345d06a0f4aa2" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1017-32n.071" size="65536" crc="a4c116f9" sha1="fc7becef35306ef99ffbd0cd9202759352eb6cbe" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1018-32l.071" size="65536" crc="e25d7847" sha1="3821c62f9bdc04eb774c2210a84e26b36f2e163d" region="gfx3" dispose="yes" offset="10000"/>
+		<rom name="1043-7k.071" size="65536" crc="94f24575" sha1="b93b326e15cd328362ce409b7c0cc42b8a28c701" region="sound1" offset="0"/>
+		<rom name="1044-7j.071" size="65536" crc="87208e1e" sha1="3647867ddc36df7633ed740c0b9365a979ef5621" region="sound1" offset="10000"/>
+		<rom name="1045-7e.071" size="65536" crc="f82558b9" sha1="afbecccc6203db9bdcf60638e0f4e95040d7aaf2" region="sound1" offset="20000"/>
+		<rom name="1046-7d.071" size="65536" crc="d96437ad" sha1="b0b5cd75de4048e54b9d7d09a75381eb73c22ee1" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="1" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="cyberb21" cloneof="cyberbal" romof="cyberbal">
+		<description>Cyberball 2072 (2 player, rev 1)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="1019-10c.071" size="65536" crc="37f5f8ba" sha1="80552b41d7d1c3044ccd1cbfbac6051447915d41" region="cpu1" offset="0"/>
+		<rom name="1020-10d.071" size="65536" crc="cae4faa2" sha1="e3282416b1d0dccd52dd8763a02647470dd37114" region="cpu1" offset="1"/>
+		<rom name="1021-21c.071" size="65536" crc="9b6cecc3" sha1="14291302ca6a35fc4c24d9f7d6a4ef7c88a95e5a" region="cpu1" offset="20000"/>
+		<rom name="1022-21d.071" size="65536" crc="24949cfa" sha1="283c1e2baf6774ebb7f4674b112bdb703fed5aa5" region="cpu1" offset="20001"/>
+		<rom name="1023-15c.071" size="65536" crc="4043649d" sha1="7fab7f8cc41fb923368db2f9b14e59ae12aa58e1" region="cpu1" offset="40000"/>
+		<rom name="1024-15d.071" size="65536" crc="ed052dd6" sha1="3755ca476865f7218dc1c837433cfd6068a61797" region="cpu1" offset="40001"/>
+		<rom name="1025-27c.071" size="65536" crc="95ff68c6" sha1="43f716a4c44fe1a38fcc6e2600bac948bb603504" region="cpu1" offset="60000"/>
+		<rom name="1026-27d.071" size="65536" crc="f61c4898" sha1="9e4a14eac6d197f63c3392af3d804e81c034cb09" region="cpu1" offset="60001"/>
+		<rom name="1042-1b.071" size="65536" crc="e63cf125" sha1="449880f561660ba67ac2d7f8ce6333768e0ae0be" region="cpu2" offset="10000"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1013-10k.071" size="65536" crc="cdf6e3d6" sha1="476644065b82e2ea553dfb51844c0bbf3313c481" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1014-16f.071" size="65536" crc="ec2fef3e" sha1="07ed472fa1723ebf82d608667df70511a50dca3e" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="1015-16k.071" size="65536" crc="e866848f" sha1="35b438dcc1947151a7aafe919b9adf33d7a8fb77" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="1016-10f.071" size="65536" crc="9b9a393c" sha1="db4ceb33756bab0ac7bea30e6c7345d06a0f4aa2" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1017-32n.071" size="65536" crc="a4c116f9" sha1="fc7becef35306ef99ffbd0cd9202759352eb6cbe" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1018-32l.071" size="65536" crc="e25d7847" sha1="3821c62f9bdc04eb774c2210a84e26b36f2e163d" region="gfx3" dispose="yes" offset="10000"/>
+		<rom name="1043-7k.071" size="65536" crc="94f24575" sha1="b93b326e15cd328362ce409b7c0cc42b8a28c701" region="sound1" offset="0"/>
+		<rom name="1044-7j.071" size="65536" crc="87208e1e" sha1="3647867ddc36df7633ed740c0b9365a979ef5621" region="sound1" offset="10000"/>
+		<rom name="1045-7e.071" size="65536" crc="f82558b9" sha1="afbecccc6203db9bdcf60638e0f4e95040d7aaf2" region="sound1" offset="20000"/>
+		<rom name="1046-7d.071" size="65536" crc="d96437ad" sha1="b0b5cd75de4048e54b9d7d09a75381eb73c22ee1" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="1" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="skullxbo">
+		<description>Skull &amp; Crossbones (rev 5)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="5150228a.072" size="65536" crc="9546d88b" sha1="4b02c1c8a57377e651a719a0fe2a3532594f3e71" region="cpu1" offset="0"/>
+		<rom name="5151228c.072" size="65536" crc="b9ed8bd4" sha1="784a2fc8f5901d9e462966e3f7226ce3c6db980a" region="cpu1" offset="1"/>
+		<rom name="5152213a.072" size="65536" crc="c07e44fc" sha1="0aacb77be59c398c9eb5f01108957bbb17c9e5cd" region="cpu1" offset="20000"/>
+		<rom name="5153213c.072" size="65536" crc="fef8297f" sha1="f62f378a957599ea38579a29df1f9e11335e8fb3" region="cpu1" offset="20001"/>
+		<rom name="1154200a.072" size="65536" crc="de4101a3" sha1="21cf656fc0695a0ef31cfa6e686069d7d4965cce" region="cpu1" offset="40000"/>
+		<rom name="1155200c.072" size="65536" crc="78c0f6ad" sha1="21ce2a83cd3350cd7ff53627a7e27599b9754a12" region="cpu1" offset="40001"/>
+		<rom name="1156185a.072" size="32768" crc="cde16b55" sha1="bf5059f0f73a8819551fb3ded3cb6a3123841481" region="cpu1" offset="70000"/>
+		<rom name="1157185c.072" size="32768" crc="31c77376" sha1="19eb54d73edb25fda6803df896e182d05c5bad7e" region="cpu1" offset="70001"/>
+		<rom name="1149-1b.072" size="65536" crc="8d730e7a" sha1="b89fb9cadcf813ea5cba55f1efcdcdd2517944c7" region="cpu2" offset="10000"/>
+		<rom name="1102-13r.072" size="65536" crc="90becdfa" sha1="aa5aaeda70e137518a9e58906daed66fa563b27e" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1104-28r.072" size="65536" crc="33609071" sha1="6d9671a9edbdd28c1e360017253dab5dd858dbe7" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="1106-41r.072" size="65536" crc="71962e9f" sha1="4e6017ede5ce2fec7f6e25eadfc4070f3296ff2f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1101-13p.072" size="65536" crc="4d41701e" sha1="b34b392ba00e580cb719be2c1a40cfc0d2f177e3" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1103-28p.072" size="65536" crc="3011da3b" sha1="e7118b111e0de9b9a2dfe5a165f2140e90c919e7" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1108-53r.072" size="65536" crc="386c7edc" sha1="a2f61c7f8fb822433957565f373ab5cc8e0a2ba0" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-67r.072" size="65536" crc="a54d16e6" sha1="ad10623f0a87e5a92b8e8c611c2d374a8fd7047e" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="1112-81r.072" size="65536" crc="669411f6" sha1="a0c678a75076b466f4a27c881642c44d47c9dea0" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1107-53p.072" size="65536" crc="caaeb57a" sha1="e20050d10ee18f52ac36616003de241aa9951eab" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1109-67p.072" size="65536" crc="61cb4e28" sha1="6d0cb4409fa4c9c696abd612395d5f6ddede6779" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1114-95r.072" size="65536" crc="e340d5a1" sha1="29a23ad2b6c8302508a8b49cfbc064fe86a8b908" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1116109r.072" size="65536" crc="f25b8aca" sha1="c8c6d0951098c32e32b87d9717cc14bb91ac2017" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="1118123r.072" size="65536" crc="8cf73585" sha1="b1f3e44f6cd434ecfe4d88463b7e2e7b48d2bf1f" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1113-95p.072" size="65536" crc="899b59af" sha1="c7344e4bf57024415463cb50c788631fbad07132" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1115109p.072" size="65536" crc="cf4fd19a" sha1="731fc7bb1dacacc6e2e4db1e096d07d5fe3d8b19" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1120137r.072" size="65536" crc="fde7c03d" sha1="ec336af0f3314af134fd1a64c478be06249a550a" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1122151r.072" size="65536" crc="6ff6a9f2" sha1="af8fda010c15e13e58e0f235b7b5a12d5a21fc0c" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="1124165r.072" size="65536" crc="f11909f1" sha1="2dbd5c92e8329f5b5033b3633bd56618eb7da875" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1119137p.072" size="65536" crc="6f8003a1" sha1="df8494ce56213dddd11f1365c03bb77ebf3e6eba" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1121151p.072" size="65536" crc="8ff0a1ec" sha1="8df33657a035316a1e4ce7d7b33af6e51b990c48" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1125123n.072" size="65536" crc="3aa7c756" sha1="c1585733cef28fdf031e335503364846cfd0384a" region="gfx1" dispose="yes" offset="140000"/>
+		<rom name="1126137n.072" size="65536" crc="cb82c9aa" sha1="1469d2825e6d366a8e3f74294b0a64f2a63384aa" region="gfx1" dispose="yes" offset="150000"/>
+		<rom name="1128151n.072" size="65536" crc="dce32863" sha1="b0476de8d54dcf163a723b1fc805da4e1ca11c27" region="gfx1" dispose="yes" offset="160000"/>
+		<rom name="2129180p.072" size="65536" crc="36b1a578" sha1="ded9cccd1009e517662387353333f20031abddd5" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="2131193p.072" size="65536" crc="7b7c04a1" sha1="b57f3f35f39ecf912daf2611919f31a92005f07b" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="2133208p.072" size="65536" crc="e03fe4d9" sha1="d9a9174a2d2e2d83f7c32177f0dbab74f3875d2e" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="2135221p.072" size="65536" crc="7d497110" sha1="4d5ce6673a112486e9dff77c901d90105aa0a210" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="2137235p.072" size="65536" crc="f91e7872" sha1="690715a92e8ca1b1d22fff85f9ed3f1e02edca99" region="gfx2" dispose="yes" offset="40000"/>
+		<rom name="2130180r.072" size="65536" crc="b25368cc" sha1="110e6882399e200b3a4cdd823cc5b0565183cfeb" region="gfx2" dispose="yes" offset="50000"/>
+		<rom name="2132193r.072" size="65536" crc="112f2d20" sha1="3acd43cf73f1be10c17a717c8990f5c656935b3a" region="gfx2" dispose="yes" offset="60000"/>
+		<rom name="2134208r.072" size="65536" crc="84884ed6" sha1="6129f090a4e5b8f65895086e1731b13ee72b6079" region="gfx2" dispose="yes" offset="70000"/>
+		<rom name="2136221r.072" size="65536" crc="bc028690" sha1="e75a961febf1f1a6c4981301b73bab82c3d19785" region="gfx2" dispose="yes" offset="80000"/>
+		<rom name="2138235r.072" size="65536" crc="60cec955" sha1="d184746589130a8f10fcc6c79484578bd08757f0" region="gfx2" dispose="yes" offset="90000"/>
+		<rom name="2141250k.072" size="32768" crc="60d6d6df" sha1="a8d56092f014a0a93742c701effaec86c75772e1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1145-7k.072" size="65536" crc="d9475d58" sha1="5a4a0094c83f5d0e26f0c35feb0b1f15a5f5c3f9" region="sound1" offset="0"/>
+		<rom name="1146-7j.072" size="65536" crc="133e6aef" sha1="e393d0b246889779029443a19e3859d45cb900db" region="sound1" offset="10000"/>
+		<rom name="1147-7e.072" size="65536" crc="ba4d556e" sha1="af4364f2c456abc20f1742c945a3acfeb5e192c4" region="sound1" offset="20000"/>
+		<rom name="1148-7d.072" size="65536" crc="c48df49a" sha1="c92fde9be1a1ab09453c57eefb0dcfe49e538d07" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="2" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="skullxb4" cloneof="skullxbo" romof="skullxbo">
+		<description>Skull &amp; Crossbones (rev 4)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="4150228a.072" size="65536" crc="607fc73b" sha1="e6ebaf1a7570df1d12becae217becdd0a60d6aca" region="cpu1" offset="0"/>
+		<rom name="4151228c.072" size="65536" crc="76bbf619" sha1="2cbd61f414684587c0e634c223c758b0a28aafc0" region="cpu1" offset="1"/>
+		<rom name="4152213a.072" size="65536" crc="095206f5" sha1="c468b908b7a6cb83a4a91e3999494531511eee2b" region="cpu1" offset="20000"/>
+		<rom name="4153213c.072" size="65536" crc="e44be9d3" sha1="f1637c3512f99a43f62833319194d18c2a56e581" region="cpu1" offset="20001"/>
+		<rom name="1154200a.072" merge="1154200a.072" size="65536" crc="de4101a3" sha1="21cf656fc0695a0ef31cfa6e686069d7d4965cce" region="cpu1" offset="40000"/>
+		<rom name="1155200c.072" merge="1155200c.072" size="65536" crc="78c0f6ad" sha1="21ce2a83cd3350cd7ff53627a7e27599b9754a12" region="cpu1" offset="40001"/>
+		<rom name="1156185a.072" merge="1156185a.072" size="32768" crc="cde16b55" sha1="bf5059f0f73a8819551fb3ded3cb6a3123841481" region="cpu1" offset="70000"/>
+		<rom name="1157185c.072" merge="1157185c.072" size="32768" crc="31c77376" sha1="19eb54d73edb25fda6803df896e182d05c5bad7e" region="cpu1" offset="70001"/>
+		<rom name="1149-1b.072" merge="1149-1b.072" size="65536" crc="8d730e7a" sha1="b89fb9cadcf813ea5cba55f1efcdcdd2517944c7" region="cpu2" offset="10000"/>
+		<rom name="1102-13r.072" merge="1102-13r.072" size="65536" crc="90becdfa" sha1="aa5aaeda70e137518a9e58906daed66fa563b27e" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1104-28r.072" merge="1104-28r.072" size="65536" crc="33609071" sha1="6d9671a9edbdd28c1e360017253dab5dd858dbe7" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="1106-41r.072" merge="1106-41r.072" size="65536" crc="71962e9f" sha1="4e6017ede5ce2fec7f6e25eadfc4070f3296ff2f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1101-13p.072" merge="1101-13p.072" size="65536" crc="4d41701e" sha1="b34b392ba00e580cb719be2c1a40cfc0d2f177e3" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1103-28p.072" merge="1103-28p.072" size="65536" crc="3011da3b" sha1="e7118b111e0de9b9a2dfe5a165f2140e90c919e7" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1108-53r.072" merge="1108-53r.072" size="65536" crc="386c7edc" sha1="a2f61c7f8fb822433957565f373ab5cc8e0a2ba0" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-67r.072" merge="1110-67r.072" size="65536" crc="a54d16e6" sha1="ad10623f0a87e5a92b8e8c611c2d374a8fd7047e" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="1112-81r.072" merge="1112-81r.072" size="65536" crc="669411f6" sha1="a0c678a75076b466f4a27c881642c44d47c9dea0" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1107-53p.072" merge="1107-53p.072" size="65536" crc="caaeb57a" sha1="e20050d10ee18f52ac36616003de241aa9951eab" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1109-67p.072" merge="1109-67p.072" size="65536" crc="61cb4e28" sha1="6d0cb4409fa4c9c696abd612395d5f6ddede6779" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1114-95r.072" merge="1114-95r.072" size="65536" crc="e340d5a1" sha1="29a23ad2b6c8302508a8b49cfbc064fe86a8b908" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1116109r.072" merge="1116109r.072" size="65536" crc="f25b8aca" sha1="c8c6d0951098c32e32b87d9717cc14bb91ac2017" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="1118123r.072" merge="1118123r.072" size="65536" crc="8cf73585" sha1="b1f3e44f6cd434ecfe4d88463b7e2e7b48d2bf1f" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1113-95p.072" merge="1113-95p.072" size="65536" crc="899b59af" sha1="c7344e4bf57024415463cb50c788631fbad07132" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1115109p.072" merge="1115109p.072" size="65536" crc="cf4fd19a" sha1="731fc7bb1dacacc6e2e4db1e096d07d5fe3d8b19" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1120137r.072" merge="1120137r.072" size="65536" crc="fde7c03d" sha1="ec336af0f3314af134fd1a64c478be06249a550a" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1122151r.072" merge="1122151r.072" size="65536" crc="6ff6a9f2" sha1="af8fda010c15e13e58e0f235b7b5a12d5a21fc0c" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="1124165r.072" merge="1124165r.072" size="65536" crc="f11909f1" sha1="2dbd5c92e8329f5b5033b3633bd56618eb7da875" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1119137p.072" merge="1119137p.072" size="65536" crc="6f8003a1" sha1="df8494ce56213dddd11f1365c03bb77ebf3e6eba" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1121151p.072" merge="1121151p.072" size="65536" crc="8ff0a1ec" sha1="8df33657a035316a1e4ce7d7b33af6e51b990c48" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1125123n.072" merge="1125123n.072" size="65536" crc="3aa7c756" sha1="c1585733cef28fdf031e335503364846cfd0384a" region="gfx1" dispose="yes" offset="140000"/>
+		<rom name="1126137n.072" merge="1126137n.072" size="65536" crc="cb82c9aa" sha1="1469d2825e6d366a8e3f74294b0a64f2a63384aa" region="gfx1" dispose="yes" offset="150000"/>
+		<rom name="1128151n.072" merge="1128151n.072" size="65536" crc="dce32863" sha1="b0476de8d54dcf163a723b1fc805da4e1ca11c27" region="gfx1" dispose="yes" offset="160000"/>
+		<rom name="2129180p.072" merge="2129180p.072" size="65536" crc="36b1a578" sha1="ded9cccd1009e517662387353333f20031abddd5" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="2131193p.072" merge="2131193p.072" size="65536" crc="7b7c04a1" sha1="b57f3f35f39ecf912daf2611919f31a92005f07b" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="2133208p.072" merge="2133208p.072" size="65536" crc="e03fe4d9" sha1="d9a9174a2d2e2d83f7c32177f0dbab74f3875d2e" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="2135221p.072" merge="2135221p.072" size="65536" crc="7d497110" sha1="4d5ce6673a112486e9dff77c901d90105aa0a210" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="2137235p.072" merge="2137235p.072" size="65536" crc="f91e7872" sha1="690715a92e8ca1b1d22fff85f9ed3f1e02edca99" region="gfx2" dispose="yes" offset="40000"/>
+		<rom name="2130180r.072" merge="2130180r.072" size="65536" crc="b25368cc" sha1="110e6882399e200b3a4cdd823cc5b0565183cfeb" region="gfx2" dispose="yes" offset="50000"/>
+		<rom name="2132193r.072" merge="2132193r.072" size="65536" crc="112f2d20" sha1="3acd43cf73f1be10c17a717c8990f5c656935b3a" region="gfx2" dispose="yes" offset="60000"/>
+		<rom name="2134208r.072" merge="2134208r.072" size="65536" crc="84884ed6" sha1="6129f090a4e5b8f65895086e1731b13ee72b6079" region="gfx2" dispose="yes" offset="70000"/>
+		<rom name="2136221r.072" merge="2136221r.072" size="65536" crc="bc028690" sha1="e75a961febf1f1a6c4981301b73bab82c3d19785" region="gfx2" dispose="yes" offset="80000"/>
+		<rom name="2138235r.072" merge="2138235r.072" size="65536" crc="60cec955" sha1="d184746589130a8f10fcc6c79484578bd08757f0" region="gfx2" dispose="yes" offset="90000"/>
+		<rom name="2141250k.072" merge="2141250k.072" size="32768" crc="60d6d6df" sha1="a8d56092f014a0a93742c701effaec86c75772e1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1145-7k.072" merge="1145-7k.072" size="65536" crc="d9475d58" sha1="5a4a0094c83f5d0e26f0c35feb0b1f15a5f5c3f9" region="sound1" offset="0"/>
+		<rom name="1146-7j.072" merge="1146-7j.072" size="65536" crc="133e6aef" sha1="e393d0b246889779029443a19e3859d45cb900db" region="sound1" offset="10000"/>
+		<rom name="1147-7e.072" merge="1147-7e.072" size="65536" crc="ba4d556e" sha1="af4364f2c456abc20f1742c945a3acfeb5e192c4" region="sound1" offset="20000"/>
+		<rom name="1148-7d.072" merge="1148-7d.072" size="65536" crc="c48df49a" sha1="c92fde9be1a1ab09453c57eefb0dcfe49e538d07" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="2" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="skullxb3" cloneof="skullxbo" romof="skullxbo">
+		<description>Skull &amp; Crossbones (rev 3)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="3150228a.072" size="65536" crc="47083d59" sha1="a713231c22a3c2de09af65aa2bae17ea41f10cf0" region="cpu1" offset="0"/>
+		<rom name="3151228c.072" size="65536" crc="2c03feaf" sha1="e7ad1568e3008386f520ed3ba90aefbfc9417a64" region="cpu1" offset="1"/>
+		<rom name="3152213a.072" size="65536" crc="aa0471de" sha1="c0bf12304b9d64595f2fc40c2fb67f6ccb9d3b8f" region="cpu1" offset="20000"/>
+		<rom name="3153213c.072" size="65536" crc="a65386f9" sha1="3bc7d0bc844cd1f9efa1a5f6abccfbe3ab7c2bef" region="cpu1" offset="20001"/>
+		<rom name="1154200a.072" merge="1154200a.072" size="65536" crc="de4101a3" sha1="21cf656fc0695a0ef31cfa6e686069d7d4965cce" region="cpu1" offset="40000"/>
+		<rom name="1155200c.072" merge="1155200c.072" size="65536" crc="78c0f6ad" sha1="21ce2a83cd3350cd7ff53627a7e27599b9754a12" region="cpu1" offset="40001"/>
+		<rom name="1156185a.072" merge="1156185a.072" size="32768" crc="cde16b55" sha1="bf5059f0f73a8819551fb3ded3cb6a3123841481" region="cpu1" offset="70000"/>
+		<rom name="1157185c.072" merge="1157185c.072" size="32768" crc="31c77376" sha1="19eb54d73edb25fda6803df896e182d05c5bad7e" region="cpu1" offset="70001"/>
+		<rom name="1149-1b.072" merge="1149-1b.072" size="65536" crc="8d730e7a" sha1="b89fb9cadcf813ea5cba55f1efcdcdd2517944c7" region="cpu2" offset="10000"/>
+		<rom name="1102-13r.072" merge="1102-13r.072" size="65536" crc="90becdfa" sha1="aa5aaeda70e137518a9e58906daed66fa563b27e" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1104-28r.072" merge="1104-28r.072" size="65536" crc="33609071" sha1="6d9671a9edbdd28c1e360017253dab5dd858dbe7" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="1106-41r.072" merge="1106-41r.072" size="65536" crc="71962e9f" sha1="4e6017ede5ce2fec7f6e25eadfc4070f3296ff2f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1101-13p.072" merge="1101-13p.072" size="65536" crc="4d41701e" sha1="b34b392ba00e580cb719be2c1a40cfc0d2f177e3" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1103-28p.072" merge="1103-28p.072" size="65536" crc="3011da3b" sha1="e7118b111e0de9b9a2dfe5a165f2140e90c919e7" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1108-53r.072" merge="1108-53r.072" size="65536" crc="386c7edc" sha1="a2f61c7f8fb822433957565f373ab5cc8e0a2ba0" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-67r.072" merge="1110-67r.072" size="65536" crc="a54d16e6" sha1="ad10623f0a87e5a92b8e8c611c2d374a8fd7047e" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="1112-81r.072" merge="1112-81r.072" size="65536" crc="669411f6" sha1="a0c678a75076b466f4a27c881642c44d47c9dea0" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1107-53p.072" merge="1107-53p.072" size="65536" crc="caaeb57a" sha1="e20050d10ee18f52ac36616003de241aa9951eab" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1109-67p.072" merge="1109-67p.072" size="65536" crc="61cb4e28" sha1="6d0cb4409fa4c9c696abd612395d5f6ddede6779" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1114-95r.072" merge="1114-95r.072" size="65536" crc="e340d5a1" sha1="29a23ad2b6c8302508a8b49cfbc064fe86a8b908" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1116109r.072" merge="1116109r.072" size="65536" crc="f25b8aca" sha1="c8c6d0951098c32e32b87d9717cc14bb91ac2017" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="1118123r.072" merge="1118123r.072" size="65536" crc="8cf73585" sha1="b1f3e44f6cd434ecfe4d88463b7e2e7b48d2bf1f" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1113-95p.072" merge="1113-95p.072" size="65536" crc="899b59af" sha1="c7344e4bf57024415463cb50c788631fbad07132" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1115109p.072" merge="1115109p.072" size="65536" crc="cf4fd19a" sha1="731fc7bb1dacacc6e2e4db1e096d07d5fe3d8b19" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1120137r.072" merge="1120137r.072" size="65536" crc="fde7c03d" sha1="ec336af0f3314af134fd1a64c478be06249a550a" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1122151r.072" merge="1122151r.072" size="65536" crc="6ff6a9f2" sha1="af8fda010c15e13e58e0f235b7b5a12d5a21fc0c" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="1124165r.072" merge="1124165r.072" size="65536" crc="f11909f1" sha1="2dbd5c92e8329f5b5033b3633bd56618eb7da875" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1119137p.072" merge="1119137p.072" size="65536" crc="6f8003a1" sha1="df8494ce56213dddd11f1365c03bb77ebf3e6eba" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1121151p.072" merge="1121151p.072" size="65536" crc="8ff0a1ec" sha1="8df33657a035316a1e4ce7d7b33af6e51b990c48" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1125123n.072" merge="1125123n.072" size="65536" crc="3aa7c756" sha1="c1585733cef28fdf031e335503364846cfd0384a" region="gfx1" dispose="yes" offset="140000"/>
+		<rom name="1126137n.072" merge="1126137n.072" size="65536" crc="cb82c9aa" sha1="1469d2825e6d366a8e3f74294b0a64f2a63384aa" region="gfx1" dispose="yes" offset="150000"/>
+		<rom name="1128151n.072" merge="1128151n.072" size="65536" crc="dce32863" sha1="b0476de8d54dcf163a723b1fc805da4e1ca11c27" region="gfx1" dispose="yes" offset="160000"/>
+		<rom name="2129180p.072" merge="2129180p.072" size="65536" crc="36b1a578" sha1="ded9cccd1009e517662387353333f20031abddd5" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="2131193p.072" merge="2131193p.072" size="65536" crc="7b7c04a1" sha1="b57f3f35f39ecf912daf2611919f31a92005f07b" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="2133208p.072" merge="2133208p.072" size="65536" crc="e03fe4d9" sha1="d9a9174a2d2e2d83f7c32177f0dbab74f3875d2e" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="2135221p.072" merge="2135221p.072" size="65536" crc="7d497110" sha1="4d5ce6673a112486e9dff77c901d90105aa0a210" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="2137235p.072" merge="2137235p.072" size="65536" crc="f91e7872" sha1="690715a92e8ca1b1d22fff85f9ed3f1e02edca99" region="gfx2" dispose="yes" offset="40000"/>
+		<rom name="2130180r.072" merge="2130180r.072" size="65536" crc="b25368cc" sha1="110e6882399e200b3a4cdd823cc5b0565183cfeb" region="gfx2" dispose="yes" offset="50000"/>
+		<rom name="2132193r.072" merge="2132193r.072" size="65536" crc="112f2d20" sha1="3acd43cf73f1be10c17a717c8990f5c656935b3a" region="gfx2" dispose="yes" offset="60000"/>
+		<rom name="2134208r.072" merge="2134208r.072" size="65536" crc="84884ed6" sha1="6129f090a4e5b8f65895086e1731b13ee72b6079" region="gfx2" dispose="yes" offset="70000"/>
+		<rom name="2136221r.072" merge="2136221r.072" size="65536" crc="bc028690" sha1="e75a961febf1f1a6c4981301b73bab82c3d19785" region="gfx2" dispose="yes" offset="80000"/>
+		<rom name="2138235r.072" merge="2138235r.072" size="65536" crc="60cec955" sha1="d184746589130a8f10fcc6c79484578bd08757f0" region="gfx2" dispose="yes" offset="90000"/>
+		<rom name="2141250k.072" merge="2141250k.072" size="32768" crc="60d6d6df" sha1="a8d56092f014a0a93742c701effaec86c75772e1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1145-7k.072" merge="1145-7k.072" size="65536" crc="d9475d58" sha1="5a4a0094c83f5d0e26f0c35feb0b1f15a5f5c3f9" region="sound1" offset="0"/>
+		<rom name="1146-7j.072" merge="1146-7j.072" size="65536" crc="133e6aef" sha1="e393d0b246889779029443a19e3859d45cb900db" region="sound1" offset="10000"/>
+		<rom name="1147-7e.072" merge="1147-7e.072" size="65536" crc="ba4d556e" sha1="af4364f2c456abc20f1742c945a3acfeb5e192c4" region="sound1" offset="20000"/>
+		<rom name="1148-7d.072" merge="1148-7d.072" size="65536" crc="c48df49a" sha1="c92fde9be1a1ab09453c57eefb0dcfe49e538d07" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="2" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="skullxb2" cloneof="skullxbo" romof="skullxbo">
+		<description>Skull &amp; Crossbones (rev 2)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="2150228a.072" size="65536" crc="8614f9ef" sha1="981ba6fad7aa7002c3a5aa0d4dd859e664ca0fdb" region="cpu1" offset="0"/>
+		<rom name="2151228c.072" size="65536" crc="47090acb" sha1="12c47d6112bec88aaf25d10ba2d5335b6b474fb7" region="cpu1" offset="1"/>
+		<rom name="2152213a.072" size="65536" crc="02f6a944" sha1="24c2326c8b175fd03c5cf44f091365a860dbb9c9" region="cpu1" offset="20000"/>
+		<rom name="2153213c.072" size="65536" crc="589ce449" sha1="fdc3d2ba30390848d8728b4256bf06af470de6a7" region="cpu1" offset="20001"/>
+		<rom name="1154200a.072" merge="1154200a.072" size="65536" crc="de4101a3" sha1="21cf656fc0695a0ef31cfa6e686069d7d4965cce" region="cpu1" offset="40000"/>
+		<rom name="1155200c.072" merge="1155200c.072" size="65536" crc="78c0f6ad" sha1="21ce2a83cd3350cd7ff53627a7e27599b9754a12" region="cpu1" offset="40001"/>
+		<rom name="1156185a.072" merge="1156185a.072" size="32768" crc="cde16b55" sha1="bf5059f0f73a8819551fb3ded3cb6a3123841481" region="cpu1" offset="70000"/>
+		<rom name="1157185c.072" merge="1157185c.072" size="32768" crc="31c77376" sha1="19eb54d73edb25fda6803df896e182d05c5bad7e" region="cpu1" offset="70001"/>
+		<rom name="1149-1b.072" merge="1149-1b.072" size="65536" crc="8d730e7a" sha1="b89fb9cadcf813ea5cba55f1efcdcdd2517944c7" region="cpu2" offset="10000"/>
+		<rom name="1102-13r.072" merge="1102-13r.072" size="65536" crc="90becdfa" sha1="aa5aaeda70e137518a9e58906daed66fa563b27e" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1104-28r.072" merge="1104-28r.072" size="65536" crc="33609071" sha1="6d9671a9edbdd28c1e360017253dab5dd858dbe7" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="1106-41r.072" merge="1106-41r.072" size="65536" crc="71962e9f" sha1="4e6017ede5ce2fec7f6e25eadfc4070f3296ff2f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1101-13p.072" merge="1101-13p.072" size="65536" crc="4d41701e" sha1="b34b392ba00e580cb719be2c1a40cfc0d2f177e3" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1103-28p.072" merge="1103-28p.072" size="65536" crc="3011da3b" sha1="e7118b111e0de9b9a2dfe5a165f2140e90c919e7" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1108-53r.072" merge="1108-53r.072" size="65536" crc="386c7edc" sha1="a2f61c7f8fb822433957565f373ab5cc8e0a2ba0" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-67r.072" merge="1110-67r.072" size="65536" crc="a54d16e6" sha1="ad10623f0a87e5a92b8e8c611c2d374a8fd7047e" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="1112-81r.072" merge="1112-81r.072" size="65536" crc="669411f6" sha1="a0c678a75076b466f4a27c881642c44d47c9dea0" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1107-53p.072" merge="1107-53p.072" size="65536" crc="caaeb57a" sha1="e20050d10ee18f52ac36616003de241aa9951eab" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1109-67p.072" merge="1109-67p.072" size="65536" crc="61cb4e28" sha1="6d0cb4409fa4c9c696abd612395d5f6ddede6779" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1114-95r.072" merge="1114-95r.072" size="65536" crc="e340d5a1" sha1="29a23ad2b6c8302508a8b49cfbc064fe86a8b908" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1116109r.072" merge="1116109r.072" size="65536" crc="f25b8aca" sha1="c8c6d0951098c32e32b87d9717cc14bb91ac2017" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="1118123r.072" merge="1118123r.072" size="65536" crc="8cf73585" sha1="b1f3e44f6cd434ecfe4d88463b7e2e7b48d2bf1f" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1113-95p.072" merge="1113-95p.072" size="65536" crc="899b59af" sha1="c7344e4bf57024415463cb50c788631fbad07132" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1115109p.072" merge="1115109p.072" size="65536" crc="cf4fd19a" sha1="731fc7bb1dacacc6e2e4db1e096d07d5fe3d8b19" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1120137r.072" merge="1120137r.072" size="65536" crc="fde7c03d" sha1="ec336af0f3314af134fd1a64c478be06249a550a" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1122151r.072" merge="1122151r.072" size="65536" crc="6ff6a9f2" sha1="af8fda010c15e13e58e0f235b7b5a12d5a21fc0c" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="1124165r.072" merge="1124165r.072" size="65536" crc="f11909f1" sha1="2dbd5c92e8329f5b5033b3633bd56618eb7da875" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1119137p.072" merge="1119137p.072" size="65536" crc="6f8003a1" sha1="df8494ce56213dddd11f1365c03bb77ebf3e6eba" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1121151p.072" merge="1121151p.072" size="65536" crc="8ff0a1ec" sha1="8df33657a035316a1e4ce7d7b33af6e51b990c48" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1125123n.072" merge="1125123n.072" size="65536" crc="3aa7c756" sha1="c1585733cef28fdf031e335503364846cfd0384a" region="gfx1" dispose="yes" offset="140000"/>
+		<rom name="1126137n.072" merge="1126137n.072" size="65536" crc="cb82c9aa" sha1="1469d2825e6d366a8e3f74294b0a64f2a63384aa" region="gfx1" dispose="yes" offset="150000"/>
+		<rom name="1128151n.072" merge="1128151n.072" size="65536" crc="dce32863" sha1="b0476de8d54dcf163a723b1fc805da4e1ca11c27" region="gfx1" dispose="yes" offset="160000"/>
+		<rom name="2129180p.072" merge="2129180p.072" size="65536" crc="36b1a578" sha1="ded9cccd1009e517662387353333f20031abddd5" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="2131193p.072" merge="2131193p.072" size="65536" crc="7b7c04a1" sha1="b57f3f35f39ecf912daf2611919f31a92005f07b" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="2133208p.072" merge="2133208p.072" size="65536" crc="e03fe4d9" sha1="d9a9174a2d2e2d83f7c32177f0dbab74f3875d2e" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="2135221p.072" merge="2135221p.072" size="65536" crc="7d497110" sha1="4d5ce6673a112486e9dff77c901d90105aa0a210" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="2137235p.072" merge="2137235p.072" size="65536" crc="f91e7872" sha1="690715a92e8ca1b1d22fff85f9ed3f1e02edca99" region="gfx2" dispose="yes" offset="40000"/>
+		<rom name="2130180r.072" merge="2130180r.072" size="65536" crc="b25368cc" sha1="110e6882399e200b3a4cdd823cc5b0565183cfeb" region="gfx2" dispose="yes" offset="50000"/>
+		<rom name="2132193r.072" merge="2132193r.072" size="65536" crc="112f2d20" sha1="3acd43cf73f1be10c17a717c8990f5c656935b3a" region="gfx2" dispose="yes" offset="60000"/>
+		<rom name="2134208r.072" merge="2134208r.072" size="65536" crc="84884ed6" sha1="6129f090a4e5b8f65895086e1731b13ee72b6079" region="gfx2" dispose="yes" offset="70000"/>
+		<rom name="2136221r.072" merge="2136221r.072" size="65536" crc="bc028690" sha1="e75a961febf1f1a6c4981301b73bab82c3d19785" region="gfx2" dispose="yes" offset="80000"/>
+		<rom name="2138235r.072" merge="2138235r.072" size="65536" crc="60cec955" sha1="d184746589130a8f10fcc6c79484578bd08757f0" region="gfx2" dispose="yes" offset="90000"/>
+		<rom name="2141250k.072" merge="2141250k.072" size="32768" crc="60d6d6df" sha1="a8d56092f014a0a93742c701effaec86c75772e1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1145-7k.072" merge="1145-7k.072" size="65536" crc="d9475d58" sha1="5a4a0094c83f5d0e26f0c35feb0b1f15a5f5c3f9" region="sound1" offset="0"/>
+		<rom name="1146-7j.072" merge="1146-7j.072" size="65536" crc="133e6aef" sha1="e393d0b246889779029443a19e3859d45cb900db" region="sound1" offset="10000"/>
+		<rom name="1147-7e.072" merge="1147-7e.072" size="65536" crc="ba4d556e" sha1="af4364f2c456abc20f1742c945a3acfeb5e192c4" region="sound1" offset="20000"/>
+		<rom name="1148-7d.072" merge="1148-7d.072" size="65536" crc="c48df49a" sha1="c92fde9be1a1ab09453c57eefb0dcfe49e538d07" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="2" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="skullxb1" cloneof="skullxbo" romof="skullxbo">
+		<description>Skull &amp; Crossbones (rev 1)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="1150228a.072" size="65536" crc="376bb0c7" sha1="195c8411f3ea9681e9ba6661a55418c194324339" region="cpu1" offset="0"/>
+		<rom name="1151228c.072" size="65536" crc="858382f7" sha1="6e18183962c36bf2599cf04b7dc824e840a94343" region="cpu1" offset="1"/>
+		<rom name="1152213a.072" size="65536" crc="dc5b2008" sha1="03a343d3cfd7c86b778ea9d568babc72dee23e1f" region="cpu1" offset="20000"/>
+		<rom name="1153213c.072" size="65536" crc="e5266c7c" sha1="c8facce7fcb9777b157e515ca62b1e5f2be8b2ab" region="cpu1" offset="20001"/>
+		<rom name="1154200a.072" merge="1154200a.072" size="65536" crc="de4101a3" sha1="21cf656fc0695a0ef31cfa6e686069d7d4965cce" region="cpu1" offset="40000"/>
+		<rom name="1155200c.072" merge="1155200c.072" size="65536" crc="78c0f6ad" sha1="21ce2a83cd3350cd7ff53627a7e27599b9754a12" region="cpu1" offset="40001"/>
+		<rom name="1156185a.072" merge="1156185a.072" size="32768" crc="cde16b55" sha1="bf5059f0f73a8819551fb3ded3cb6a3123841481" region="cpu1" offset="70000"/>
+		<rom name="1157185c.072" merge="1157185c.072" size="32768" crc="31c77376" sha1="19eb54d73edb25fda6803df896e182d05c5bad7e" region="cpu1" offset="70001"/>
+		<rom name="1149-1b.072" merge="1149-1b.072" size="65536" crc="8d730e7a" sha1="b89fb9cadcf813ea5cba55f1efcdcdd2517944c7" region="cpu2" offset="10000"/>
+		<rom name="1102-13r.072" merge="1102-13r.072" size="65536" crc="90becdfa" sha1="aa5aaeda70e137518a9e58906daed66fa563b27e" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1104-28r.072" merge="1104-28r.072" size="65536" crc="33609071" sha1="6d9671a9edbdd28c1e360017253dab5dd858dbe7" region="gfx1" dispose="yes" offset="10000"/>
+		<rom name="1106-41r.072" merge="1106-41r.072" size="65536" crc="71962e9f" sha1="4e6017ede5ce2fec7f6e25eadfc4070f3296ff2f" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1101-13p.072" merge="1101-13p.072" size="65536" crc="4d41701e" sha1="b34b392ba00e580cb719be2c1a40cfc0d2f177e3" region="gfx1" dispose="yes" offset="30000"/>
+		<rom name="1103-28p.072" merge="1103-28p.072" size="65536" crc="3011da3b" sha1="e7118b111e0de9b9a2dfe5a165f2140e90c919e7" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1108-53r.072" merge="1108-53r.072" size="65536" crc="386c7edc" sha1="a2f61c7f8fb822433957565f373ab5cc8e0a2ba0" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1110-67r.072" merge="1110-67r.072" size="65536" crc="a54d16e6" sha1="ad10623f0a87e5a92b8e8c611c2d374a8fd7047e" region="gfx1" dispose="yes" offset="60000"/>
+		<rom name="1112-81r.072" merge="1112-81r.072" size="65536" crc="669411f6" sha1="a0c678a75076b466f4a27c881642c44d47c9dea0" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1107-53p.072" merge="1107-53p.072" size="65536" crc="caaeb57a" sha1="e20050d10ee18f52ac36616003de241aa9951eab" region="gfx1" dispose="yes" offset="80000"/>
+		<rom name="1109-67p.072" merge="1109-67p.072" size="65536" crc="61cb4e28" sha1="6d0cb4409fa4c9c696abd612395d5f6ddede6779" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1114-95r.072" merge="1114-95r.072" size="65536" crc="e340d5a1" sha1="29a23ad2b6c8302508a8b49cfbc064fe86a8b908" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1116109r.072" merge="1116109r.072" size="65536" crc="f25b8aca" sha1="c8c6d0951098c32e32b87d9717cc14bb91ac2017" region="gfx1" dispose="yes" offset="b0000"/>
+		<rom name="1118123r.072" merge="1118123r.072" size="65536" crc="8cf73585" sha1="b1f3e44f6cd434ecfe4d88463b7e2e7b48d2bf1f" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1113-95p.072" merge="1113-95p.072" size="65536" crc="899b59af" sha1="c7344e4bf57024415463cb50c788631fbad07132" region="gfx1" dispose="yes" offset="d0000"/>
+		<rom name="1115109p.072" merge="1115109p.072" size="65536" crc="cf4fd19a" sha1="731fc7bb1dacacc6e2e4db1e096d07d5fe3d8b19" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1120137r.072" merge="1120137r.072" size="65536" crc="fde7c03d" sha1="ec336af0f3314af134fd1a64c478be06249a550a" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1122151r.072" merge="1122151r.072" size="65536" crc="6ff6a9f2" sha1="af8fda010c15e13e58e0f235b7b5a12d5a21fc0c" region="gfx1" dispose="yes" offset="100000"/>
+		<rom name="1124165r.072" merge="1124165r.072" size="65536" crc="f11909f1" sha1="2dbd5c92e8329f5b5033b3633bd56618eb7da875" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1119137p.072" merge="1119137p.072" size="65536" crc="6f8003a1" sha1="df8494ce56213dddd11f1365c03bb77ebf3e6eba" region="gfx1" dispose="yes" offset="120000"/>
+		<rom name="1121151p.072" merge="1121151p.072" size="65536" crc="8ff0a1ec" sha1="8df33657a035316a1e4ce7d7b33af6e51b990c48" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1125123n.072" merge="1125123n.072" size="65536" crc="3aa7c756" sha1="c1585733cef28fdf031e335503364846cfd0384a" region="gfx1" dispose="yes" offset="140000"/>
+		<rom name="1126137n.072" merge="1126137n.072" size="65536" crc="cb82c9aa" sha1="1469d2825e6d366a8e3f74294b0a64f2a63384aa" region="gfx1" dispose="yes" offset="150000"/>
+		<rom name="1128151n.072" merge="1128151n.072" size="65536" crc="dce32863" sha1="b0476de8d54dcf163a723b1fc805da4e1ca11c27" region="gfx1" dispose="yes" offset="160000"/>
+		<rom name="2129180p.072" merge="2129180p.072" size="65536" crc="36b1a578" sha1="ded9cccd1009e517662387353333f20031abddd5" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="2131193p.072" merge="2131193p.072" size="65536" crc="7b7c04a1" sha1="b57f3f35f39ecf912daf2611919f31a92005f07b" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="2133208p.072" merge="2133208p.072" size="65536" crc="e03fe4d9" sha1="d9a9174a2d2e2d83f7c32177f0dbab74f3875d2e" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="2135221p.072" merge="2135221p.072" size="65536" crc="7d497110" sha1="4d5ce6673a112486e9dff77c901d90105aa0a210" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="2137235p.072" merge="2137235p.072" size="65536" crc="f91e7872" sha1="690715a92e8ca1b1d22fff85f9ed3f1e02edca99" region="gfx2" dispose="yes" offset="40000"/>
+		<rom name="2130180r.072" merge="2130180r.072" size="65536" crc="b25368cc" sha1="110e6882399e200b3a4cdd823cc5b0565183cfeb" region="gfx2" dispose="yes" offset="50000"/>
+		<rom name="2132193r.072" merge="2132193r.072" size="65536" crc="112f2d20" sha1="3acd43cf73f1be10c17a717c8990f5c656935b3a" region="gfx2" dispose="yes" offset="60000"/>
+		<rom name="2134208r.072" merge="2134208r.072" size="65536" crc="84884ed6" sha1="6129f090a4e5b8f65895086e1731b13ee72b6079" region="gfx2" dispose="yes" offset="70000"/>
+		<rom name="2136221r.072" merge="2136221r.072" size="65536" crc="bc028690" sha1="e75a961febf1f1a6c4981301b73bab82c3d19785" region="gfx2" dispose="yes" offset="80000"/>
+		<rom name="2138235r.072" merge="2138235r.072" size="65536" crc="60cec955" sha1="d184746589130a8f10fcc6c79484578bd08757f0" region="gfx2" dispose="yes" offset="90000"/>
+		<rom name="2141250k.072" merge="2141250k.072" size="32768" crc="60d6d6df" sha1="a8d56092f014a0a93742c701effaec86c75772e1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1145-7k.072" merge="1145-7k.072" size="65536" crc="d9475d58" sha1="5a4a0094c83f5d0e26f0c35feb0b1f15a5f5c3f9" region="sound1" offset="0"/>
+		<rom name="1146-7j.072" merge="1146-7j.072" size="65536" crc="133e6aef" sha1="e393d0b246889779029443a19e3859d45cb900db" region="sound1" offset="10000"/>
+		<rom name="1147-7e.072" merge="1147-7e.072" size="65536" crc="ba4d556e" sha1="af4364f2c456abc20f1742c945a3acfeb5e192c4" region="sound1" offset="20000"/>
+		<rom name="1148-7d.072" merge="1148-7d.072" size="65536" crc="c48df49a" sha1="c92fde9be1a1ab09453c57eefb0dcfe49e538d07" region="sound1" offset="30000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789500"/>
+		<chip type="audio" name="YM2151" clock="3579000"/>
+		<chip type="audio" name="MSM6295" clock="9037"/>
+		<video screen="raster" orientation="horizontal" width="672" height="240" aspectx="4" aspecty="3" refresh="60.000000"/>
+		<sound channels="1"/>
+		<input players="2" control="joy8way" buttons="2" coins="3"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="2048"/>
+	</game>
+	<game name="cyberbt" cloneof="cyberbal" romof="cyberbal">
+		<description>Tournament Cyberball 2072 (rev 2)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="2007-1m.073" size="65536" crc="adfa9e23" sha1="5462030fa275ce7b261b7283e92df9f7f1383251" region="cpu1" offset="0"/>
+		<rom name="2008-1kl.073" size="65536" crc="c9191452" sha1="583c1f916fbd54dbc188be7a181ccd60c7320cc8" region="cpu1" offset="1"/>
+		<rom name="2009-3m.073" size="65536" crc="88bfc6dd" sha1="ac2a67c8b4dbae62497236d624d333992195c218" region="cpu1" offset="20000"/>
+		<rom name="2010-3kl.073" size="65536" crc="3a121f29" sha1="ebd088187abb863f2a632812811479dca7e31802" region="cpu1" offset="20001"/>
+		<rom name="1029-2f.073" size="65536" crc="afee87e1" sha1="da5e91167c68eecd2cb4436ac64cda14e5f6eae7" region="cpu2" offset="10000"/>
+		<rom name="2011-3cd.073" size="65536" crc="bb5c5926" sha1="6f7424418559841053d0c874ac8bb72c793d0d62" region="cpu3" offset="0"/>
+		<rom name="2012-1b.073" size="65536" crc="a045f5f3" sha1="c74f62ee0b3640caea818dca2deede83cd39e76a" region="cpu3" offset="1"/>
+		<rom name="1013-1cd.073" size="65536" crc="11d287c9" sha1="a25095ab29a7103f2bf02d656414d9dab0b79215" region="cpu3" offset="20000"/>
+		<rom name="1014-3b.073" size="65536" crc="be15db42" sha1="f3b1a676106e9956f62d3f36fbb1f849695ff771" region="cpu3" offset="20001"/>
+		<rom name="1132-3cd.064" merge="1132-3cd.064" size="65536" crc="ca5ce8d8" sha1="69dc83d43d8c9dc7ce3207e70f48fcfc5ddda0cc" region="cpu4" offset="0"/>
+		<rom name="1133-1b.064" merge="1133-1b.064" size="65536" crc="ffeb8746" sha1="0d8d28b2d997ff3cf01b4ef25b75fa5a69754af4" region="cpu4" offset="1"/>
+		<rom name="1134-1cd.064" merge="1134-1cd.064" size="65536" crc="bcbd4c00" sha1="f0bfcdf0b5491e15872b543e99b834ae384cbf18" region="cpu4" offset="20000"/>
+		<rom name="1135-3b.064" merge="1135-3b.064" size="65536" crc="d520f560" sha1="fb0b8d021458379188c424a343622c46ad74edaa" region="cpu4" offset="20001"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1001-9lm.073" size="65536" crc="dbbad153" sha1="1004292e320037fc1d5e5e8e7b6a068b1305e872" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1002-8lm.073" size="65536" crc="76e0d008" sha1="2af4e48a229d23d85272d3c3203d977d81143a7f" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="100311lm.073" size="65536" crc="ddca9ca2" sha1="19cb170fe6aeed6c67b68376b5bde07f7f115fb0" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="100410lm.073" size="65536" crc="aa495b6f" sha1="c7d8e16d3084143928f25f66ee4d037ff7c43bcb" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1005-15n.073" size="65536" crc="833b4768" sha1="754f00089d439fb0aa1f650c1fef73cf7e5f33a1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1006-16n.073" size="65536" crc="4976cffd" sha1="4cac8d9bd30743da6e6e4f013e6101ebc27060b6" region="gfx3" dispose="yes" offset="10000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789772"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="audio" name="YM2151" clock="3579545"/>
+		<chip type="audio" name="DAC"/>
+		<chip type="audio" name="DAC"/>
+		<video screen="raster" orientation="horizontal" width="1344" height="240" aspectx="8" aspecty="3" refresh="60.000000"/>
+		<sound channels="2"/>
+		<input players="4" control="joy8way" buttons="1" coins="4"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="4096"/>
+	</game>
+	<game name="cyberbt1" cloneof="cyberbal" romof="cyberbal">
+		<description>Tournament Cyberball 2072 (rev 1)</description>
+		<year>1989</year>
+		<manufacturer>Atari Games</manufacturer>
+		<rom name="1007-1m.073" size="65536" crc="d434b2d7" sha1="af6d51399ad4fca01ffbc7afa2bf73d7ee2f89b6" region="cpu1" offset="0"/>
+		<rom name="1008-1kl.073" size="65536" crc="7d6c4163" sha1="f1fe9d758f30bd0ebc990d8604ba32cc0d780683" region="cpu1" offset="1"/>
+		<rom name="1009-3m.073" size="65536" crc="3933e089" sha1="4bd453bddabeafd07d193a1bc8ac0792e7aa99c3" region="cpu1" offset="20000"/>
+		<rom name="1010-3kl.073" size="65536" crc="e7a7cae8" sha1="91e0c6a1b0c138a0e6a599011518fe10df44e76e" region="cpu1" offset="20001"/>
+		<rom name="1029-2f.073" size="65536" crc="afee87e1" sha1="da5e91167c68eecd2cb4436ac64cda14e5f6eae7" region="cpu2" offset="10000"/>
+		<rom name="1011-3cd.073" size="65536" crc="22d3e09c" sha1="18298951659badef39f839341c4d66958fcc86aa" region="cpu3" offset="0"/>
+		<rom name="1012-1b.073" size="65536" crc="a8eeed8c" sha1="965765e5762ec09573243983db491a9fc85b37ef" region="cpu3" offset="1"/>
+		<rom name="1013-1cd.073" size="65536" crc="11d287c9" sha1="a25095ab29a7103f2bf02d656414d9dab0b79215" region="cpu3" offset="20000"/>
+		<rom name="1014-3b.073" size="65536" crc="be15db42" sha1="f3b1a676106e9956f62d3f36fbb1f849695ff771" region="cpu3" offset="20001"/>
+		<rom name="1132-3cd.064" merge="1132-3cd.064" size="65536" crc="ca5ce8d8" sha1="69dc83d43d8c9dc7ce3207e70f48fcfc5ddda0cc" region="cpu4" offset="0"/>
+		<rom name="1133-1b.064" merge="1133-1b.064" size="65536" crc="ffeb8746" sha1="0d8d28b2d997ff3cf01b4ef25b75fa5a69754af4" region="cpu4" offset="1"/>
+		<rom name="1134-1cd.064" merge="1134-1cd.064" size="65536" crc="bcbd4c00" sha1="f0bfcdf0b5491e15872b543e99b834ae384cbf18" region="cpu4" offset="20000"/>
+		<rom name="1135-3b.064" merge="1135-3b.064" size="65536" crc="d520f560" sha1="fb0b8d021458379188c424a343622c46ad74edaa" region="cpu4" offset="20001"/>
+		<rom name="1001-55l.071" size="131072" crc="586ba107" sha1="f15d4489f5834ea5fe695f43cb9d1c2401179870" region="gfx1" dispose="yes" offset="0"/>
+		<rom name="1005-43l.071" size="131072" crc="a53e6248" sha1="4f2466c6af74a5498468801b1de7adfc34873d5d" region="gfx1" dispose="yes" offset="20000"/>
+		<rom name="1032-18a.071" size="65536" crc="131f52a0" sha1="fa50ea82d26c36dd6a135e22dee509676d1dfe86" region="gfx1" dispose="yes" offset="40000"/>
+		<rom name="1002-55n.071" size="131072" crc="0f71f86c" sha1="783f33ba5cc1b2f0c42b8515b1cf8b6a2270acb9" region="gfx1" dispose="yes" offset="50000"/>
+		<rom name="1006-43n.071" size="131072" crc="df0ab373" sha1="3d511236eb55a773c66643158c6ef2c4dce53b68" region="gfx1" dispose="yes" offset="70000"/>
+		<rom name="1033-13a.071" size="65536" crc="b6270943" sha1="356e58dfd30c6db15264eceacef0eacda99aabae" region="gfx1" dispose="yes" offset="90000"/>
+		<rom name="1003-90l.071" size="131072" crc="1cf373a2" sha1="c8538855bb82fc03e26c64fc9008fbd0c66fac09" region="gfx1" dispose="yes" offset="a0000"/>
+		<rom name="1007-78l.071" size="131072" crc="f2ffab24" sha1="6c5c90a9d9b342414a0d6258dd27b0b84bf0af0b" region="gfx1" dispose="yes" offset="c0000"/>
+		<rom name="1034-18c.071" size="65536" crc="6514f0bd" sha1="e887dfb9e0334a7d94e7124cea6101d9ac7f0ab6" region="gfx1" dispose="yes" offset="e0000"/>
+		<rom name="1004-90n.071" size="131072" crc="537f6de3" sha1="d5d385c3ff07aaef7bd3bd4f6c8066948a45ce9c" region="gfx1" dispose="yes" offset="f0000"/>
+		<rom name="1008-78n.071" size="131072" crc="78525bbb" sha1="98ece6c0672cb60f818b8005c76cc4ae1d24b104" region="gfx1" dispose="yes" offset="110000"/>
+		<rom name="1035-13c.071" size="65536" crc="1be3e5c8" sha1="1a4d0e0d53b902c28977c8598e363c7b61c9c1c8" region="gfx1" dispose="yes" offset="130000"/>
+		<rom name="1001-9lm.073" size="65536" crc="dbbad153" sha1="1004292e320037fc1d5e5e8e7b6a068b1305e872" region="gfx2" dispose="yes" offset="0"/>
+		<rom name="1002-8lm.073" size="65536" crc="76e0d008" sha1="2af4e48a229d23d85272d3c3203d977d81143a7f" region="gfx2" dispose="yes" offset="10000"/>
+		<rom name="100311lm.073" size="65536" crc="ddca9ca2" sha1="19cb170fe6aeed6c67b68376b5bde07f7f115fb0" region="gfx2" dispose="yes" offset="20000"/>
+		<rom name="100410lm.073" size="65536" crc="aa495b6f" sha1="c7d8e16d3084143928f25f66ee4d037ff7c43bcb" region="gfx2" dispose="yes" offset="30000"/>
+		<rom name="1005-15n.073" size="65536" crc="833b4768" sha1="754f00089d439fb0aa1f650c1fef73cf7e5f33a1" region="gfx3" dispose="yes" offset="0"/>
+		<rom name="1006-16n.073" size="65536" crc="4976cffd" sha1="4cac8d9bd30743da6e6e4f013e6101ebc27060b6" region="gfx3" dispose="yes" offset="10000"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="M6502" clock="1789772"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="cpu" name="68000" clock="7159090"/>
+		<chip type="audio" name="YM2151" clock="3579545"/>
+		<chip type="audio" name="DAC"/>
+		<chip type="audio" name="DAC"/>
+		<video screen="raster" orientation="horizontal" width="1344" height="240" aspectx="8" aspecty="3" refresh="60.000000"/>
+		<sound channels="2"/>
+		<input players="4" control="joy8way" buttons="1" coins="4"/>
+		<dipswitch name="Service Mode">
+			<dipvalue name="Off" default="yes"/>
+			<dipvalue name="On"/>
+		</dipswitch>
+		<driver status="good" emulation="good" color="good" sound="good" graphic="good" palettesize="4096"/>
+	</game>
+	<game runnable="no" name="skns">
+		<description>Super Kaneko Nova System BIOS</description>
+		<year>1996</year>
+		<manufacturer>Kaneko</manufacturer>
+		<rom name="sknsj1.u10" size="524288" crc="7e2b836c" sha1="92c5a7a2472496028bff0e5980d41dd294f42144" region="cpu1" offset="0"/>
+		<rom name="sknse1.u10" size="524288" crc="e2b9d7d1" sha1="b530a3bb9dedc8cfafcba9f1f10277590be04a15" region="cpu1" offset="0"/>
+		<rom name="sknsa1.u10" size="524288" crc="745e5212" sha1="caba649ab2d83b2d7e007eecee0fc582c019df38" region="cpu1" offset="0"/>
+		<rom name="sknsu1.u10" size="524288" crc="384d21ec" sha1="a27e8a18099d9cea64fa32db28d01101c2a78815" region="cpu1" offset="0"/>
+	</game>
+	<game runnable="no" name="pgm">
+		<description>PGM (Polygame Master) System BIOS</description>
+		<year>1997</year>
+		<manufacturer>IGS</manufacturer>
+		<rom name="pgm_p01s.rom" size="131072" crc="e42b166e" sha1="2a9df9ec746b14b74fae48b1a438da14973702ea" region="cpu1" offset="0"/>
+		<rom name="pgm_t01s.rom" size="2097152" crc="1a7123a0" sha1="cc567f577bfbf45427b54d6695b11b74f2578af3" region="gfx1" offset="0"/>
+		<rom name="pgm_m01s.rom" size="2097152" crc="45ae7159" sha1="d3ed3ff3464557fd0df6b069b2e431528b0ebfa8" region="sound1" offset="0"/>
+	</game>
+	<game runnable="no" name="macsbios">
+		<description>Multi Amenity Cassette System BIOS</description>
+		<year>1995</year>
+		<manufacturer>I'Max</manufacturer>
+		<rom name="macsos_h.u44" size="524288" crc="538b68e4" sha1="a0534147791e94e726f49451d0e95671ae0a87d5" region="user1" offset="1"/>
+	</game>
+	<game runnable="no" name="neogeo">
+		<description>Neo-Geo</description>
+		<year>1990</year>
+		<manufacturer>SNK</manufacturer>
+		<biosset name="euro" description="Europe MVS (Ver. 2)" default="yes"/>
+		<biosset name="euro-s1" description="Europe MVS (Ver. 1)"/>
+		<biosset name="us" description="US MVS (Ver. 2?)"/>
+		<biosset name="us-e" description="US MVS (Ver. 1)"/>
+		<biosset name="asia" description="Asia MVS (Ver. 3)"/>
+		<biosset name="japan" description="Japan MVS (Ver. 3)"/>
+		<biosset name="japan-s2" description="Japan MVS (Ver. 2)"/>
+		<rom name="sp-s2.sp1" bios="euro" size="131072" crc="9036d879" sha1="4f5ed7105b7128794654ce82b51723e16e389543" region="user1" offset="0"/>
+		<rom name="sp-s.sp1" bios="euro-s1" size="131072" crc="c7f2fa45" sha1="09576ff20b4d6b365e78e6a5698ea450262697cd" region="user1" offset="0"/>
+		<rom name="usa_2slt.bin" bios="us" size="131072" crc="e72943de" sha1="5c6bba07d2ec8ac95776aa3511109f5e1e2e92eb" region="user1" offset="0"/>
+		<rom name="sp-e.sp1" bios="us-e" size="131072" crc="2723a5b5" sha1="5dbff7531cf04886cde3ef022fb5ca687573dcb8" region="user1" offset="0"/>
+		<rom name="asia-s3.rom" bios="asia" size="131072" crc="91b64be3" sha1="720a3e20d26818632aedf2c2fd16c54f213543e1" region="user1" offset="0"/>
+		<rom name="vs-bios.rom" bios="japan" size="131072" crc="f0e8f27d" sha1="ecf01eda815909f1facec62abf3594eaa8d11075" region="user1" offset="0"/>
+		<rom name="sp-j2.rom" bios="japan-s2" size="131072" crc="acede59c" sha1="b6f97acd282fd7e94d9426078a90f059b5e9dd91" region="user1" offset="0"/>
+		<rom name="sm1.sm1" size="333333" crc="97cf998b" sha1="977387a7c76ef9b21d0b01fa69830e949a9a9626" region="cpu2" offset="0"/>
+		<rom name="000-lo.lo" size="22222" crc="e09e253c" sha1="2b1c719531dac9bb503f22644e6e4236b91e7cfc" region="gfx4" offset="0"/>
+		<rom name="sfix.sfx" size="111111" crc="354029fc" sha1="4ae4bf23b4c2acff875775d4cbff5583893ce2a1" region="gfx2" offset="0"/>
+	</game>
+	<game runnable="no" name="hng64">
+		<description>Hyper NeoGeo 64 Bios</description>
+		<year>1997</year>
+		<manufacturer>SNK</manufacturer>
+		<rom name="brom1.bin" size="524288" crc="aaaaaaaa" sha1="3e2fd0a56214e6f5dcb93687e409af13d065ea30" region="user1" offset="0"/>
+		<rom name="from1.bin" size="524288" crc="bbbbbbbb" sha1="e992747f46c48b66e5509fe0adf19c91250b00c7" region="user2" offset="0"/>
+		<rom name="rom1.bin" size="130866" crc="4a6832dc" sha1="ae504f7733c2f40450157cd1d3b85bc83fac8569" region="user2" offset="0"/>
+	</game>
+</mame>

@@ -1,6 +1,12 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.10 2004/08
+	) Added support for .chd files. Check the new -K option.
+	) The program now automatically renames any damaged .zip
+		and .chd file instead of aborting.
+	) Updated the included expat library to version 1.95.8.
+
 AdvanceSCAN Version 1.9 2004/07
 	) Fixed a Mac OS X crash problem with XML files with
 		empty items.

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,8 @@ using namespace std;
 // ------------------------------------------------------------------------
 // Game
 
-game::game() {
+game::game()
+{
 	resource = false;
 	working = true;
 	working_subset = false;
@@ -44,9 +45,11 @@ game::game(const string& Aname) :
 
 game::game(const game& A) : 
 	rs(A.rs), 
-	ss(A.ss), 
+	ss(A.ss),
+	ds(A.ds),
 	rzs(A.rzs), 
 	szs(A.szs),
+	dzs(A.dzs),
 	name(A.name), 
 	romof(A.romof), 
 	cloneof(A.cloneof), 
@@ -61,7 +64,8 @@ game::game(const game& A) :
 	rom_son(A.rom_son) {
 }
 
-game::~game() {
+game::~game()
+{
 }
 
 unsigned game::good_rom_size() const {
@@ -125,12 +129,58 @@ bool game::has_bad_sample() const {
 	return false;
 }
 
-void game::rzs_add(const zippath& Azip) const {
-	rzs.insert( rzs.end(), Azip );
+bool game::has_good_disk() const {
+	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
+		zippath_container::const_iterator j;
+		for(j=dzs_get().begin();j!=dzs_get().end();++j) {
+			string name = file_basename(j->file_get());
+			if (name == i->name_get()) {
+				if (j->good_get())
+					break;
+			}
+		}
+
+		if (j == dzs_get().end())
+			return false;
+	}
+
+	return true;
 }
 
-void game::szs_add(const zippath& Azip) const {
-	szs.insert( szs.end(), Azip );
+unsigned game::good_disk_size() const {
+	unsigned size = 0;
+
+	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
+		zippath_container::const_iterator j;
+		for(j=dzs_get().begin();j!=dzs_get().end();++j) {
+			string name = file_basename(j->file_get());
+			if (name == i->name_get()) {
+				if (j->good_get())
+					size += j->size_get();
+			}
+		}
+	}
+
+	return size;
+}
+
+bool game::has_bad_disk() const {
+	for(zippath_container::const_iterator i=dzs_get().begin();i!=dzs_get().end();++i)
+		if (!i->good_get())
+			return true;
+	return false;
+}
+
+void game::rzs_add(const infopath& Azip) const {
+	rzs.insert(rzs.end(), Azip);
+}
+
+void game::szs_add(const infopath& Azip) const {
+	szs.insert(szs.end(), Azip);
+}
+
+void game::dzs_add(const infopath& Azip) const {
+	dzs.insert(dzs.end(), Azip);
 }
 
 void game::working_set(bool Aworking) const {
@@ -145,35 +195,43 @@ void game::working_parent_subset_set(bool Aworking) const {
 	working_parent_subset = Aworking;
 }
 
-void game::name_set(const string& Aname) {
+void game::name_set(const string& Aname)
+{
 	name = Aname;
 }
 
-void game::cloneof_set(const string& Acloneof) {
+void game::cloneof_set(const string& Acloneof)
+{
 	cloneof = Acloneof;
 }
 
-void game::romof_set(const string& Aromof) {
+void game::romof_set(const string& Aromof)
+{
 	romof = Aromof;
 }
 
-void game::sampleof_set(const string& Asampleof) {
+void game::sampleof_set(const string& Asampleof)
+{
 	sampleof = Asampleof;
 }
 
-void game::description_set(const string& Adescription) {
+void game::description_set(const string& Adescription)
+{
 	description = Adescription;
 }
 
-void game::year_set(const string& Ayear) {
+void game::year_set(const string& Ayear)
+{
 	year = Ayear;
 }
 
-void game::manufacturer_set(const string& Amanufacturer) {
+void game::manufacturer_set(const string& Amanufacturer)
+{
 	manufacturer = Amanufacturer;
 }
 
-void game::resource_set(bool Aresource) {
+void game::resource_set(bool Aresource)
+{
 	resource = Aresource;
 }
 
@@ -181,9 +239,9 @@ void game::resource_set(bool Aresource) {
 void game::rs_remove_name(const rom_by_name_set& A) const {
 	rom_by_name_set B;
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i) {
-		rom_by_name_set::const_iterator j = A.find( *i );
+		rom_by_name_set::const_iterator j = A.find(*i);
 		if (j == A.end() || j->crc_get()!=i->crc_get() || j->size_get()!=i->size_get()) {
-			B.insert( *i );
+			B.insert(*i);
 		}
 	}
 	rs = B;
@@ -193,24 +251,36 @@ void game::rs_remove_name(const rom_by_name_set& A) const {
 void game::rs_remove_crc(const rom_by_crc_set& A) const {
 	rom_by_name_set B;
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i) {
-		rom_by_crc_set::const_iterator j = A.find( *i );
+		rom_by_crc_set::const_iterator j = A.find(*i);
 		if (j == A.end()) {
-			B.insert( *i );
+			B.insert(*i);
 		}
 	}
 	rs = B;
 }
 
-// Remove samples by name
+// Remove sample by name
 void game::ss_remove_name(const sample_by_name_set& A) const {
 	sample_by_name_set B;
 	for(sample_by_name_set::const_iterator i=ss_get().begin();i!=ss_get().end();++i) {
-		sample_by_name_set::const_iterator j = A.find( *i );
+		sample_by_name_set::const_iterator j = A.find(*i);
 		if (j == A.end()) {
-			B.insert( *i );
+			B.insert(*i);
 		}
 	}
 	ss = B;
+}
+
+// Remove disk by name
+void game::ds_remove_name(const disk_by_name_set& A) const {
+	disk_by_name_set B;
+	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
+		disk_by_name_set::const_iterator j = A.find(*i);
+		if (j == A.end()) {
+			B.insert(*i);
+		}
+	}
+	ds = B;
 }
 
 // Return the size of the romlist
@@ -225,18 +295,21 @@ unsigned game::size_get() const {
 // ------------------------------------------------------------------------
 // Game archive
 
-gamearchive::gamearchive() {
+gamearchive::gamearchive()
+{
 }
 
-gamearchive::~gamearchive() {
+gamearchive::~gamearchive()
+{
 }
 
 gamearchive::const_iterator gamearchive::find(const game& A) const {
-	return map.find( A );
+	return map.find(A);
 }
 
-bool gamearchive::is_game_parent(const game& g) {
-	const_iterator j = find( g.romof_get() );
+bool gamearchive::is_game_parent(const game& g)
+{
+	const_iterator j = find(g.romof_get());
 	return j == end() || j->resource_get();
 }
 
@@ -250,7 +323,7 @@ bool gamearchive::game_working_subset_compute(const game& g) {
 		result = true;
 
 	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-		gamearchive::iterator j = find( *i );
+		gamearchive::iterator j = find(*i);
 		if (j!=end()) {
 			if (game_working_subset_compute(*j))
 				result = true;
@@ -275,7 +348,7 @@ bool gamearchive::game_working_parent_subset_compute(const game& g) {
 
 	if (!result) {
 		for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-			gamearchive::iterator j = find( *i );
+			gamearchive::iterator j = find(*i);
 			if (j!=end()) {
 				result = game_working_parent_subset_compute(*j);
 				if (result)
@@ -298,7 +371,7 @@ string_container gamearchive::find_working_clones(const game& g) const
 		r.insert(r.end(), g.name_get());
 
 	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-		gamearchive::iterator j = find( *i );
+		gamearchive::iterator j = find(*i);
 		if (j!=end()) {
 			string_container s = find_working_clones(*j);
 			for(string_container::const_iterator k=s.begin();k!=s.end();++k) {
@@ -313,7 +386,7 @@ string_container gamearchive::find_working_clones(const game& g) const
 bool gamearchive::has_working_clone_with_rom(const game& g) const
 {
 	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-		gamearchive::iterator j = find( *i );
+		gamearchive::iterator j = find(*i);
 		if (j!=end()) {
 			if (j->working_get() && j->has_good_rom())
 				return true;
@@ -325,7 +398,8 @@ bool gamearchive::has_working_clone_with_rom(const game& g) const
 	return false;
 }
 
-void gamearchive::load(istream& f) {
+void gamearchive::load(istream& f)
+{
 	int c;
 
 	c = f.get();
@@ -343,16 +417,23 @@ void gamearchive::load(istream& f) {
 
 	// reduce, eliminate merged rom and sample
 	for(iterator i=begin();i!=end();++i) {
-		// rom
+		// rom/disk
 		string romof = i->romof_get();
 		while (romof.length()) {
-			iterator j = find( game( romof ) );
+			iterator j = find(game(romof));
 			if (j!=end()) {
 				rom_by_crc_set A;
 				for(rom_by_name_set::const_iterator k=j->rs_get().begin();k!=j->rs_get().end();++k) {
-					A.insert( *k );
+					A.insert(*k);
 				}
-				i->rs_remove_crc( A );
+				i->rs_remove_crc(A);
+
+				disk_by_name_set B;
+				for(disk_by_name_set::const_iterator k=j->ds_get().begin();k!=j->ds_get().end();++k) {
+					B.insert(*k);
+				}
+				i->ds_remove_name(B);
+
 				romof = j->romof_get();
 			} else
 				break;
@@ -360,9 +441,9 @@ void gamearchive::load(istream& f) {
 		// sample
 		string sampleof = i->sampleof_get();
 		while (sampleof.length()) {
-			iterator j = find( game( sampleof ) );
+			iterator j = find(game(sampleof));
 			if (j!=end()) {
-				i->ss_remove_name( j->ss_get() );
+				i->ss_remove_name(j->ss_get());
 				sampleof = j->sampleof_get();
 			} else
 				break;
@@ -372,7 +453,7 @@ void gamearchive::load(istream& f) {
 	// test romof relationship and adjust it
 	for(iterator i=begin();i!=end();++i) {
 		if (i->romof_get().length() != 0) {
-			const_iterator j = find( i->romof_get() );
+			const_iterator j = find(i->romof_get());
 			if (j == end()) {
 				cerr << "Missing definition of romof '" << i->romof_get() << "' for game '" << i->name_get() << "'." << endl;
 				(const_cast<game*>((&*i)))->romof_set(string());
@@ -383,7 +464,7 @@ void gamearchive::load(istream& f) {
 						(const_cast<game*>((&*i)))->romof_set(string());
 						break;
 					}
-					j = find( j->romof_get() );
+					j = find(j->romof_get());
 				}
 			}
 		}
@@ -391,7 +472,7 @@ void gamearchive::load(istream& f) {
 
 	// compute the rom_son container
 	for(iterator i=begin();i!=end();++i) {
-		iterator j = find( game( i->romof_get() ) );
+		iterator j = find(game(i->romof_get()));
 		if (j!=end()) {
 			j->rom_son_get().insert(j->rom_son_get().end(), i->name_get());
 		}
@@ -416,7 +497,8 @@ void gamearchive::load(istream& f) {
 	}
 }
 
-void gamearchive::filter(filter_proc* p) {
+void gamearchive::filter(filter_proc* p)
+{
 	iterator i;
 
 	i = map.begin();

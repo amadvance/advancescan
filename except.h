@@ -31,17 +31,12 @@ class error {
 	std::string file;
 	unsigned line;
 	std::string desc;
-	bool ignore;
 public:
-	error() : line(0), ignore(false)
+	error() : line(0)
 	{
 	}
 
-	error(bool Aignore) : line(0), ignore(Aignore)
-	{
-	}
-
-	error(const char* Afunction, const char* Afile, unsigned Aline) : function(Afunction), file(Afile), line(Aline), ignore(false)
+	error(const char* Afunction, const char* Afile, unsigned Aline) : function(Afunction), file(Afile), line(Aline)
 	{
 	}
 
@@ -63,11 +58,6 @@ public:
 	unsigned line_get() const
 	{
 		return line;
-	}
-
-	bool ignore_get() const
-	{
-		return ignore;
 	}
 
 	error& operator<<(const char* A)
@@ -94,18 +84,56 @@ public:
 
 class error_ignore : public error {
 public:
-	error_ignore() : error(true)
+	error_ignore() : error()
 	{
+	}
+
+	error_ignore& operator<<(const char* A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_ignore& operator<<(const std::string& A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_ignore& operator<<(const unsigned A)
+	{
+		error::operator<<(A);
+		return *this;
 	}
 };
 
-#ifndef NDEBUG
-#define error_trace() \
-	error(__PRETTY_FUNCTION__,__FILE__,__LINE__)
-#else
-#define error_trace() \
-	error()
-#endif
+class error_invalid : public error {
+public:
+	error_invalid() : error()
+	{
+	}
+
+	error_invalid& operator<<(const char* A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_invalid& operator<<(const std::string& A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+
+	error_invalid& operator<<(const unsigned A)
+	{
+		error::operator<<(A);
+		return *this;
+	}
+};
+
+#define error() \
+	error(__PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 static inline std::ostream& operator<<(std::ostream& os, const error& e)
 {
