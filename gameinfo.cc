@@ -125,3 +125,4 @@ void gamearchive::load_info(istream& f) {
 
 	info_done();
 }
+

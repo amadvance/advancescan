@@ -1,8 +1,9 @@
 Name
         advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.7 2003/06
+AdvanceSCAN Version 1.7 2003/08
 	) Added support for reading XML info file.
+	) Updated with automake 1.7.6.
 
 AdvanceSCAN Version 1.6 2003/05
 	) Fixed the support for zips with additional data descriptors.

@@ -3,10 +3,11 @@
                             =======================
 
 
-1 ADVANCESCAN VERSION 1.7 2003/06
+1 ADVANCESCAN VERSION 1.7 2003/08
 =================================
 
 * Added support for reading XML info file.
+* Updated with automake 1.7.6.
 
 
 2 ADVANCESCAN VERSION 1.6 2003/05

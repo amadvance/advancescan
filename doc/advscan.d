@@ -61,8 +61,8 @@ Options
 		information file. It can be generally created with
 		the -listinfo/-listxml (MAME) or -gameinfo (Raine)
 		options of the emulator. If the first not space
-		char of the file is a `<' the file is assumed to be
-		xml, otherwise the old listing format.
+		char of the file is a `<', the file is assumed to be
+		xml, otherwise it's assumed to be the old listing format.
 
 	-r,--rom
 		Operates on roms. All the next commands will
@@ -326,7 +326,7 @@ Examples
 	can add the -v switch.
 
 Copyright
-	This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
+	This file is Copyright (C) 2003 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advdiff(1)
