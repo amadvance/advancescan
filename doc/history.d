@@ -1,6 +1,11 @@
 Name
 	advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.13 2004/11
+	) Relaxed a consistency check for the local header in zip files.
+		The crc and size entries are allowed to contain the real
+		value also if a data descriptor is present.
+
 AdvanceSCAN Version 1.12 2004/11
 	) In -listinfo files are now allowed crc with the "0x"
 		prefix.

@@ -3,21 +3,29 @@
                             =======================
 
 
-1 ADVANCESCAN VERSION 1.12 2004/11
+1 ADVANCESCAN VERSION 1.13 2004/11
+==================================
+
+* Relaxed a consistency check for the local header in zip files.
+  The crc and size entries are allowed to contain the real
+  value also if a data descriptor is present.
+
+
+2 ADVANCESCAN VERSION 1.12 2004/11
 ==================================
 
 * In -listinfo files are now allowed crc with the "0x"
   prefix.
 
 
-2 ADVANCESCAN VERSION 1.11 2004/09
+3 ADVANCESCAN VERSION 1.11 2004/09
 ==================================
 
 * Minor changes at the source. Removed the gamediff.* files.
 * Fixed a compilation problem with gcc 3.4.
 
 
-3 ADVANCESCAN VERSION 1.10 2004/08
+4 ADVANCESCAN VERSION 1.10 2004/08
 ==================================
 
 * Added support for .chd files. Check the new -K option.
@@ -26,7 +34,7 @@
 * Updated the included expat library to version 1.95.8.
 
 
-4 ADVANCESCAN VERSION 1.9 2004/07
+5 ADVANCESCAN VERSION 1.9 2004/07
 =================================
 
 * Fixed a Mac OS X crash problem with XML files with
@@ -36,7 +44,7 @@
   "preliminary" are considered working games.
 
 
-5 ADVANCESCAN VERSION 1.8 2004/04
+6 ADVANCESCAN VERSION 1.8 2004/04
 =================================
 
 * Added a filter capability able to filter in/out preliminary, parent
@@ -46,14 +54,14 @@
 * Updated the expat library at version 1.95.7.
 
 
-6 ADVANCESCAN VERSION 1.7 2003/08
+7 ADVANCESCAN VERSION 1.7 2003/08
 =================================
 
 * Added support for reading XML info file.
 * Updated with automake 1.7.6.
 
 
-7 ADVANCESCAN VERSION 1.6 2003/05
+8 ADVANCESCAN VERSION 1.6 2003/05
 =================================
 
 * Fixed the support for zips with additional data descriptors.
@@ -65,22 +73,22 @@
 * Some fixes for the gcc 3.3 compiler.
 
 
-8 ADVANCESCAN VERSION 1.5 2003/02
+9 ADVANCESCAN VERSION 1.5 2003/02
 =================================
 
 * Removed the recompression utilities. Now they are in the
   AdvanceCOMP package.
 
 
-9 ADVANCESCAN VERSION 1.4 2002/12
-=================================
+10 ADVANCESCAN VERSION 1.4 2002/12
+==================================
 
 * Fixed a bug in the advmng utility when it was called with
   more than one file in the command line. The program
   was incorrectly adding a PLTE chunk at rgb images.
 
 
-10 ADVANCESCAN VERSION 1.3 2002/11
+11 ADVANCESCAN VERSION 1.3 2002/11
 ==================================
 
 * Fixed a bug in the advscan utility. When a .zip file was completly
@@ -94,7 +102,7 @@
 * Minor changes at the autoconf/automake scripts.
 
 
-11 ADVANCESCAN VERSION 1.2 2002/08
+12 ADVANCESCAN VERSION 1.2 2002/08
 ==================================
 
 * Added the advpng utility to compress the PNG files.
@@ -103,14 +111,14 @@
 * Other minor fixes.
 
 
-12 ADVANCESCAN VERSION 1.1 2002/06
+13 ADVANCESCAN VERSION 1.1 2002/06
 ==================================
 
 * Fixed an infinite loop bug testing some small damaged zips.
 * Removed some warning compiling with gcc 3.1.
 
 
-13 ADVANCESCAN VERSION 1.0 2002/05
+14 ADVANCESCAN VERSION 1.0 2002/05
 ==================================
 
 * First public release.
@@ -125,7 +133,7 @@
 * Other minor fixes.
 
 
-14 ADVANCESCAN VERSION 0.6-BETA 2002/05
+15 ADVANCESCAN VERSION 0.6-BETA 2002/05
 =======================================
 
 * Major revision.
@@ -135,37 +143,37 @@
 * Added the AdvanceDIFF and AdvanceZIP utility.
 
 
-15 MAMESCAN VERSION 0.5 2001/08
+16 MAMESCAN VERSION 0.5 2001/08
 ===============================
 
 * Removed the options -fix, -cat, -collision.
 
 
-16 MAMESCAN VERSION 0.4 2000/02
+17 MAMESCAN VERSION 0.4 2000/02
 ===============================
 
 * Added configure for msdos.
 
 
-17 MAMESCAN VERSION 0.3
+18 MAMESCAN VERSION 0.3
 =======================
 
 * Minor revison.
 
 
-18 MAMESCAN VERSION 0.2
+19 MAMESCAN VERSION 0.2
 =======================
 
 * Minor revison.
 
 
-19 MAMESCAN VERSION 0.1 1999/07
+20 MAMESCAN VERSION 0.1 1999/07
 ===============================
 
 * First version.
 
 
-20 MAMESCAN VERSION 0.0 1998/11
+21 MAMESCAN VERSION 0.0 1998/11
 ===============================
 
 * Posted in the MAME list the new listinfo command.
