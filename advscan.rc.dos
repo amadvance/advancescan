@@ -1,0 +1,11 @@
+# Example configuration file for AdvanceSCAN
+
+# Check the advscan.txt file for a complete explication of all the options.
+
+rom c:\mame\roms;p:\mame\bigroms
+rom_new c:\mame\roms
+rom_import c:\raine\roms:c:\pacmame\roms
+rom_unknown c:\mame\unknown
+sample c:\mame\samples
+sample_unknown c:\mame\unknown
+

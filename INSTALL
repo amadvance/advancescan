@@ -1,0 +1,35 @@
+QUICK INSTALL for Linux
+
+	As root or user type:
+
+		./configure
+		make
+
+	To check the generated executable type:
+
+		make check
+
+	and as root to install the programs and the documentation
+	type:
+
+		make install
+
+	then change the example configuration file advscan.rc to
+	your requirements.
+
+	The documentation is in the advscan, advzip and advdiff
+	manpages accessible with the commands:
+
+		man advscan
+		man advzip
+		man advdiff
+
+
+QUICK INSTALL for DOS
+
+	Download the binary version and copy the executables on
+	your path.
+
+	The documentation is in the advscan.txt, advzip.txt and
+	advdiff.txt files.
+

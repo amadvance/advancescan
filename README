@@ -1,0 +1,15 @@
+AdvanceSCAN is a command line rom manager for MAME, MESS,
+AdvanceMAME, AdvanceMESS and Raine for Unix and DOS.
+
+It contains also a recompression utility for your roms and
+a diff generator of rom sets.
+
+The official site of AdvanceSCAN is :
+
+        http://advancemame.sourceforge.net
+
+This package contains :
+        advscan - Rom manager
+        advzip - Recompression and test utility for zip files
+        advdiff - Diff utility for rom info files
+
