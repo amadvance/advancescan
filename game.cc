@@ -292,6 +292,10 @@ bool gamearchive::load_internal() {
 						} else if (strcmp(info_text_get(),"crc")==0) {
 							if (info_token_get() != info_symbol) return false;
 							r.crc_set( strhex( info_text_get() ) );
+						} else if (strcmp(info_text_get(),"flags")==0) {
+							if (info_token_get() != info_symbol) return false;
+							if (strcmp(info_text_get(),"nodump")==0)
+								r.nodump_set(true);
 						} else {
 							if (info_skip_value() == info_error) return false;
 						}

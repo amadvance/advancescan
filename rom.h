@@ -35,9 +35,10 @@ protected:
 	std::string name;
 	unsigned size;
 	crc_t crc;
+	bool nodump;
 public:
 	rom();
-	rom(const std::string& Aname, const unsigned Asize, const crc_t Acrc);
+	rom(const std::string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump);
 	rom(const rom&);
 	~rom();
 
@@ -49,7 +50,10 @@ public:
 
 	unsigned size_get() const { return size; }
 	void size_set(unsigned Asize);
-	
+
+	bool nodump_get() const { return nodump; }
+	void nodump_set(bool Anodump);
+
 	bool operator==(const rom& A) const;
 };
 
@@ -84,7 +88,7 @@ protected:
 	std::string game;
 public:
 	gamerom();
-	gamerom(const std::string& Agame, const std::string& Aname, unsigned Asize, crc_t Acrc);
+	gamerom(const std::string& Agame, const std::string& Aname, unsigned Asize, crc_t Acrc, bool Anodump);
 	gamerom(const gamerom&);
 	~gamerom();
 
@@ -112,7 +116,7 @@ private:
 protected:
 	mutable void* data;
 public:
-	gameromdata(const std::string& Agame, const std::string& Aname, unsigned Asize, crc_t Acrc, void* Adata);
+	gameromdata(const std::string& Agame, const std::string& Aname, unsigned Asize, crc_t Acrc, bool Anodump, void* Adata);
 	gameromdata(const gameromdata&);
 	~gameromdata();
 

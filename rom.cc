@@ -30,14 +30,15 @@ using namespace std;
 rom::rom() {
 	size = 0;
 	crc = 0;
+	nodump = false;
 }
 
-rom::rom(const string& Aname, unsigned Asize, crc_t Acrc) :
-	name(Aname), size(Asize), crc(Acrc) {
+rom::rom(const string& Aname, unsigned Asize, crc_t Acrc, bool Anodump) :
+	name(Aname), size(Asize), crc(Acrc), nodump(Anodump) {
 }
 
 rom::rom(const rom& A) :
-	name(A.name), size(A.size), crc(A.crc) {
+	name(A.name), size(A.size), crc(A.crc), nodump(A.nodump) {
 }
 
 rom::~rom() {
@@ -55,6 +56,10 @@ void rom::size_set(unsigned Asize) {
 	size = Asize;
 }
 
+void rom::nodump_set(bool Anodump) {
+	nodump = Anodump;
+}
+
 bool rom::operator==(const rom& A) const {
 	return file_compare(name_get(),A.name_get())==0 && size_get()==A.size_get() && crc_get()==A.crc_get();
 }
@@ -64,8 +69,8 @@ bool rom::operator==(const rom& A) const {
 gamerom::gamerom() {
 }
 
-gamerom::gamerom(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc) :
-	rom(Aname,Asize,Acrc), game(Agame) {
+gamerom::gamerom(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump) :
+	rom(Aname,Asize,Acrc,Anodump), game(Agame) {
 }
 
 gamerom::gamerom(const gamerom& A) :
@@ -81,8 +86,8 @@ void gamerom::game_set(const string& Agame) {
 
 // gameromdata
 
-gameromdata::gameromdata(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc, void* Adata) :
-	gamerom(Agame,Aname,Asize,Acrc), data(Adata) {
+gameromdata::gameromdata(const string& Agame, const string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump, void* Adata) :
+	gamerom(Agame,Aname,Asize,Acrc,Anodump), data(Adata) {
 }
 
 gameromdata::gameromdata(const gameromdata& A) :

@@ -134,8 +134,8 @@ Options
 
 	-v,--verbose
 		Print a more verbose report. The content of any zip
-		archive is printed also if it contains any not rom
-		files.
+		archive is printed also if it contains at least one
+		not rom file.
 
 Information Options
 	The following options are used only to print information.
@@ -268,18 +268,24 @@ Report
 	=rom_miss
 		A missing rom.
 
+	=nodump_good
+		A fake "NO GOOD DUMP KNOWN" rom. The rom is
+		recognized by its name, size and 0 crc.
+
 	=nodump_miss
-		A missing "NO GOOD DUMP KNOWN" rom.
+		A missing "NO GOOD DUMP KNOWN" rom. It's the normal
+		condition, a no dump rom must be missing.
 
 	=nodump_bad
-		A recognized "NO GOOD DUMP KNOWN" rom. The rom is
-		recognized by its name and size.
+		A recognized bad "NO GOOD DUMP KNOWN" rom. The rom is
+		recognized by its name.
 
-	=redump_bad
-		A recognized "ROM NEEDS REDUMP" rom. The rom is
-		recognized by its name, size and negate crc. The
-		negate crc is the special convention used by MAME
-		to sign a known bad dump.
+	=sound_good
+		A recognized good sound sample. The sample is
+		recognized by its name.
+
+	=sound_miss
+		A missing sound sample.
 
 	=text
 		An unknown text file.
@@ -292,13 +298,6 @@ Report
 		advertising text file added generally by a rom
 		site. The file is recognized by its name, size and
 		crc.
-
-	=sound_good
-		A recognized good sound sample. The sample is
-		recognized by its name.
-
-	=sound_miss
-		A missing sound sample.
 
 Examples
 	For the generic use you need to run advscan with the

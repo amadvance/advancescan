@@ -122,19 +122,16 @@ struct rom_bad {
 
 typedef list<rom_bad> rom_bad_container;
 
-#define MAME_CRC_NODUMP 0
-#define MAME_CRC_BADDUMP(x) (~(x))
-
 struct rom_stat_t {
-	rom_by_name_set miss; // rom missing
-	rom_bad_container wrong; // rom wrong
-	rom_by_name_set good; // rom good
-	rom_by_name_set remove; // rom unknow
-	rom_by_name_set text; // text file
-	rom_by_name_set garbage; // text file
-	rom_bad_container nodump_wrong; // nodump present, always wrong rom
-	rom_by_name_set nodump_miss; // nodump not present
-	rom_by_name_set baddump; // baddump present (with ~crc)
+	rom_by_name_set rom_miss; // rom missing
+	rom_by_name_set rom_equal; // rom good
+	rom_bad_container rom_bad; // rom wrong
+	rom_by_name_set unk_binary; // unknown binary file
+	rom_by_name_set unk_text; // unknown text file
+	rom_by_name_set unk_garbage; // unknown garbage file
+	rom_by_name_set nodump_equal; // nodump present
+	rom_bad_container nodump_bad; // nodump present bat wrong
+	rom_by_name_set nodump_miss; // nodump missing
 };
 
 void stat_rom_zip(
@@ -144,72 +141,71 @@ void stat_rom_zip(
 	const analyze& ana)
 {
 	// setup
-	result.miss = gam.rs_get();
-	
+	rom_by_name_set b = gam.rs_get();
+
 	for(ziprom::const_iterator z=zd.begin();z!=zd.end();++z) {
 		// search for name
-		rom_by_name_set::iterator i = result.miss.find( rom( z->name_get(), 0, 0 ) );
-		if (i == result.miss.end()) { // if name unknow
+		rom_by_name_set::iterator i = b.find( rom( z->name_get(), 0, 0, false) );
+		if (i == b.end()) { // if name unknown
 			// rom to insert
-			rom r( z->name_get(), z->uncompressed_size_get(), z->crc_get());
+			rom r( z->name_get(), z->uncompressed_size_get(), z->crc_get(), false);
 
 			analyze_type t = ana(z->name_get(), z->uncompressed_size_get(), z->crc_get());
 			switch (t) {
 				case analyze_text :
-					result.text.insert( r );
+					result.unk_text.insert( r );
 					break;
 				case analyze_binary :
-					result.remove.insert( r );
+					result.unk_binary.insert( r );
 					break;
 				case analyze_garbage :
-					result.garbage.insert( r );
+					result.unk_garbage.insert( r );
 					break;
 			}
 		} else { // if name know
-			if (z->uncompressed_size_get() == i->size_get() && z->crc_get() == i->crc_get()) {
-				// rom is good
-				result.good.insert( *i );
-			} else if (i->crc_get() == MAME_CRC_NODUMP) {
-				// no dump exists
-				rom_bad r;
-				r.r = *i;
-				r.bad_size = z->uncompressed_size_get();
-				r.bad_crc = z->crc_get();
-				result.nodump_wrong.insert(result.nodump_wrong.end(),r);
-			} else if (MAME_CRC_BADDUMP(i->crc_get()) == z->crc_get()) {
-				// baddump required
-				result.baddump.insert(*i);
+			if (i->nodump_get()) {
+				if (z->uncompressed_size_get() == i->size_get() && z->crc_get() == i->crc_get()) {
+					result.nodump_equal.insert(*i);
+				} else {
+					rom_bad r;
+					r.r = *i;
+					r.bad_size = z->uncompressed_size_get();
+					r.bad_crc = z->crc_get();
+					result.nodump_bad.insert(result.nodump_bad.end(), r);
+				}
 			} else {
-				// rom is wrong
-				rom_bad r;
-				r.r = *i;
-				r.bad_size = z->uncompressed_size_get();
-				r.bad_crc = z->crc_get();
-				result.wrong.insert(result.wrong.end(),r);
+				if (z->uncompressed_size_get() == i->size_get() && z->crc_get() == i->crc_get()) {
+					result.rom_equal.insert( *i );
+				} else {
+					// rom is wrong
+					rom_bad r;
+					r.r = *i;
+					r.bad_size = z->uncompressed_size_get();
+					r.bad_crc = z->crc_get();
+					result.rom_bad.insert(result.rom_bad.end(),r);
+				}
 			}
+
 			// remove from original bag
-			result.miss.erase( i );
+			b.erase( i );
 		}
 	}
 
-	rom_by_name_set tmp_miss;
-	for(rom_by_name_set::iterator i=result.miss.begin();i!=result.miss.end();++i) {
-		if (i->crc_get() == MAME_CRC_NODUMP) {
+	for(rom_by_name_set::iterator i=b.begin();i!=b.end();++i) {
+		if (i->nodump_get()) {
 			result.nodump_miss.insert(*i);
 		} else {
-			tmp_miss.insert(*i);
+			result.rom_miss.insert(*i);
 		}
 	}
-
-	result.miss = tmp_miss;
 }
 
 struct sample_stat_t {
-	sample_by_name_set miss;
-	sample_by_name_set remove;
-	sample_by_name_set text;
-	sample_by_name_set garbage;
-	sample_by_name_set good;
+	sample_by_name_set sample_equal;
+	sample_by_name_set sample_miss;
+	sample_by_name_set unk_binary;
+	sample_by_name_set unk_text;
+	sample_by_name_set unk_garbage;
 };
 
 void sample_stat(
@@ -218,29 +214,29 @@ void sample_stat(
 	sample_stat_t& result,
 	const analyze& ana)
 {
-	result.miss = gam.ss_get();
+	result.sample_miss = gam.ss_get();
 
 	for(ziprom::const_iterator z=zd.begin();z!=zd.end();++z) {
-		sample_by_name_set::iterator i = result.miss.find( sample( z->name_get() ) );
-		if (i == result.miss.end()) { // if name unknow
+		sample_by_name_set::iterator i = result.sample_miss.find( sample( z->name_get() ) );
+		if (i == result.sample_miss.end()) { // if name unknow
 			sample s( z->name_get() );
 
 			analyze_type t = ana(z->name_get(), z->uncompressed_size_get(), z->crc_get());
 			switch (t) {
 				case analyze_text :
-					result.text.insert( s );
+					result.unk_text.insert( s );
 					break;
 				case analyze_binary :
-					result.remove.insert( s );
+					result.unk_binary.insert( s );
 					break;
 				case analyze_garbage :
-					result.garbage.insert( s );
+					result.unk_garbage.insert( s );
 					break;
 			}
 		} else { // if name know
-			result.good.insert( *i );
+			result.sample_equal.insert( *i );
 			// remove from original bag
-			result.miss.erase( i );
+			result.sample_miss.erase( i );
 		}
 	}
 }
@@ -263,11 +259,15 @@ void rom_add(
 	rom_by_name_set good;
 	rom_by_name_set miss = g.rs_get();
 
-	// for any miss rom
+	// for any rom/nodump
 	rom_by_name_set tmp_miss;
 	for(rom_by_name_set::iterator i=miss.begin();i!=miss.end();++i) {
 		bool found = false;
 		bool added = false;
+
+		// skip nodump
+		if (i->nodump_get())
+			continue;
 
 		// check if is in another zip
 		if (!found) {
@@ -282,23 +282,6 @@ void rom_add(
 				if (oper.output_add()) {
 					out.title("rom_zip",title,z.file_get());
 					out.cmd_rom("rom_good","add", *i) << " " << k->parentname_get() << "/" << k->name_get() << endl;
-				}
-				found = true;
-			}
-		}
-
-		if (!found) {
-			ziprom::const_iterator k;
-			ziparchive::const_iterator j = zar.find_exclude(z,i->size_get(), MAME_CRC_BADDUMP( i->crc_get() ),k);
-			if (j!=zar.end()) {
-				if (oper.active_add() && !z.is_readonly()) {
-					z.add(k, i->name_get());
-					good.insert(*i);
-					added = true;
-				} 
-				if (oper.output_add()) {
-					out.title("rom_zip",title,z.file_get());
-					out.cmd_rom("redump_bad","add", *i) << " " << k->parentname_get() << "/" << k->name_get() << endl;
 				}
 				found = true;
 			}
@@ -325,7 +308,7 @@ void rom_add(
 			struct stat fst;
 			string path = z.file_get();
 			if (stat(path.c_str(),&fst) != 0)
-			throw error() << "Failed stat file " << z.file_get();
+				throw error() << "Failed stat file " << z.file_get();
 
 			// if no rom is missing
 			if (miss.size()==0) {
@@ -483,8 +466,8 @@ void rom_scan(
 	stat_rom_zip(z,gam,st,ana);
 
 	// for any missing rom
-	rom_by_name_set tmp_miss; // missing rom
-	for(rom_by_name_set::iterator i=st.miss.begin();i!=st.miss.end();++i) {
+	rom_by_name_set tmp_rom_miss; // missing rom
+	for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
 		bool found = false;
 		bool added = false;
 
@@ -493,33 +476,22 @@ void rom_scan(
 			"rom_good","add",
 			z, reject, found, title,
 			i->name_get(), i->size_get(), i->crc_get(), 
-			st.remove, zar, out)) {
+			st.unk_binary, zar, out)) {
 
-			st.good.insert(*i);
-			added = true;
-		}
-
-		if (rom_scan_add(
-			oper,
-			"redump_bad","add",
-			z, reject, found, title,
-			i->name_get(), i->size_get(), MAME_CRC_BADDUMP( i->crc_get() ),
-			st.remove, zar, out)) {
-
-			st.baddump.insert(*i);
+			st.rom_equal.insert(*i);
 			added = true;
 		}
 
 		if (!added) {
 			// rom is missing
-			tmp_miss.insert( *i );
+			tmp_rom_miss.insert( *i );
 		}
 	}
-	st.miss = tmp_miss;
+	st.rom_miss = tmp_rom_miss;
 
 	// for any wrong rom (rom with corret name bat bad crc or size)
-	rom_bad_container tmp_wrong;
-	for(rom_bad_container::iterator i=st.wrong.begin();i!=st.wrong.end();++i) {
+	rom_bad_container tmp_rom_bad;
+	for(rom_bad_container::iterator i=st.rom_bad.begin();i!=st.rom_bad.end();++i) {
 		bool found = false;
 		bool added = false;
 
@@ -528,30 +500,19 @@ void rom_scan(
 			"rom_good","add",
 			z, reject, found, title,
 			i->name_get(), i->size_get(), i->crc_get(), 
-			st.remove, zar, out)) {
+			st.unk_binary, zar, out)) {
 
-			st.good.insert(i->r);
-			added = true;
-		}
-
-		if (rom_scan_add(
-			oper,
-			"redump_bad","add",
-			z, reject, found, title,
-			i->name_get(), i->size_get(), MAME_CRC_BADDUMP(i->crc_get()),
-			st.remove, zar, out)) {
-
-			st.baddump.insert(i->r);
+			st.rom_equal.insert(i->r);
 			added = true;
 		}
 
 		if (!added)
 			// if not found insert in wrong rom
-			tmp_wrong.insert( tmp_wrong.end(), *i );
+			tmp_rom_bad.insert( tmp_rom_bad.end(), *i );
 	}
-	st.wrong = tmp_wrong;
+	st.rom_bad = tmp_rom_bad;
 
-	for(rom_by_name_set::iterator i=st.remove.begin();i!=st.remove.end();++i) {
+	for(rom_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
 		if (oper.active_remove_binary() && !z.is_readonly()) {
 			z.remove(i->name_get(), reject);
 		}
@@ -561,7 +522,7 @@ void rom_scan(
 		}
 	}
 
-	for(rom_by_name_set::iterator i=st.text.begin();i!=st.text.end();++i) {
+	for(rom_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
 		if (oper.active_remove_text() && !z.is_readonly()) {
 			z.remove(i->name_get(), reject);
 		}
@@ -571,7 +532,7 @@ void rom_scan(
 		}
 	}
 
-	for(rom_by_name_set::iterator i=st.garbage.begin();i!=st.garbage.end();++i) {
+	for(rom_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
 		if (oper.active_remove_garbage() && !z.is_readonly()) {
 			z.remove(i->name_get());
 		}
@@ -595,8 +556,10 @@ void rom_scan(
 		if (stat(path.c_str(),&fst) != 0)
 			throw error() << "Failed stat file " << z.file_get();
 
-		// if no rom is missing or wrong
-		if (st.miss.size()==0 && st.wrong.size()==0) {
+		// if no rom is missing or wrong. Ignore nodump.
+		if (st.rom_miss.size()==0
+		    && st.rom_bad.size()==0
+		    ) {
 			// add zip to directory list of game as good
 			gam.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
 		} else {
@@ -627,20 +590,20 @@ void sample_scan(
 	sample_stat(z,gam,st,ana);
 	
 	// for any miss sample
-	sample_by_name_set tmp_miss;
-	for(sample_by_name_set::iterator i=st.miss.begin();i!=st.miss.end();++i) {
+	sample_by_name_set tmp_rom_miss;
+	for(sample_by_name_set::iterator i=st.sample_miss.begin();i!=st.sample_miss.end();++i) {
 		bool found = false;
 		bool added = false;
 
 		if (!found) {
 			// check if is present in remove bag with directory
-			for(sample_by_name_set::iterator j=st.remove.begin();j!=st.remove.end();++j) {
+			for(sample_by_name_set::iterator j=st.unk_binary.begin();j!=st.unk_binary.end();++j) {
 				// compare name without dir
 				if (file_compare( i->name_get(), file_name(j->name_get()) )==0) {
 					// found rom with different name
 					if (oper.active_fix() && !z.is_readonly()) {
 						z.add(j->name_get(), i->name_get());
-						st.good.insert(*i);
+						st.sample_equal.insert(*i);
 						added = true;
 					} 
 					if (oper.output_fix()) {
@@ -655,11 +618,11 @@ void sample_scan(
 
 		if (!added)
 			// if not found insert in missing sample
-			tmp_miss.insert( *i );
+			tmp_rom_miss.insert( *i );
 	}
-	st.miss = tmp_miss;
+	st.sample_miss = tmp_rom_miss;
 
-	for(sample_by_name_set::iterator i=st.remove.begin();i!=st.remove.end();++i) {
+	for(sample_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
 		if (oper.active_remove_binary() && !z.is_readonly()) {
 			z.remove(i->name_get(), reject);
 		}
@@ -669,7 +632,7 @@ void sample_scan(
 		}
 	}
 
-	for(sample_by_name_set::iterator i=st.text.begin();i!=st.text.end();++i) {
+	for(sample_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
 		if (oper.active_remove_text() && !z.is_readonly()) {
 			z.remove(i->name_get(), reject);
 		}
@@ -679,7 +642,7 @@ void sample_scan(
 		}
 	}
 
-	for(sample_by_name_set::iterator i=st.garbage.begin();i!=st.garbage.end();++i) {
+	for(sample_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
 		if (oper.active_remove_garbage() && !z.is_readonly()) {
 			z.remove(i->name_get());
 		}
@@ -704,7 +667,7 @@ void sample_scan(
 			throw error() << "Failed stat file " << z.file_get();
 
 		// if no sample is missing
-		if (st.miss.size()==0) {
+		if (st.sample_miss.size()==0) {
 			gam.szs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
 		} else {
 			gam.szs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
@@ -723,7 +686,7 @@ void unknow_scan(
 	// create the list of all the roms to remove
 	rom_by_name_set remove;
 	for(ziprom::const_iterator i=z.begin();i!=z.end();++i) {
-		rom r( i->name_get(), i->uncompressed_size_get(), i->crc_get());
+		rom r( i->name_get(), i->uncompressed_size_get(), i->crc_get(), false);
 		remove.insert( r );
 	}
 
@@ -759,7 +722,7 @@ void rom_move(
 	// create the list of all the roms to remove
 	rom_by_name_set remove;
 	for(ziprom::const_iterator i=z.begin();i!=z.end();++i) {
-		rom r(i->name_get(), i->uncompressed_size_get(), i->crc_get());
+		rom r(i->name_get(), i->uncompressed_size_get(), i->crc_get(), false);
 		remove.insert( r );
 	}
 
@@ -798,7 +761,7 @@ void sample_move(
 	// create the list of all the roms to remove
 	rom_by_name_set remove;
 	for(ziprom::const_iterator i=z.begin();i!=z.end();++i) {
-		rom r(i->name_get(), i->uncompressed_size_get(), i->crc_get());
+	rom r(i->name_get(), i->uncompressed_size_get(), i->crc_get(), false);
 		remove.insert( r );
 	}
 
@@ -847,48 +810,46 @@ void rom_report(
 	stat_rom_zip(z,gam,st,ana);
 
 	// print the report
-	if (st.miss.size() || st.wrong.size()
-		|| (verbose && (st.nodump_miss.size() || st.nodump_wrong.size() || st.baddump.size() || st.text.size() || st.remove.size() || st.garbage.size()))
+	if (st.rom_miss.size() || st.rom_bad.size()
+		|| (verbose && (st.nodump_miss.size() || st.nodump_bad.size() || st.nodump_equal.size() || st.unk_text.size() || st.unk_binary.size() || st.unk_garbage.size()))
 	) {
 		bool title = false;
 
 		out.title("rom_zip",title,z.file_get());
 
-		for(rom_by_name_set::iterator i=st.miss.begin();i!=st.miss.end();++i) {
+		for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
 			out.state_rom("rom_miss", *i) << endl;
-			out.state_rom("redump_miss", i->name_get(), i->size_get(), MAME_CRC_BADDUMP(i->crc_get())) << endl;
-		}
-
-		for(rom_bad_container::iterator i=st.wrong.begin();i!=st.wrong.end();++i) {
-			out.state_rom_real("rom_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << endl;
-			out.state_rom("redump_bad", i->name_get(), i->size_get(), MAME_CRC_BADDUMP(i->crc_get())) << endl;
 		}
 
 		for(rom_by_name_set::iterator i=st.nodump_miss.begin();i!=st.nodump_miss.end();++i) {
 			out.state_rom("nodump_miss", *i) << endl;
 		}
 
-		for(rom_bad_container::iterator i=st.nodump_wrong.begin();i!=st.nodump_wrong.end();++i) {
+		for(rom_bad_container::iterator i=st.rom_bad.begin();i!=st.rom_bad.end();++i) {
+			out.state_rom_real("rom_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << endl;
+		}
+
+		for(rom_bad_container::iterator i=st.nodump_bad.begin();i!=st.nodump_bad.end();++i) {
 			out.state_rom_real("nodump_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << endl;
 		}
 
-		for(rom_by_name_set::iterator i=st.baddump.begin();i!=st.baddump.end();++i) {
-			out.state_rom("redump_bad", i->name_get(), i->size_get(), MAME_CRC_BADDUMP(i->crc_get())) << endl;
-		}
-
-		for(rom_by_name_set::iterator i=st.text.begin();i!=st.text.end();++i) {
+		for(rom_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
 			out.state_rom("text", *i) << endl;
 		}
 
-		for(rom_by_name_set::iterator i=st.remove.begin();i!=st.remove.end();++i) {
+		for(rom_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
 			out.state_rom("binary", *i) << endl;
 		}
 
-		for(rom_by_name_set::iterator i=st.garbage.begin();i!=st.garbage.end();++i) {
+		for(rom_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
 			out.state_rom("garbage", *i) << endl;
 		}
 
-		for(rom_by_name_set::iterator i=st.good.begin();i!=st.good.end();++i) {
+		for(rom_by_name_set::iterator i=st.nodump_equal.begin();i!=st.nodump_equal.end();++i) {
+			out.state_rom("nodump_good", i->name_get(), i->size_get(), i->crc_get()) << endl;
+		}
+
+		for(rom_by_name_set::iterator i=st.rom_equal.begin();i!=st.rom_equal.end();++i) {
 			out.state_rom("rom_good", *i) << endl;
 		}
 
@@ -912,22 +873,22 @@ void sample_report(
 	sample_stat(z,gam,st,ana);
 
 	// print the report
-	if (st.miss.size() ||
-		(verbose && (st.text.size()))
+	if (st.sample_miss.size()
+		|| (verbose && (st.unk_text.size() || st.unk_binary.size() || st.unk_garbage.size()))
 	) {
 		bool title = false;
 
 		out.title("sample_zip",title,z.file_get());
 
-		for(sample_by_name_set::iterator i=st.miss.begin();i!=st.miss.end();++i) {
+		for(sample_by_name_set::iterator i=st.sample_miss.begin();i!=st.sample_miss.end();++i) {
 			out.state_sample("sound_miss", *i) << endl;
 		}
 
-		for(sample_by_name_set::iterator i=st.text.begin();i!=st.text.end();++i) {
+		for(sample_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
 			out.state_sample("text", *i) << endl;
 		}
 		
-		for(sample_by_name_set::iterator i=st.good.begin();i!=st.good.end();++i) {
+		for(sample_by_name_set::iterator i=st.sample_equal.begin();i!=st.sample_equal.end();++i) {
 			out.state_sample("sound_good", *i) << endl;
 		}
 
@@ -1358,7 +1319,7 @@ void equal(const gamearchive& gar, ostream& out) {
 	// insert rom
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		for(rom_by_name_set::const_iterator j=i->rs_get().begin();j!=i->rs_get().end();++j) {
-			rcb.insert( gamerom( i->name_get(), j->name_get(), j->size_get(), j->crc_get() ) );
+			rcb.insert( gamerom( i->name_get(), j->name_get(), j->size_get(), j->crc_get(), j->nodump_get() ) );
 		}
 	}
 

@@ -228,8 +228,8 @@ options.
 -v,--verbose
 </em></td></tr><tr><td>
 Print a more verbose report. The content of any zip
-archive is printed also if it contains any not rom
-files.
+archive is printed also if it contains at least one
+not rom file.
 </td></tr>
 </table>
 <h2>4 
@@ -446,27 +446,41 @@ A missing rom.
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
+nodump_good
+</em></td></tr><tr><td>
+A fake "NO GOOD DUMP KNOWN" rom. The rom is
+recognized by its name, size and 0 crc.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
 nodump_miss
 </em></td></tr><tr><td>
-A missing "NO GOOD DUMP KNOWN" rom.
+A missing "NO GOOD DUMP KNOWN" rom. It's the normal
+condition, a no dump rom must be missing.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
 nodump_bad
 </em></td></tr><tr><td>
-A recognized "NO GOOD DUMP KNOWN" rom. The rom is
-recognized by its name and size.
+A recognized bad "NO GOOD DUMP KNOWN" rom. The rom is
+recognized by its name.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
-redump_bad
+sound_good
 </em></td></tr><tr><td>
-A recognized "ROM NEEDS REDUMP" rom. The rom is
-recognized by its name, size and negate crc. The
-negate crc is the special convention used by MAME
-to sign a known bad dump.
+A recognized good sound sample. The sample is
+recognized by its name.
+</td></tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td><strong>
+sound_miss
+</em></td></tr><tr><td>
+A missing sound sample.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -491,21 +505,6 @@ A recognized garbage file. A garbage file is an
 advertising text file added generally by a rom
 site. The file is recognized by its name, size and
 crc.
-</td></tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="2">
-<tr valign="top" align="left"><td><strong>
-sound_good
-</em></td></tr><tr><td>
-A recognized good sound sample. The sample is
-recognized by its name.
-</td></tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="2">
-<tr valign="top" align="left"><td><strong>
-sound_miss
-</em></td></tr><tr><td>
-A missing sound sample.
 </td></tr>
 </table>
 <h2>8 

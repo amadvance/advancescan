@@ -172,8 +172,8 @@ options.
 .TP
 .B \(hyv,\(hy\(hyverbose
 Print a more verbose report. The content of any zip
-archive is printed also if it contains any not rom
-files.
+archive is printed also if it contains at least one
+not rom file.
 .SH INFORMATION OPTIONS 
 The following options are used only to print information.
 These options don\(cqt need or read the configuration file.
@@ -322,18 +322,24 @@ The rom is recognized by its name.
 .B rom_miss
 A missing rom.
 .TP
+.B nodump_good
+A fake \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
+recognized by its name, size and 0 crc.
+.TP
 .B nodump_miss
-A missing \(a"NO GOOD DUMP KNOWN\(a" rom.
+A missing \(a"NO GOOD DUMP KNOWN\(a" rom. It\(cqs the normal
+condition, a no dump rom must be missing.
 .TP
 .B nodump_bad
-A recognized \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
-recognized by its name and size.
+A recognized bad \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
+recognized by its name.
 .TP
-.B redump_bad
-A recognized \(a"ROM NEEDS REDUMP\(a" rom. The rom is
-recognized by its name, size and negate crc. The
-negate crc is the special convention used by MAME
-to sign a known bad dump.
+.B sound_good
+A recognized good sound sample. The sample is
+recognized by its name.
+.TP
+.B sound_miss
+A missing sound sample.
 .TP
 .B text
 An unknown text file.
@@ -346,13 +352,6 @@ A recognized garbage file. A garbage file is an
 advertising text file added generally by a rom
 site. The file is recognized by its name, size and
 crc.
-.TP
-.B sound_good
-A recognized good sound sample. The sample is
-recognized by its name.
-.TP
-.B sound_miss
-A missing sound sample.
 .SH EXAMPLES 
 For the generic use you need to run advscan with the
 options:
