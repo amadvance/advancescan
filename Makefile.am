@@ -16,13 +16,18 @@ advscan_SOURCES =  \
 	utility.cc \
 	ziprom.cc \
 	game.cc \
+	gameinfo.cc \
+	gamexml.cc \
 	zip.cc \
 	output.cc \
 	analyze.cc \
 	siglock.cc \
 	getopt.c \
 	snprintf.c \
-	lib/readinfo.c
+	lib/readinfo.c \
+	expat/xmlrole.c \
+	expat/xmlparse.c \
+	expat/xmltok.c
 
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	README AUTHORS HISTORY INSTALL COPYING \
@@ -50,7 +55,28 @@ noinst_HEADERS = \
 	portable.h \
 	lib/readinfo.h \
 	lib/endianrw.h \
-	lib/extra.h
+	lib/extra.h \
+	expat/COPYING \
+	expat/README \
+	expat/ascii.h \
+	expat/asciitab.h \
+	expat/expat-1.95.6.diff \
+	expat/expat.h \
+	expat/iasciitab.h \
+	expat/intconfig.h \
+	expat/internal.h \
+	expat/intexpat.h \
+	expat/latin1tab.h \
+	expat/nametab.h \
+	expat/utf8tab.h \
+	expat/xmlparse.c \
+	expat/xmlrole.c \
+	expat/xmlrole.h \
+	expat/xmltok.c \
+	expat/xmltok.h \
+	expat/xmltok_impl.c \
+	expat/xmltok_impl.h \
+	expat/xmltok_ns.c
 
 man_MANS = doc/advscan.1 doc/advdiff.1
 
@@ -129,3 +155,4 @@ DISTWEB = \
 	doc/advscan.hh doc/advdiff.hh doc/history.hh
 
 web: $(DISTWEB)
+

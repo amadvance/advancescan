@@ -2,19 +2,16 @@ Name
         advscan - History For AdvanceSCAN
 
 AdvanceSCAN Version 1.7 2003/06
+	) Added support for reading XML info file.
 
 AdvanceSCAN Version 1.6 2003/05
 	) Fixed the support for zips with additional data descriptors.
 	) Updated with autoconf 2.57 and automake 1.7.4.
 	) Added support for the new `nodump' flag in MAME 0.68.
 	) Removed the `redump' output because no more required.
-		Now MAME 0.68 ouputs the correct crc and no more
+		Now MAME 0.68 outputs the correct crc and no more
 		the NOT version. No more ambiguity.
 	) Some fixes for the gcc 3.3 compiler.
-
-	Please note that MAME 0.67 and MAME 0.68 have a broken -listinfo output
-	and they cannot be used with AdvanceSCAN. You can use AdvanceMAME 0.67
-	and AdvanceMAME 0.68 instead.
 
 AdvanceSCAN Version 1.5 2003/02
 	) Removed the recompression utilities. Now they are in the

@@ -10,15 +10,15 @@ advscan [-c, --cfg config.rc] [-r, --rom] [-s, --sample]
 [-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
 [-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
 [-n, --print-only] [-p, --report]
-[-v, --verbose] < info.lst
+[-v, --verbose] < info.lst/xml
 
-advscan [-R, --rom-std] [-S, --sample-std] < info.lst
+advscan [-R, --rom-std] [-S, --sample-std] < info.lst/xml
 
-advscan [-i, --ident] files... < info.lst
+advscan [-i, --ident] files... < info.lst/xml
 
-advscan [-l, --bbs] < info.lst
+advscan [-l, --bbs] < info.lst/xml
 
-advscan [-e, --equal] < info.lst
+advscan [-e, --equal] < info.lst/xml
 
 advscan [-h, --help] [-V, --version]
 
@@ -66,11 +66,13 @@ but also has these misfeatures:
         assumed the file `advscan.rc' in the current
         directory.
 
-    < info.lst
+    < info.lst/xml
         To operate advscan needs always as input a rom
         information file. It can be generally created with
-        the -listinfo (MAME) or -gameinfo (Raine) options
-        of the emulator.
+        the -listinfo/-listxml (MAME) or -gameinfo (Raine)
+        options of the emulator. If the first not space
+        char of the file is a `<' the file is assumed to be
+        xml, otherwise the old listing format.
 
     -r,--rom
         Operates on roms. All the next commands will
@@ -210,16 +212,16 @@ The rom information file is the file that contains the
 information of all the roms used by the emulator. It can
 be made with the command:
 
-    advmame -listinfo > info.lst
+    advmame -listxml > info.xml
 
 This file is expected as input of advscan. So, you can use
 this command:
 
-    advscan [options] < info.lst
+    advscan [options] < info.xml
 
 Or combine the two commands together:
 
-    advmame -listinfo | advscan [options]
+    advmame -listxml | advscan [options]
 
 The configuration file is a text file that describes your
 directories structure. You can use absolute path or
@@ -328,7 +330,7 @@ tag explained here:
 For the generic use you need to run advscan with the
 options:
 
-    advscan -R < info.lst
+    advscan -R < info.xml
 
 This command will fix your rom collection (without removing
 the precious text files).
@@ -336,14 +338,14 @@ the precious text files).
 To check in advance all the operations that will be done
 you can use the command:
 
-    advscan -R -n < info.lst
+    advscan -R -n < info.xml
 
 which only show the operations.
 
 To only generate an extensive report of your rom set you
 can use the command:
 
-    advscan -r -p < info.lst > report.txt
+    advscan -r -p < info.xml > report.txt
 
 To increase the verbosity of the printed information you
 can add the -v switch.

@@ -129,13 +129,18 @@ advscan_SOURCES = \
 	utility.cc \
 	ziprom.cc \
 	game.cc \
+	gameinfo.cc \
+	gamexml.cc \
 	zip.cc \
 	output.cc \
 	analyze.cc \
 	siglock.cc \
 	getopt.c \
 	snprintf.c \
-	lib/readinfo.c
+	lib/readinfo.c \
+	expat/xmlrole.c \
+	expat/xmlparse.c \
+	expat/xmltok.c
 
 
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
@@ -165,7 +170,28 @@ noinst_HEADERS = \
 	portable.h \
 	lib/readinfo.h \
 	lib/endianrw.h \
-	lib/extra.h
+	lib/extra.h \
+	expat/COPYING \
+	expat/README \
+	expat/ascii.h \
+	expat/asciitab.h \
+	expat/expat-1.95.6.diff \
+	expat/expat.h \
+	expat/iasciitab.h \
+	expat/intconfig.h \
+	expat/internal.h \
+	expat/intexpat.h \
+	expat/latin1tab.h \
+	expat/nametab.h \
+	expat/utf8tab.h \
+	expat/xmlparse.c \
+	expat/xmlrole.c \
+	expat/xmlrole.h \
+	expat/xmltok.c \
+	expat/xmltok.h \
+	expat/xmltok_impl.c \
+	expat/xmltok_impl.h \
+	expat/xmltok_ns.c
 
 
 man_MANS = doc/advscan.1 doc/advdiff.1
@@ -201,9 +227,11 @@ advdiff_LDADD = $(LDADD)
 advdiff_DEPENDENCIES =
 advdiff_LDFLAGS =
 am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) conf.$(OBJEXT) \
-	utility.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) zip.$(OBJEXT) \
+	utility.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) \
+	gameinfo.$(OBJEXT) gamexml.$(OBJEXT) zip.$(OBJEXT) \
 	output.$(OBJEXT) analyze.$(OBJEXT) siglock.$(OBJEXT) \
-	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT)
+	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT) \
+	xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
 advscan_OBJECTS = $(am_advscan_OBJECTS)
 advscan_LDADD = $(LDADD)
 advscan_DEPENDENCIES =
@@ -319,6 +347,24 @@ readinfo.o: lib/readinfo.c
 
 readinfo.obj: lib/readinfo.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o readinfo.obj `if test -f 'lib/readinfo.c'; then $(CYGPATH_W) 'lib/readinfo.c'; else $(CYGPATH_W) '$(srcdir)/lib/readinfo.c'; fi`
+
+xmlrole.o: expat/xmlrole.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmlrole.o `test -f 'expat/xmlrole.c' || echo '$(srcdir)/'`expat/xmlrole.c
+
+xmlrole.obj: expat/xmlrole.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmlrole.obj `if test -f 'expat/xmlrole.c'; then $(CYGPATH_W) 'expat/xmlrole.c'; else $(CYGPATH_W) '$(srcdir)/expat/xmlrole.c'; fi`
+
+xmlparse.o: expat/xmlparse.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmlparse.o `test -f 'expat/xmlparse.c' || echo '$(srcdir)/'`expat/xmlparse.c
+
+xmlparse.obj: expat/xmlparse.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmlparse.obj `if test -f 'expat/xmlparse.c'; then $(CYGPATH_W) 'expat/xmlparse.c'; else $(CYGPATH_W) '$(srcdir)/expat/xmlparse.c'; fi`
+
+xmltok.o: expat/xmltok.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmltok.o `test -f 'expat/xmltok.c' || echo '$(srcdir)/'`expat/xmltok.c
+
+xmltok.obj: expat/xmltok.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o xmltok.obj `if test -f 'expat/xmltok.c'; then $(CYGPATH_W) 'expat/xmltok.c'; else $(CYGPATH_W) '$(srcdir)/expat/xmltok.c'; fi`
 
 .cc.o:
 	$(CXXCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
@@ -444,7 +490,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/doc $(distdir)/lib
+	$(mkinstalldirs) $(distdir)/doc $(distdir)/expat $(distdir)/lib
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

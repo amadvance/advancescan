@@ -1627,10 +1627,10 @@ void run(int argc, char* argv[]) {
 	// set of all game
 	gamearchive gar;
 
-	if (!gar.load(cin))
-		throw error() << "Failed read at row " << info_row_get()+1 << " at column " << info_col_get()+1 << " on the info file";
+	gar.load(cin);
+
 	if (gar.begin() == gar.end())
-		throw error() << "Empty info file";
+		throw error() << "Empty information file";
 
 	if (flag_ident) {
 		for(int i=optind;i<argc;++i)

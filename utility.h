@@ -40,8 +40,8 @@
 // Generic utility
 
 int striwildcmp(const char* pattern, const char* str);
-unsigned strdec(const char* s);
-unsigned strhex(const char* s);
+unsigned strdec(const char* s, const char** e);
+unsigned strhex(const char* s, const char** e);
 
 std::string numhex(unsigned v);
 std::string numdec(unsigned v);

@@ -18,27 +18,27 @@ advscan [\(hyc, \(hy\(hycfg config.rc] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysamp
 .PD 0
 .PP
 .PD
-[\(hyv, \(hy\(hyverbose] < info.lst
+[\(hyv, \(hy\(hyverbose] < info.lst/xml
 .PD 0
 .PP
 .PD
 .PP
-advscan [\(hyR, \(hy\(hyrom\(hystd] [\(hyS, \(hy\(hysample\(hystd] < info.lst
+advscan [\(hyR, \(hy\(hyrom\(hystd] [\(hyS, \(hy\(hysample\(hystd] < info.lst/xml
 .PD 0
 .PP
 .PD
 .PP
-advscan [\(hyi, \(hy\(hyident] files... < info.lst
+advscan [\(hyi, \(hy\(hyident] files... < info.lst/xml
 .PD 0
 .PP
 .PD
 .PP
-advscan [\(hyl, \(hy\(hybbs] < info.lst
+advscan [\(hyl, \(hy\(hybbs] < info.lst/xml
 .PD 0
 .PP
 .PD
 .PP
-advscan [\(hye, \(hy\(hyequal] < info.lst
+advscan [\(hye, \(hy\(hyequal] < info.lst/xml
 .PD 0
 .PP
 .PD
@@ -94,11 +94,13 @@ Select the configuration file. If not specified is
 assumed the file \(oqadvscan.rc\(cq in the current
 directory.
 .TP
-.B < info.lst
+.B < info.lst/xml
 To operate advscan needs always as input a rom
 information file. It can be generally created with
-the \(hylistinfo (MAME) or \(hygameinfo (Raine) options
-of the emulator.
+the \(hylistinfo/\(hylistxml (MAME) or \(hygameinfo (Raine)
+options of the emulator. If the first not space
+char of the file is a \(oq<\(cq the file is assumed to be
+xml, otherwise the old listing format.
 .TP
 .B \(hyr,\(hy\(hyrom
 Operates on roms. All the next commands will
@@ -232,7 +234,7 @@ information of all the roms used by the emulator. It can
 be made with the command:
 .PP
 .RS 4
-advmame \(hylistinfo > info.lst
+advmame \(hylistxml > info.xml
 .PD 0
 .PP
 .PD
@@ -242,7 +244,7 @@ This file is expected as input of advscan. So, you can use
 this command:
 .PP
 .RS 4
-advscan [options] < info.lst
+advscan [options] < info.xml
 .PD 0
 .PP
 .PD
@@ -251,7 +253,7 @@ advscan [options] < info.lst
 Or combine the two commands together:
 .PP
 .RS 4
-advmame \(hylistinfo | advscan [options]
+advmame \(hylistxml | advscan [options]
 .PD 0
 .PP
 .PD
@@ -357,7 +359,7 @@ For the generic use you need to run advscan with the
 options:
 .PP
 .RS 4
-advscan \(hyR < info.lst
+advscan \(hyR < info.xml
 .PD 0
 .PP
 .PD
@@ -370,7 +372,7 @@ To check in advance all the operations that will be done
 you can use the command:
 .PP
 .RS 4
-advscan \(hyR \(hyn < info.lst
+advscan \(hyR \(hyn < info.xml
 .PD 0
 .PP
 .PD
@@ -382,7 +384,7 @@ To only generate an extensive report of your rom set you
 can use the command:
 .PP
 .RS 4
-advscan \(hyr \(hyp < info.lst > report.txt
+advscan \(hyr \(hyp < info.xml > report.txt
 .PD 0
 .PP
 .PD
