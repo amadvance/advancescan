@@ -8,9 +8,9 @@ touch configure.ac
 
 # Regenerate configuration files
 aclocal
-automake --foreign --ignore-deps --add-missing
+automake
 autoconf
-autoheader
+autoheader && touch config.h.in
 
 # Run configure for this platform
 echo "Now you are ready to run ./configure"

@@ -18,6 +18,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/** \file
+ * adv_mng file support.
+ */
+
 #ifndef __MNG_H
 #define __MNG_H
 
@@ -27,6 +31,8 @@
 extern "C" {
 #endif
 
+/** \name MNG_CHUNK */
+/*@{*/
 #define MNG_CN_DHDR 0x44484452
 #define MNG_CN_MHDR 0x4D484452
 #define MNG_CN_MEND 0x4D454E44
@@ -40,27 +46,63 @@ extern "C" {
 #define MNG_CN_ENDL 0x454e444c
 #define MNG_CN_BACK 0x4241434b
 #define MNG_CN_FRAM 0x4652414d
+/*@}*/
 
-int mng_read_signature(FZ* f);
-int mng_write_signature(FZ* f, unsigned* count);
+/**
+ * adv_mng context.
+ */
+typedef struct mng_struct {
+	int end_flag; /**< End flag. */
+	unsigned pixel; /**< Bytes per pixel. */
+	unsigned char* dat_ptr; /**< Current image buffer. */
+	unsigned dat_size; /**< Size of the buffer image. */
+	unsigned dat_line; /**< Bytes per scanline. */
+	
+	int dat_x; /**< X position of the displayed area in the working area. */
+	int dat_y; /**< Y position of the displayed area in the working area. */
+	unsigned dat_width; /**< Width of the working area. */
+	unsigned dat_height; /**< height of the working area. */
 
-void* mng_init(FZ* f);
-void mng_done(void* void_mng);
-int mng_read(
-	void* void_mng,
+	unsigned char* dlt_ptr; /**< Delta buffer. */
+	unsigned dlt_size; /**< Delta buffer size. */
+	unsigned dlt_line; /**< Delta bufer bytes per scanline. */
+
+	unsigned char pal_ptr[256*3]; /**< Palette data. */
+	unsigned pal_size; /**< Palette data size in bytes. */
+
+	unsigned frame_frequency; /**< Base frame rate. */
+	unsigned frame_tick; /**< Ticks for a generic frame. */
+	unsigned frame_width; /**< Frame width. */
+	unsigned frame_height; /**< Frame height. */
+} adv_mng;
+
+adv_error mng_read_signature(adv_fz* f);
+adv_error mng_write_signature(adv_fz* f, unsigned* count);
+
+/** \addtogroup VideoFile */
+/*@{*/
+
+adv_mng* mng_init(adv_fz* f);
+void mng_done(adv_mng* mng);
+adv_error mng_read(
+	adv_mng* mng,
 	unsigned* pix_width, unsigned* pix_height, unsigned* pix_pixel,
 	unsigned char** dat_ptr, unsigned* dat_size,
 	unsigned char** pix_ptr, unsigned* pix_scanline,
 	unsigned char** pal_ptr, unsigned* pal_size,
 	unsigned* tick,
-	FZ* f
+	adv_fz* f
 );
-unsigned mng_frequency_get(void* void_mng);
-unsigned mng_width_get(void* void_mng);
-unsigned mng_height_get(void* void_mng);
+unsigned mng_frequency_get(adv_mng* mng);
+unsigned mng_width_get(adv_mng* mng);
+unsigned mng_height_get(adv_mng* mng);
+
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
+
+

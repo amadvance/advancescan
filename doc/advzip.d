@@ -5,14 +5,14 @@ Synopsis
 	:advzip [-a, --add] [-x, --extract] [-l, --list]
 	:[-z, --recompress] [-t, --test] [-0, --shrink-0]
 	:[-1, --shrink-1] [-2, --shrink-2] [-3, --shrink-3]
-	:[-N, --not- zip] [-p, --pedantic] [-q, --quiet]
+	:[-N, --not-zip] [-p, --pedantic] [-q, --quiet]
 	:[-h, --help] [-V, --version] ARCHIVES... [FILES...]
 
 Description
 	The main purpose of this utility is to recompress and test
 	the zip archives to get the smallest possible size.
 
-	For the recompression the 7-Zip (www.7-zip.com) Deflate
+	For recompression the 7-Zip (www.7-zip.com) Deflate
 	implementation is used. This implementation generally
 	gives 5-10% more compression than the zLib Deflate
 	implementation.
@@ -38,7 +38,7 @@ Options
 
 	-z, --recompress ARCHIVES...
 		Recompress the specified archives. If the -1, -2,
-		-3 options are specified is used the smallest file
+		-3 options are specified, it's used the smallest file
 		choice from: the previous compressed data, the new
 		compression and the uncompressed format. If the -0
 		option is specified the archive is always rewritten
@@ -55,8 +55,8 @@ Options
 
 	-p, --pedantic
 		Be pedantic on the zip tests. If this flag is
-		enabled some more extensive test on the zip
-		integrity are done. These test are generally not
+		enabled some more extensive tests on the zip
+		integrity are done. These tests are generally not
 		done by other zip utilities.
 
 	-0, --shrink-0
@@ -81,7 +81,7 @@ Options
 		SLOW.
 
 Copyright
-	This file is Copyright (C) 2002 Andrea Mazzoleni
+	This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advpng(1), advmng(1)

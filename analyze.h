@@ -24,11 +24,25 @@
 #include <set>
 #include <string>
 
-struct analyze_entry {
+#include "game.h"
+
+struct analyze_entry_static {
 	const char* name;
 	unsigned size;
 	unsigned crc;
 };
+
+struct analyze_entry {
+	std::string name;
+	unsigned size;
+	unsigned crc;
+
+	analyze_entry(const std::string& Aname, unsigned size, unsigned crc);
+	analyze_entry(const analyze_entry& A);
+	analyze_entry(const analyze_entry_static& A);
+	~analyze_entry();
+};
+
 
 bool operator<(const analyze_entry& A, const analyze_entry& B);
 
@@ -43,7 +57,7 @@ typedef std::set<analyze_entry> analyze_set;
 class analyze {
 	analyze_set garbage;
 public:
-	analyze();
+	analyze(const gamearchive& gar);
 
 	analyze_type operator()(const std::string& name, unsigned size, unsigned crc) const;
 };

@@ -3,24 +3,24 @@
 <title>The AdvancePNG compressor</title>
 </head>
 <body>
-<h1><center>The AdvancePNG compressor</center></h1>
-<h1>1 
+<h2><center>The AdvancePNG compressor</center></h2>
+<h2>1 
 Synopsis
-</h1>
+</h2>
 <font face="Courier">
 advpng [-l, --list] [-z, --recompress] [-0, --shrink-0]<br>
 [-1, --shrink-1] [-2, --shrink-2] [-3, --shrink-3]<br>
 [-f, --force] [-q, --quiet] [-h, --help] [-V, --version]<br>
 FILES...<br>
 </font>
-<h1>2 
+<h2>2 
 Description
-</h1>
+</h2>
 The main purpose of this utility is to recompress png
 files to get the smallest possible size.
-<h1>3 
+<h2>3 
 Options
-</h1>
+</h2>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
 -l, --list FILES...
@@ -33,7 +33,7 @@ List the content of the specified files.
 -z, --recompress FILES...
 </em></td></tr><tr><td>
 Recompress the specified files. If the -1, -2, -3
-options are specified is used the smallest file
+options are specified it's used the smallest file
 choice from the previous compressed data and the
 new compression. If the -0 option is specified the
 file is always rewritten without any compression.
@@ -78,13 +78,18 @@ SLOW.
 Force the use of the new file also if it's bigger.
 </td></tr>
 </table>
-<h1>4 
+<h2>4 
+Bugs
+</h2>
+All the ancillary chuncks are ignored and silently removed.
+Only the transparency tRNS chunck is processed.
+<h2>5 
 Copyright
-</h1>
-This file is Copyright (C) 2002 Andrea Mazzoleni
-<h1>5 
+</h2>
+This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
+<h2>6 
 See Also
-</h1>
+</h2>
 advzip(1), advmng(1)
 </body>
 </html>

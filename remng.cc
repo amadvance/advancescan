@@ -21,12 +21,13 @@
 #include "portable.h"
 
 #include "pngex.h"
-#include "mng.h"
-#include "error.h"
+#include "except.h"
 #include "utility.h"
 #include "compress.h"
 #include "siglock.h"
-#include "endianrw.h"
+
+#include "lib/endianrw.h"
+#include "lib/mng.h"
 
 #include <iostream>
 #include <iomanip>
@@ -240,7 +241,7 @@ void analyze_insert(struct scroll* sc, int x, int y) {
 	++sc->mac;
 }
 
-void analyze_image(FZ* f, struct scroll* sc, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline) {
+void analyze_image(adv_fz* f, struct scroll* sc, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline) {
 	unsigned char* ptr;
 	unsigned scanline;
 	unsigned i;
@@ -294,10 +295,10 @@ void analyze_range(struct scroll* sc) {
 	sc->height = max_y - min_y;
 }
 
-void analyze_f(FZ* f, struct scroll* sc) {
+void analyze_f(adv_fz* f, struct scroll* sc) {
 	data_ptr data;
 	unsigned counter;
-	void* mng;
+	adv_mng* mng;
 	int dx = 0;
 	int dy = 0;
 
@@ -370,7 +371,7 @@ void analyze_f(FZ* f, struct scroll* sc) {
 }
 
 void analyze_file(const string& path, struct scroll* sc) {
-	FZ* f;
+	adv_fz* f;
 
 	f = fzopen(path.c_str(),"rb");
 	if (!f) {
@@ -525,7 +526,7 @@ void write_expand(data_ptr out_ptr, unsigned& out_scanline, const unsigned char*
 	out_scanline = new_scanline;
 }
 
-void write_header(FZ* f, unsigned* fc, unsigned width, unsigned height, unsigned frequency, int scroll_x, int scroll_y, unsigned scroll_width, unsigned scroll_height) {
+void write_header(adv_fz* f, unsigned* fc, unsigned width, unsigned height, unsigned frequency, int scroll_x, int scroll_y, unsigned scroll_width, unsigned scroll_height) {
 	unsigned simplicity;
 	unsigned char mhdr[28];
 
@@ -655,7 +656,7 @@ void write_store(unsigned char* img_ptr, unsigned img_scanline, unsigned char* p
 	}
 }
 
-void write_first(FZ* f, unsigned* fc) {
+void write_first(adv_fz* f, unsigned* fc) {
 	unsigned char defi[12];
 	unsigned defi_size;
 	unsigned char ihdr[13];
@@ -709,7 +710,7 @@ void write_first(FZ* f, unsigned* fc) {
 	}
 }
 
-void write_move(FZ* f, unsigned* fc, int shift_x, int shift_y) {
+void write_move(adv_fz* f, unsigned* fc, int shift_x, int shift_y) {
 	unsigned char move[13];
 
 	if (shift_x!=0 || shift_y!=0) {
@@ -726,7 +727,7 @@ void write_move(FZ* f, unsigned* fc, int shift_x, int shift_y) {
 	}
 }
 
-void write_delta_image(FZ* f, unsigned* fc, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size) {
+void write_delta_image(adv_fz* f, unsigned* fc, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size) {
 	unsigned x,y,dx,dy;
 	data_ptr pal_d_ptr;
 	unsigned pal_d_size;
@@ -824,7 +825,7 @@ void write_delta_image(FZ* f, unsigned* fc, unsigned char* img_ptr, unsigned img
 	write_store(img_ptr, img_scanline, pal_ptr, pal_size);
 }
 
-void write_base_image(FZ* f, unsigned* fc, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size) {
+void write_base_image(adv_fz* f, unsigned* fc, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size) {
 	data_ptr pal_r_ptr;
 	unsigned pal_r_size;
 	data_ptr z_r_ptr;
@@ -871,7 +872,7 @@ void write_base_image(FZ* f, unsigned* fc, unsigned char* img_ptr, unsigned img_
 	write_store(img_ptr, img_scanline, pal_ptr, pal_size);
 }
 
-void write_image_raw(FZ* f, unsigned* fc, unsigned width, unsigned height, unsigned pixel, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size, int shift_x, int shift_y) {
+void write_image_raw(adv_fz* f, unsigned* fc, unsigned width, unsigned height, unsigned pixel, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size, int shift_x, int shift_y) {
 	if (width != WRITE.width) {
 		throw error() << "Internal error";
 	}
@@ -912,7 +913,7 @@ void write_image_raw(FZ* f, unsigned* fc, unsigned width, unsigned height, unsig
 	}
 }
 
-void write_image(FZ* f, unsigned* fc, unsigned width, unsigned height, unsigned pixel, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size, int shift_x, int shift_y) {
+void write_image(adv_fz* f, unsigned* fc, unsigned width, unsigned height, unsigned pixel, unsigned char* img_ptr, unsigned img_scanline, unsigned char* pal_ptr, unsigned pal_size, int shift_x, int shift_y) {
 	if (pixel == 1) {
 		data_ptr new_ptr;
 		unsigned new_scanline;
@@ -953,7 +954,7 @@ void write_image(FZ* f, unsigned* fc, unsigned width, unsigned height, unsigned 
 	}
 }
 
-void write_footer(FZ* f, unsigned* fc) {
+void write_footer(adv_fz* f, unsigned* fc) {
 	free(WRITE.scroll_ptr);
 
 	if (png_write_chunk(f, MNG_CN_MEND, 0, 0, fc) != 0) {
@@ -964,7 +965,7 @@ void write_footer(FZ* f, unsigned* fc) {
 /*************************************************************************************/
 /* Conversion */
 
-void convert_frame(FZ* f, unsigned* fc, unsigned tick) {
+void convert_frame(adv_fz* f, unsigned* fc, unsigned tick) {
 	unsigned char fram[10];
 	unsigned fram_size;
 
@@ -989,7 +990,7 @@ void convert_frame(FZ* f, unsigned* fc, unsigned tick) {
 	}
 }
 
-void convert_header(FZ* f, unsigned* fc, unsigned frame_width, unsigned frame_height, unsigned frame_frequency, struct scroll* sc) {
+void convert_header(adv_fz* f, unsigned* fc, unsigned frame_width, unsigned frame_height, unsigned frame_frequency, struct scroll* sc) {
 	if (sc) {
 		write_header(f, fc, frame_width, frame_height, frame_frequency, sc->x, sc->y, sc->width, sc->height);
 	} else {
@@ -997,7 +998,7 @@ void convert_header(FZ* f, unsigned* fc, unsigned frame_width, unsigned frame_he
 	}
 }
 
-void convert_image(FZ* f_out, unsigned* fc, FZ* f_in, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size, struct scroll_coord* scc) {
+void convert_image(adv_fz* f_out, unsigned* fc, adv_fz* f_in, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size, struct scroll_coord* scc) {
 	if (scc) {
 		write_image(f_out, fc, pix_width, pix_height, pix_pixel, pix_ptr, pix_scanline, pal_ptr, pal_size, scc->x, scc->y);
 	} else {
@@ -1005,9 +1006,9 @@ void convert_image(FZ* f_out, unsigned* fc, FZ* f_in, unsigned pix_width, unsign
 	}
 }
 
-void convert_f(FZ* f_in, FZ* f_out, unsigned* filec, unsigned* framec, struct scroll* sc) {
+void convert_f(adv_fz* f_in, adv_fz* f_out, unsigned* filec, unsigned* framec, struct scroll* sc) {
 	unsigned counter;
-	void* mng;
+	adv_mng* mng;
 	bool first = true;
 
 	mng = mng_init(f_in);
@@ -1088,8 +1089,8 @@ void convert_f(FZ* f_in, FZ* f_out, unsigned* filec, unsigned* framec, struct sc
 }
 
 void convert_file(const string& path_src, const string& path_dst, struct scroll* sc) {
-	FZ* f_in;
-	FZ* f_out;
+	adv_fz* f_in;
+	adv_fz* f_out;
 	
 	unsigned filec;
 	unsigned framec;
@@ -1176,7 +1177,7 @@ void convert_inplace(const string& path) {
 void mng_print(const string& path) {
 	unsigned type;
 	unsigned size;
-	FZ* f_in;
+	adv_fz* f_in;
 
 	f_in = fzopen(path.c_str(),"rb");
 	if (!f_in) {

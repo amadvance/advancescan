@@ -46,7 +46,11 @@
 
 #define INFLATE_INPUT_BUFFER_MAX 4096
 
-unsigned fzread(void *buffer, unsigned size, unsigned number, FZ* f) {
+/**
+ * Read from a file.
+ * The semantic is like the C fread() function.
+ */
+unsigned fzread(void *buffer, unsigned size, unsigned number, adv_fz* f) {
 	if (f->type == fz_file) {
 		return fread(buffer,size,number,f->f);
 	} else {
@@ -100,7 +104,12 @@ unsigned fzread(void *buffer, unsigned size, unsigned number, FZ* f) {
 	return 0;
 }
 
-unsigned fzwrite(const void *buffer, unsigned size, unsigned number, FZ* f) {
+/**
+ * Write to a file.
+ * This function works only for files opened with fzopen().
+ * The semantic is like the C fwrite() function.
+ */
+unsigned fzwrite(const void *buffer, unsigned size, unsigned number, adv_fz* f) {
 	if (f->type == fz_file) {
 		return fwrite(buffer,size,number,f->f);
 	} else {
@@ -108,9 +117,13 @@ unsigned fzwrite(const void *buffer, unsigned size, unsigned number, FZ* f) {
 	}
 }
 
-FZ* fzopen(const char* file, const char* mode) {
+/**
+ * Open a normal file.
+ * The semantic is like the C fopen() function.
+ */
+adv_fz* fzopen(const char* file, const char* mode) {
 	struct stat st;
-	FZ* f = malloc(sizeof(FZ));
+	adv_fz* f = malloc(sizeof(adv_fz));
 	f->type = fz_file;
 	f->virtual_pos = -1; /* not used */
 	f->real_offset = 0;
@@ -131,9 +144,15 @@ FZ* fzopen(const char* file, const char* mode) {
 	return f;
 }
 
-FZ* fzopenzipuncompressed(const char* file, unsigned offset, unsigned size) {
+/**
+ * Open an uncompressed file part of a ZIP archive.
+ * \param file ZIP archive.
+ * \param offset Offset in the archive.
+ * \param size Size of the data.
+ */
+adv_fz* fzopenzipuncompressed(const char* file, unsigned offset, unsigned size) {
 	unsigned char buf[ZIP_LO_FIXED];
-	FZ* f = malloc(sizeof(FZ));
+	adv_fz* f = malloc(sizeof(adv_fz));
 	unsigned filename_length;
 	unsigned extra_field_length;
 
@@ -174,7 +193,7 @@ FZ* fzopenzipuncompressed(const char* file, unsigned offset, unsigned size) {
 	return f;
 }
 
-static void compressed_init(FZ* f) {
+static void compressed_init(adv_fz* f) {
 	int err;
 
 	f->z.zalloc = 0;
@@ -200,14 +219,21 @@ static void compressed_init(FZ* f) {
 	assert(err == Z_OK);
 }
 
-static void compressed_done(FZ* f) {
+static void compressed_done(adv_fz* f) {
 	inflateEnd(&f->z);
 	free(f->zbuffer);
 }
 
-FZ* fzopenzipcompressed(const char* file, unsigned offset, unsigned size_compressed, unsigned size_uncompressed) {
+/**
+ * Open an compressed file part of a ZIP archive.
+ * \param file ZIP archive.
+ * \param offset Offset in the archive.
+ * \param size_compressed Size of the compressed data.
+ * \param size_uncompressed Size of the uncompressed data.
+ */
+adv_fz* fzopenzipcompressed(const char* file, unsigned offset, unsigned size_compressed, unsigned size_uncompressed) {
 	unsigned char buf[ZIP_LO_FIXED];
-	FZ* f = malloc(sizeof(FZ));
+	adv_fz* f = malloc(sizeof(adv_fz));
 	unsigned filename_length;
 	unsigned extra_field_length;
 
@@ -251,8 +277,13 @@ FZ* fzopenzipcompressed(const char* file, unsigned offset, unsigned size_compres
 	return f;
 }
 
-FZ* fzopenmemory(const unsigned char* data, unsigned size) {
-	struct fz* f = malloc(sizeof(struct fz*));
+/**
+ * Open a memory range as a file.
+ * \param data Data.
+ * \param size Size of the data.
+ */
+adv_fz* fzopenmemory(const unsigned char* data, unsigned size) {
+	adv_fz* f = malloc(sizeof(struct fz_struct*));
 	f->type = fz_memory;
 	f->virtual_pos = 0;
 	f->virtual_size = size;
@@ -262,7 +293,11 @@ FZ* fzopenmemory(const unsigned char* data, unsigned size) {
 	return f;
 }
 
-int fzclose(FZ* f) {
+/**
+ * Close a file.
+ * The semantic is like the C fclose() function.
+ */
+adv_error fzclose(adv_fz* f) {
 	if (f->type == fz_file) {
 		fclose(f->f);
 		free(f);
@@ -279,7 +314,7 @@ int fzclose(FZ* f) {
 	return 0;
 }
 
-static int fzgetc_binary(FZ* f) {
+static int fzgetc_binary(adv_fz* f) {
 	if (f->type == fz_file) {
 		return fgetc(f->f);
 	} else {
@@ -291,7 +326,11 @@ static int fzgetc_binary(FZ* f) {
 	}
 }
 
-int fzgetc(FZ* f) {
+/**
+ * Read a char from the file.
+ * The semantic is like the C fgetc() function.
+ */
+int fzgetc(adv_fz* f) {
 	int c = fzgetc_binary(f);
 
 	/* ignore any carrige return */
@@ -301,7 +340,12 @@ int fzgetc(FZ* f) {
 	return c;
 }
 
-int fzungetc(int c, FZ* f) {
+/**
+ * Unread a char from the file.
+ * This function works only for files opened with fzopen(). 
+ * The semantic is like the C fungetc() function.
+ */
+adv_error fzungetc(int c, adv_fz* f) {
 	if (f->type == fz_file) {
 		return ungetc(c,f->f);
 	} else {
@@ -309,7 +353,11 @@ int fzungetc(int c, FZ* f) {
 	}
 }
 
-char* fzgets(char *s, int n, FZ* f) {
+/**
+ * Read a string from the file.
+ * The semantic is like the C fgets() function.
+ */
+char* fzgets(char *s, int n, adv_fz* f) {
 	char* r;
 
 	if (n < 2) {
@@ -339,7 +387,11 @@ char* fzgets(char *s, int n, FZ* f) {
 	return r;
 }
 
-int fzeof(FZ* f) {
+/**
+ * Check if the file pointer is at the end.
+ * The semantic is like the C feof() function.
+ */
+adv_error fzeof(adv_fz* f) {
 	if (f->type == fz_file) {
 		return feof(f->f);
 	} else {
@@ -347,7 +399,11 @@ int fzeof(FZ* f) {
 	}
 }
 
-long fztell(FZ* f) {
+/**
+ * Get the current position in the file.
+ * The semantic is like the C ftell() function.
+ */
+long fztell(adv_fz* f) {
 	if (f->type == fz_file) {
 		long r = ftell(f->f);
 		if (r<0)
@@ -359,11 +415,18 @@ long fztell(FZ* f) {
 	}
 }
 
-long fzsize(FZ* f) {
+/**
+ * Get the size of the file.
+ */
+long fzsize(adv_fz* f) {
 	return f->virtual_size;
 }
 
-int fzseek(FZ* f, long offset, int mode) {
+/**
+ * Seek to an arbitrary position.
+ * The semantic is like the C fseek() function.
+ */
+adv_error fzseek(adv_fz* f, long offset, int mode) {
 	if (f->type == fz_file) {
 		switch (mode) {
 			case SEEK_SET : return fseek(f->f, offset + f->real_offset, SEEK_SET);

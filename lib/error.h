@@ -28,59 +28,31 @@
  * do so, delete this exception statement from your version.
  */
 
-#ifndef __FZ_H
-#define __FZ_H
+/** \file
+ * Error.
+ */
 
-#include <stdio.h>
-#include <zlib.h>
+#ifndef __ERROR_H
+#define __ERROR_H
+
+#include "extra.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-enum fz_type {
-	fz_file, /* real file, eventually only a part */
-	fz_memory, /* memory */
-	fz_file_compressed /* compressed file, eventually only a part */
-};
+/** \addtogroup Error */
+/*@{*/
 
-typedef struct fz {
-	unsigned type; /* type of file, fz_* */
-	unsigned virtual_pos; /* current position on the virtual file */
-	unsigned virtual_size; /* size */
+const char* error_get(void);
+adv_bool error_unsupported_get(void);
 
-	unsigned real_offset; /* starting position on the real file */
-	unsigned real_size; /* real size of the intersting file */
+void error_set(const char* error, ...) __attribute__((format(printf,1,2)));
+void error_unsupported_set(const char* error, ...) __attribute__((format(printf,1,2)));
+void error_nolog_set(const char* error, ...) __attribute__((format(printf,1,2)));
+void error_nolog_cat(const char* error, ...) __attribute__((format(printf,1,2)));
 
-	/* memory */
-	const unsigned char* data;
-
-	/* file */
-	FILE* f;
-
-	/* compression */
-	z_stream z;
-	unsigned char* zbuffer;
-	unsigned remaining;
-} FZ;
-
-FZ* fzopen(const char* file, const char* mode);
-FZ* fzopenzipuncompressed(const char* file, unsigned offset, unsigned size);
-FZ* fzopenzipcompressed(const char* file, unsigned offset, unsigned size_compressed, unsigned size_uncompressed);
-FZ* fzopenmemory(const unsigned char* data, unsigned size);
-
-unsigned fzread(void *buffer, unsigned size, unsigned number, FZ* f);
-int fzclose(FZ* f);
-long fztell(FZ* f);
-long fzsize(FZ* f);
-int fzseek(FZ* f, long offset, int mode);
-
-/* only for plain file */
-int fzgetc(FZ* f);
-int fzungetc(int c, FZ* f);
-char* fzgets(char *s, int n, FZ* f);
-int fzeof(FZ* f);
-unsigned fzwrite(const void *buffer, unsigned size, unsigned number, FZ* f);
+/*@}*/
 
 #ifdef __cplusplus
 }

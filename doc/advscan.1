@@ -48,12 +48,12 @@ advscan [\(hyh, \(hy\(hyhelp] [\(hyV, \(hy\(hyversion]
 .PP
 .PD
 .SH DESCRIPTION 
-advscan is a command line utility for maintaining a rom
-and sample zip archive for the MAME, XMAME, AdvanceMAME
-and Raine emulators. The goal of advscan is to obtain a
-complete and perfect rom and sample zip archive with
+advscan is a command line utility for maintaining a zipped
+archive of roms and sample zip archive for the MAME, XMAME,
+AdvanceMAME and Raine emulators. The goal of advscan is to
+obtain a complete and perfect rom and sample zip archive with
 differential merging. Differential merging means that any
-game has his zip archive, which contains all the rom
+game has its zip archive, which contains all the rom
 files, which are not already in the parent zip archive (if
 exists).
 .PP
@@ -110,12 +110,12 @@ operate on your sampleset.
 .TP
 .B \(hya,\(hy\(hyadd\(hyzip
 Add the missing rom zips. Any missing zip archive
-for which at least one rom is available is created.
+for which at least one rom is available will be created.
 .TP
 .B \(hyb,\(hy\(hyadd\(hybin
 Add, rename and substitute all the necessary files
 in the existing zip archives. No new zip archives
-are created, only the already present zips are
+are created, only the already present zip files are
 modified. No file is deleted. Anyway, some files may
 be overwritten. Any file overwritten is saved in
 the \(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in
@@ -201,9 +201,9 @@ Rom files are identified by their crc and size. The roms
 are not really decompressed, but the crc value stored on
 the zip archives is used. If a rom has an incorrect crc or
 size, but it has a correct name, it\(cqs maintained if
-doesn\(cqt exists a valid alternative.
+doesn\(cqt exist a valid alternative.
 .PP
-Sample files are identified only by their name. This
+Sample files are identified only by their names. This
 limits the possible operations. Essentially advscan can
 report only missing samples.
 .PP
@@ -257,10 +257,10 @@ advmame \(hylistinfo | advscan [options]
 .PD
 .RE
 .PP
-The configuration file is a text files that describes your
+The configuration file is a text file that describes your
 directories structure. You can use absolute path or
-relative path. Relative path are relative to the current
-directory when you run advscan.
+relative path. Relative path is relative to the current
+directory from where you run advscan.
 .PP
 On Unix the PATH separator is \(oq:\(cq. On DOS the PATH
 separator is \(oq;\(cq. The following options are expressed with the
@@ -268,7 +268,7 @@ Unix format.
 .TP
 .B rom PATH:PATH...
 List of paths where the roms are placed. These are
-the zip archives, which are modified fixed.
+the zip archives, which are modified and fixed.
 .TP
 .B rom_new PATH
 Single path where the new created zip archives are
@@ -277,7 +277,7 @@ ALSO in the \(oqrom\(cq specification. Otherwise at the
 next run the zip archives are recreated.
 .TP
 .B rom_import PATH:PATH...
-List of directory tree where other roms files are
+List of directory trees where other roms files are
 placed. These are used for importing rom file missing
 in rompath. These files are only read and never
 modified in any way. It\(cqs very useful to insert
@@ -294,7 +294,7 @@ duplicated in an archive listed on the \(oqrom\(cq or
 \(oqrom_import\(cq options.
 .TP
 .B sample PATH:PATH...
-List of path where the samples are placed. These
+List of paths where the samples are placed. These
 are the zip archives, which are modified and fixed.
 .TP
 .B sample_unknown PATH
@@ -309,15 +309,15 @@ The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
 .SH REPORT 
 The report generated with the \(hyp option contains some text
-tag explicated here:
+tag explained here:
 .TP
 .B rom_good
-A recognized good rom. The rom is recognized by his
+A recognized good rom. The rom is recognized by its
 name, crc and size.
 .TP
 .B rom_bad
 A recognized bad rom with an incorrect size or crc.
-The rom is recognized by his name.
+The rom is recognized by its name.
 .TP
 .B rom_miss
 A missing rom.
@@ -327,13 +327,13 @@ A missing \(a"NO GOOD DUMP KNOWN\(a" rom.
 .TP
 .B nodump_bad
 A recognized \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
-recognized by his name and size.
+recognized by its name and size.
 .TP
 .B redump_bad
 A recognized \(a"ROM NEEDS REDUMP\(a" rom. The rom is
-recognized by his name, size and negate crc. The
+recognized by its name, size and negate crc. The
 negate crc is the special convention used by MAME
-to sign known bad dump.
+to sign a known bad dump.
 .TP
 .B text
 An unknown text file.
@@ -344,12 +344,12 @@ An unknown binary file.
 .B garbage
 A recognized garbage file. A garbage file is an
 advertising text file added generally by a rom
-site. The file is recognized by his name, size and
+site. The file is recognized by its name, size and
 crc.
 .TP
 .B sound_good
 A recognized good sound sample. The sample is
-recognized by his name.
+recognized by its name.
 .TP
 .B sound_miss
 A missing sound sample.
@@ -377,7 +377,7 @@ advscan \(hyR \(hyn < info.lst
 .PD
 .RE
 .PP
-which show only the operations.
+which only show the operations.
 .PP
 To only generate an extensive report of your rom set you
 can use the command:
@@ -389,9 +389,9 @@ advscan \(hyr \(hyp < info.lst > report.txt
 .PD
 .RE
 .PP
-To increase the verbosity of the information printed you
+To increase the verbosity of the printed information you
 can add the \(hyv switch.
 .SH COPYRIGHT 
-This file is Copyright (C) 2002 Andrea Mazzoleni
+This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 .SH SEE ALSO 
 advdiff(1)

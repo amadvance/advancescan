@@ -1,6 +1,17 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.3 2002/11
+	) Fixed a bug in the advscan utility. When a .zip file was completly
+		removed the program was aborting with a "Failed stat" message
+		because it was trying to reread the just deleted file.
+	) Added the support for the transparency tRNS chunk at the
+		advpng utility.
+	) Improved the garbage detecter for zipped roms.
+	) Upgraded at the lastest Advance Library.
+	) Fixes at the docs. [by Filipe Estima]
+	) Minor changes at the autoconf/automake scripts.
+
 AdvanceSCAN Version 1.2 2002/08
 	) Added the advpng utility to compress the PNG files.
 	) Added the advmng utility to compress the MNG files.

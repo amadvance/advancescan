@@ -5,8 +5,8 @@ bin_PROGRAMS = advscan advdiff advzip advpng advmng
 advdiff_SOURCES = \
 	diff.cc \
 	gamediff.cc \
-	readinfo.c \
-	portable.c
+	portable.c \
+	lib/readinfo.c
 
 advzip_SOURCES = \
 	rezip.cc \
@@ -38,27 +38,28 @@ advzip_SOURCES = \
 
 advscan_SOURCES =  \
 	scan.cc \
-	readinfo.c \
 	rom.cc \
-	utility.cc \
 	conf.cc \
+	utility.cc \
 	ziprom.cc \
 	game.cc \
 	zip.cc \
 	output.cc \
 	analyze.cc \
 	siglock.cc \
-	portable.c
+	portable.c \
+	lib/readinfo.c
 
 advpng_SOURCES = \
 	repng.cc \
-	fz.c \
-	png.c \
 	pngex.cc \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
 	portable.c \
+	lib/fz.c \
+	lib/png.c \
+	lib/error.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -81,14 +82,15 @@ advpng_SOURCES = \
 
 advmng_SOURCES = \
 	remng.cc \
-	fz.c \
-	png.c \
-	mng.c \
 	pngex.cc \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
 	portable.c \
+	lib/fz.c \
+	lib/png.c \
+	lib/mng.c \
+	lib/error.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -120,11 +122,6 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	check.lst
 
 noinst_HEADERS = \
-	png.h \
-	mng.h \
-	fz.h \
-	endianrw.h \
-	readinfo.h \
 	pngex.h \
 	compress.h \
 	rom.h \
@@ -134,13 +131,20 @@ noinst_HEADERS = \
 	game.h \
 	gamediff.h \
 	zip.h \
-	error.h \
+	except.h \
 	output.h \
 	operatio.h \
 	analyze.h \
 	analyze.dat \
 	siglock.h \
 	portable.h \
+	lib/png.h \
+	lib/mng.h \
+	lib/fz.h \
+	lib/endianrw.h \
+	lib/readinfo.h \
+	lib/error.h \
+	lib/extra.h \
 	7z/7z.h \
 	7z/AriBitCoder.h \
 	7z/AriConst.h \

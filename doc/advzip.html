@@ -3,24 +3,24 @@
 <title>The AdvanceZIP compressor</title>
 </head>
 <body>
-<h1><center>The AdvanceZIP compressor</center></h1>
-<h1>1 
+<h2><center>The AdvanceZIP compressor</center></h2>
+<h2>1 
 Synopsis
-</h1>
+</h2>
 <font face="Courier">
 advzip [-a, --add] [-x, --extract] [-l, --list]<br>
 [-z, --recompress] [-t, --test] [-0, --shrink-0]<br>
 [-1, --shrink-1] [-2, --shrink-2] [-3, --shrink-3]<br>
-[-N, --not- zip] [-p, --pedantic] [-q, --quiet]<br>
+[-N, --not-zip] [-p, --pedantic] [-q, --quiet]<br>
 [-h, --help] [-V, --version] ARCHIVES... [FILES...]<br>
 </font>
-<h1>2 
+<h2>2 
 Description
-</h1>
+</h2>
 The main purpose of this utility is to recompress and test
 the zip archives to get the smallest possible size.
 <p>
-For the recompression the 7-Zip (www.7-zip.com) Deflate
+For recompression the 7-Zip (www.7-zip.com) Deflate
 implementation is used. This implementation generally
 gives 5-10% more compression than the zLib Deflate
 implementation.
@@ -31,9 +31,9 @@ zips WILL NOT BE USEABLE by any other program. To make
 them useable you need to recompress them without the -N
 option. Generally this algorithm gives 10-20% more
 compression than the 7-Zip Deflate implementation.
-<h1>3 
+<h2>3 
 Options
-</h1>
+</h2>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
 -a, --add ARCHIVE FILES...
@@ -62,7 +62,7 @@ List the content of the specified archives.
 -z, --recompress ARCHIVES...
 </em></td></tr><tr><td>
 Recompress the specified archives. If the -1, -2,
--3 options are specified is used the smallest file
+-3 options are specified, it's used the smallest file
 choice from: the previous compressed data, the new
 compression and the uncompressed format. If the -0
 option is specified the archive is always rewritten
@@ -91,8 +91,8 @@ application!
 -p, --pedantic
 </em></td></tr><tr><td>
 Be pedantic on the zip tests. If this flag is
-enabled some more extensive test on the zip
-integrity are done. These test are generally not
+enabled some more extensive tests on the zip
+integrity are done. These tests are generally not
 done by other zip utilities.
 </td></tr>
 </table>
@@ -133,13 +133,13 @@ Set the compression level to "extreme". It's VERY
 SLOW.
 </td></tr>
 </table>
-<h1>4 
+<h2>4 
 Copyright
-</h1>
-This file is Copyright (C) 2002 Andrea Mazzoleni
-<h1>5 
+</h2>
+This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
+<h2>5 
 See Also
-</h1>
+</h2>
 advpng(1), advmng(1)
 </body>
 </html>

@@ -17,7 +17,7 @@ Options
 
 	-z, --recompress FILES...
 		Recompress the specified files. If the -1, -2, -3
-		options are specified is used the smallest file
+		options are specified it's used the smallest file
 		choice from the previous compressed data and the
 		new compression. If the -0 option is specified the
 		file is always rewritten without any compression.
@@ -41,8 +41,12 @@ Options
 	-f, --force
 		Force the use of the new file also if it's bigger.
 
+Bugs
+	All the ancillary chuncks are ignored and silently removed.
+	Only the transparency tRNS chunck is processed.
+
 Copyright
-	This file is Copyright (C) 2002 Andrea Mazzoleni
+	This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advzip(1), advmng(1)

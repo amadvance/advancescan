@@ -22,11 +22,12 @@
 
 #include "game.h"
 #include "ziprom.h"
-#include "readinfo.h"
 #include "conf.h"
 #include "operatio.h"
 #include "output.h"
 #include "analyze.h"
+
+#include "lib/readinfo.h"
 
 #include <fstream>
 #include <iomanip>
@@ -319,19 +320,21 @@ void rom_add(
 		z.save();
 		z.unload();
 
-		// get file information
-		struct stat fst;
-		string path = z.file_get();
-		if (stat(path.c_str(),&fst) != 0)
+		if (!z.empty()) {
+			// get file information
+			struct stat fst;
+			string path = z.file_get();
+			if (stat(path.c_str(),&fst) != 0)
 			throw error() << "Failed stat file " << z.file_get();
 
-		// if no rom is missing
-		if (miss.size()==0) {
-			// add zip to directory list of game as good
-			g.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly() ) );
-		} else {
-			// add zip to directory list of game as bad
-			g.rzs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly() ) );
+			// if no rom is missing
+			if (miss.size()==0) {
+				// add zip to directory list of game as good
+				g.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly() ) );
+			} else {
+				// add zip to directory list of game as bad
+				g.rzs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly() ) );
+			}
 		}
 	}
 }
@@ -585,19 +588,21 @@ void rom_scan(
 	z.save();
 	z.unload();
 
-	// get file information
-	struct stat fst;
-	string path = z.file_get();
-	if (stat(path.c_str(),&fst) != 0)
-		throw error() << "Failed stat file " << z.file_get();
+	if (!z.empty()) {
+		// get file information
+		struct stat fst;
+		string path = z.file_get();
+		if (stat(path.c_str(),&fst) != 0)
+			throw error() << "Failed stat file " << z.file_get();
 
-	// if no rom is missing or wrong
-	if (st.miss.size()==0 && st.wrong.size()==0) {
-		// add zip to directory list of game as good
-		gam.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
-	} else {
-		// add zip to directory list of game as bad
-		gam.rzs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
+		// if no rom is missing or wrong
+		if (st.miss.size()==0 && st.wrong.size()==0) {
+			// add zip to directory list of game as good
+			gam.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
+		} else {
+			// add zip to directory list of game as bad
+			gam.rzs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
+		}
 	}
 
 	// update the reject zip
@@ -691,17 +696,19 @@ void sample_scan(
 	z.save();
 	z.unload();
 
-	// get file information
-	struct stat fst;
-	string path = z.file_get();
-	if (stat(path.c_str(),&fst) != 0)
-		throw error() << "Failed stat file " << z.file_get();
+	if (!z.empty()) {
+		// get file information
+		struct stat fst;
+		string path = z.file_get();
+		if (stat(path.c_str(),&fst) != 0)
+			throw error() << "Failed stat file " << z.file_get();
 
-	// if no sample is missing
-	if (st.miss.size()==0) {
-		gam.szs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
-	} else {
-		gam.szs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
+		// if no sample is missing
+		if (st.miss.size()==0) {
+			gam.szs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
+		} else {
+			gam.szs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
+		}
 	}
 
 	// update the reject zip
@@ -1679,7 +1686,7 @@ void run(int argc, char* argv[]) {
 		config cfg(cfg_file, flag_rom, flag_sample, flag_change);
 
 		output out(cout);
-		analyze ana;
+		analyze ana(gar);
 
 		if (flag_rom) {
 			ziparchive zar;

@@ -28,7 +28,7 @@ List the content of the specified files.
 .TP
 .B \(hyz, \(hy\(hyrecompress FILES...
 Recompress the specified files. If the \(hy1, \(hy2, \(hy3
-options are specified is used the smallest file
+options are specified it\(cqs used the smallest file
 choice from the previous compressed data and the
 new compression. If the \(hy0 option is specified the
 file is always rewritten without any compression.
@@ -51,7 +51,10 @@ SLOW.
 .TP
 .B \(hyf, \(hy\(hyforce
 Force the use of the new file also if it\(cqs bigger.
+.SH BUGS 
+All the ancillary chuncks are ignored and silently removed.
+Only the transparency tRNS chunck is processed.
 .SH COPYRIGHT 
-This file is Copyright (C) 2002 Andrea Mazzoleni
+This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 .SH SEE ALSO 
 advzip(1), advmng(1)

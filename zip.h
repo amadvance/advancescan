@@ -21,7 +21,7 @@
 #ifndef __ZIP_H
 #define __ZIP_H
 
-#include "error.h"
+#include "except.h"
 #include "compress.h"
 
 #include <list>
@@ -285,8 +285,10 @@ public:
 	const_iterator end() const { assert( flag.open ); return map.end(); }
 	iterator begin() { assert( flag.open ); return map.begin(); }
 	iterator end() { assert( flag.open ); return map.end(); }
+
 	unsigned size() const { assert( flag.open ); return map.size(); }
 	unsigned size_not_zero() const;
+	bool empty() const { return size_not_zero() == 0; }
 
 	// disk
 	std::string file_get() const { return path; }

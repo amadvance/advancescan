@@ -21,9 +21,9 @@
 #include "portable.h"
 
 #include "gamediff.h"
-#include "readinfo.h"
-#include "error.h"
-#include "portable.h"
+#include "except.h"
+
+#include "lib/readinfo.h"
 
 #include <iostream>
 

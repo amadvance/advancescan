@@ -1,8 +1,8 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([advancescan],[1.2])
-AM_INIT_AUTOMAKE([advancescan], [1.2])
-AM_CONFIG_HEADER([config.h])
+AC_INIT([AdvanceSCAN],[1.3])
 AC_CONFIG_SRCDIR([scan.cc])
+AM_INIT_AUTOMAKE([foreign no-dependencies])
+AM_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Checks for programs.
@@ -39,8 +39,9 @@ AC_ARG_ENABLE(
 	AC_CHECK_LIB([bz2],[BZ2_bzBuffToBuffCompress])
 )
 
-# Define PREFIX
-CPPFLAGS="$CPPFLAGS -DPREFIX=\\\"\$(prefix)\\\""
+# Configure the library
+CFLAGS="$CFLAGS -DUSE_ERROR_SILENT"
+CXXFLAGS="$CXXFLAGS -DUSE_ERROR_SILENT"
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

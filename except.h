@@ -18,10 +18,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __ERROR_H
-#define __ERROR_H
+#ifndef __EXCEPT_H
+#define __EXCEPT_H
 
 #include <string>
+#include <iostream>
 #include <sstream>
 
 class error {
@@ -101,10 +102,12 @@ public:
 #define error_trace() \
 	error(__PRETTY_FUNCTION__,__FILE__,__LINE__)
 #else
-#define error_trace() error()
+#define error_trace() \
+	error()
 #endif
 
-static inline std::ostream& operator<<(std::ostream& os, const error& e) {
+static inline std::ostream& operator<<(std::ostream& os, const error& e)
+{
 	os << e.desc_get();
 
 	if (e.function_get().length() || e.file_get().length() || e.line_get())

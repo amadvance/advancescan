@@ -7,7 +7,7 @@ Synopsis
 Description
 	This utility prints all the games contained in the
 	DEST_INFO file and not contained in ORIG_INFO file.
-	A game is considerated contained if all his roms are present
+	A game is considered contained if all his roms are present
 	in a game with the same name.
 
 	The DEST_INFO and ORIG_INFO files are the rom information
@@ -28,11 +28,11 @@ Description
 
 		:advdiff mame59.lst mame60.lst > mame59-60.lst
 
-	to create the list of roms needed to upgrade the MAME rom
-	set from the 0.59 version to the 0.60 version.
+	to create the list of roms needed to upgrade the MAME
+	romset from the version 0.59 version to the version 0.60.
 
 Copyright
-	This file is Copyright (C) 2002 Andrea Mazzoleni
+	This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advscan(1)

@@ -24,7 +24,8 @@
 #include "zlib.h"
 #include "siglock.h"
 #include "utility.h"
-#include "endianrw.h"
+
+#include "lib/endianrw.h"
 
 #include <iostream>
 #include <string>
@@ -961,7 +962,7 @@ void zip::save() {
 
 	flag.modify = false;
 
-	if (size_not_zero() > 0) {
+	if (!empty()) {
 		// prevent external signal
 		sig_auto_lock sal;
 

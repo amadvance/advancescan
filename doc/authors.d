@@ -4,6 +4,9 @@ Name
 Authors
 	* Andrea Mazzoleni
 
+Acknowledgments
+	* Filipe Estima
+
 Libraries
 	zlib - Copyright Jean-loup Gailly and Mark Adler
 	7z - Copyright Igor Pavlov

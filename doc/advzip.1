@@ -14,7 +14,7 @@ advzip [\(hya, \(hy\(hyadd] [\(hyx, \(hy\(hyextract] [\(hyl, \(hy\(hylist]
 .PD 0
 .PP
 .PD
-[\(hyN, \(hy\(hynot\(hy zip] [\(hyp, \(hy\(hypedantic] [\(hyq, \(hy\(hyquiet]
+[\(hyN, \(hy\(hynot\(hyzip] [\(hyp, \(hy\(hypedantic] [\(hyq, \(hy\(hyquiet]
 .PD 0
 .PP
 .PD
@@ -26,7 +26,7 @@ advzip [\(hya, \(hy\(hyadd] [\(hyx, \(hy\(hyextract] [\(hyl, \(hy\(hylist]
 The main purpose of this utility is to recompress and test
 the zip archives to get the smallest possible size.
 .PP
-For the recompression the 7\(hyZip (www.7\(hyzip.com) Deflate
+For recompression the 7\(hyZip (www.7\(hyzip.com) Deflate
 implementation is used. This implementation generally
 gives 5\(hy10% more compression than the zLib Deflate
 implementation.
@@ -52,7 +52,7 @@ List the content of the specified archives.
 .TP
 .B \(hyz, \(hy\(hyrecompress ARCHIVES...
 Recompress the specified archives. If the \(hy1, \(hy2,
-\(hy3 options are specified is used the smallest file
+\(hy3 options are specified, it\(cqs used the smallest file
 choice from: the previous compressed data, the new
 compression and the uncompressed format. If the \(hy0
 option is specified the archive is always rewritten
@@ -69,8 +69,8 @@ application!
 .TP
 .B \(hyp, \(hy\(hypedantic
 Be pedantic on the zip tests. If this flag is
-enabled some more extensive test on the zip
-integrity are done. These test are generally not
+enabled some more extensive tests on the zip
+integrity are done. These tests are generally not
 done by other zip utilities.
 .TP
 .B \(hy0, \(hy\(hyshrink\(hy0
@@ -94,6 +94,6 @@ Set the compression level to \(a"extra\(a". It\(cqs SLOW.
 Set the compression level to \(a"extreme\(a". It\(cqs VERY
 SLOW.
 .SH COPYRIGHT 
-This file is Copyright (C) 2002 Andrea Mazzoleni
+This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 .SH SEE ALSO 
 advpng(1), advmng(1)

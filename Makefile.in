@@ -86,8 +86,8 @@ bin_PROGRAMS = advscan advdiff advzip advpng advmng
 advdiff_SOURCES = \
 	diff.cc \
 	gamediff.cc \
-	readinfo.c \
-	portable.c
+	portable.c \
+	lib/readinfo.c
 
 
 advzip_SOURCES = \
@@ -121,28 +121,29 @@ advzip_SOURCES = \
 
 advscan_SOURCES = \
 	scan.cc \
-	readinfo.c \
 	rom.cc \
-	utility.cc \
 	conf.cc \
+	utility.cc \
 	ziprom.cc \
 	game.cc \
 	zip.cc \
 	output.cc \
 	analyze.cc \
 	siglock.cc \
-	portable.c
+	portable.c \
+	lib/readinfo.c
 
 
 advpng_SOURCES = \
 	repng.cc \
-	fz.c \
-	png.c \
 	pngex.cc \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
 	portable.c \
+	lib/fz.c \
+	lib/png.c \
+	lib/error.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -166,14 +167,15 @@ advpng_SOURCES = \
 
 advmng_SOURCES = \
 	remng.cc \
-	fz.c \
-	png.c \
-	mng.c \
 	pngex.cc \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
 	portable.c \
+	lib/fz.c \
+	lib/png.c \
+	lib/mng.c \
+	lib/error.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -207,11 +209,6 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 
 
 noinst_HEADERS = \
-	png.h \
-	mng.h \
-	fz.h \
-	endianrw.h \
-	readinfo.h \
 	pngex.h \
 	compress.h \
 	rom.h \
@@ -221,13 +218,20 @@ noinst_HEADERS = \
 	game.h \
 	gamediff.h \
 	zip.h \
-	error.h \
+	except.h \
 	output.h \
 	operatio.h \
 	analyze.h \
 	analyze.dat \
 	siglock.h \
 	portable.h \
+	lib/png.h \
+	lib/mng.h \
+	lib/fz.h \
+	lib/endianrw.h \
+	lib/readinfo.h \
+	lib/error.h \
+	lib/extra.h \
 	7z/7z.h \
 	7z/AriBitCoder.h \
 	7z/AriConst.h \
@@ -298,14 +302,14 @@ bin_PROGRAMS = advscan$(EXEEXT) advdiff$(EXEEXT) advzip$(EXEEXT) \
 PROGRAMS = $(bin_PROGRAMS)
 
 am_advdiff_OBJECTS = diff.$(OBJEXT) gamediff.$(OBJEXT) \
-	readinfo.$(OBJEXT) portable.$(OBJEXT)
+	portable.$(OBJEXT) readinfo.$(OBJEXT)
 advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
 advdiff_DEPENDENCIES =
 advdiff_LDFLAGS =
-am_advmng_OBJECTS = remng.$(OBJEXT) fz.$(OBJEXT) png.$(OBJEXT) \
-	mng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
+am_advmng_OBJECTS = remng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
 	siglock.$(OBJEXT) compress.$(OBJEXT) portable.$(OBJEXT) \
+	fz.$(OBJEXT) png.$(OBJEXT) mng.$(OBJEXT) error.$(OBJEXT) \
 	7zdeflate.$(OBJEXT) 7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) \
 	CRC.$(OBJEXT) DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
 	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
@@ -317,9 +321,9 @@ advmng_OBJECTS = $(am_advmng_OBJECTS)
 advmng_LDADD = $(LDADD)
 advmng_DEPENDENCIES =
 advmng_LDFLAGS =
-am_advpng_OBJECTS = repng.$(OBJEXT) fz.$(OBJEXT) png.$(OBJEXT) \
-	pngex.$(OBJEXT) utility.$(OBJEXT) siglock.$(OBJEXT) \
-	compress.$(OBJEXT) portable.$(OBJEXT) 7zdeflate.$(OBJEXT) \
+am_advpng_OBJECTS = repng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
+	siglock.$(OBJEXT) compress.$(OBJEXT) portable.$(OBJEXT) \
+	fz.$(OBJEXT) png.$(OBJEXT) error.$(OBJEXT) 7zdeflate.$(OBJEXT) \
 	7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) \
 	DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
 	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
@@ -331,10 +335,10 @@ advpng_OBJECTS = $(am_advpng_OBJECTS)
 advpng_LDADD = $(LDADD)
 advpng_DEPENDENCIES =
 advpng_LDFLAGS =
-am_advscan_OBJECTS = scan.$(OBJEXT) readinfo.$(OBJEXT) rom.$(OBJEXT) \
-	utility.$(OBJEXT) conf.$(OBJEXT) ziprom.$(OBJEXT) \
-	game.$(OBJEXT) zip.$(OBJEXT) output.$(OBJEXT) analyze.$(OBJEXT) \
-	siglock.$(OBJEXT) portable.$(OBJEXT)
+am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) conf.$(OBJEXT) \
+	utility.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) zip.$(OBJEXT) \
+	output.$(OBJEXT) analyze.$(OBJEXT) siglock.$(OBJEXT) \
+	portable.$(OBJEXT) readinfo.$(OBJEXT)
 advscan_OBJECTS = $(am_advscan_OBJECTS)
 advscan_LDADD = $(LDADD)
 advscan_DEPENDENCIES =
@@ -391,7 +395,7 @@ all: config.h
 .SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  --ignore-deps Makefile
+	  $(AUTOMAKE) --foreign  Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)
 
@@ -445,9 +449,14 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+readinfo.$(OBJEXT): lib/readinfo.c
 advdiff$(EXEEXT): $(advdiff_OBJECTS) $(advdiff_DEPENDENCIES) 
 	@rm -f advdiff$(EXEEXT)
 	$(CXXLINK) $(advdiff_LDFLAGS) $(advdiff_OBJECTS) $(advdiff_LDADD) $(LIBS)
+fz.$(OBJEXT): lib/fz.c
+png.$(OBJEXT): lib/png.c
+mng.$(OBJEXT): lib/mng.c
+error.$(OBJEXT): lib/error.c
 7zdeflate.$(OBJEXT): 7z/7zdeflate.cc
 7zlzma.$(OBJEXT): 7z/7zlzma.cc
 AriBitCoder.$(OBJEXT): 7z/AriBitCoder.cc
@@ -491,6 +500,36 @@ distclean-compile:
 
 .c.obj:
 	$(COMPILE) -c `cygpath -w $<`
+
+readinfo.o: lib/readinfo.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o readinfo.o `test -f lib/readinfo.c || echo '$(srcdir)/'`lib/readinfo.c
+
+readinfo.obj: lib/readinfo.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o readinfo.obj `cygpath -w lib/readinfo.c`
+
+fz.o: lib/fz.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fz.o `test -f lib/fz.c || echo '$(srcdir)/'`lib/fz.c
+
+fz.obj: lib/fz.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fz.obj `cygpath -w lib/fz.c`
+
+png.o: lib/png.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o png.o `test -f lib/png.c || echo '$(srcdir)/'`lib/png.c
+
+png.obj: lib/png.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o png.obj `cygpath -w lib/png.c`
+
+mng.o: lib/mng.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mng.o `test -f lib/mng.c || echo '$(srcdir)/'`lib/mng.c
+
+mng.obj: lib/mng.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mng.obj `cygpath -w lib/mng.c`
+
+error.o: lib/error.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o error.o `test -f lib/error.c || echo '$(srcdir)/'`lib/error.c
+
+error.obj: lib/error.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o error.obj `cygpath -w lib/error.c`
 
 .cc.o:
 	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
@@ -703,7 +742,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/7z $(distdir)/doc
+	$(mkinstalldirs) $(distdir)/7z $(distdir)/doc $(distdir)/lib
 	@for file in $(DISTFILES); do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \

@@ -3,7 +3,21 @@
                             =======================
 
 
-1 ADVANCESCAN VERSION 1.2 2002/08
+1 ADVANCESCAN VERSION 1.3 2002/11
+=================================
+
+* Fixed a bug in the advscan utility. When a .zip file was completly
+  removed the program was aborting with a "Failed stat" message
+  because it was trying to reread the just deleted file.
+* Added the support for the transparency tRNS chunk at the
+  advpng utility.
+* Improved the garbage detecter for zipped roms.
+* Upgraded at the lastest Advance Library.
+* Fixes at the docs. [by Filipe Estima]
+* Minor changes at the autoconf/automake scripts.
+
+
+2 ADVANCESCAN VERSION 1.2 2002/08
 =================================
 
 * Added the advpng utility to compress the PNG files.
@@ -12,14 +26,14 @@
 * Other minor fixes.
 
 
-2 ADVANCESCAN VERSION 1.1 2002/06
+3 ADVANCESCAN VERSION 1.1 2002/06
 =================================
 
 * Fixed an infinite loop bug testing some small damaged zips.
 * Removed some warning compiling with gcc 3.1.
 
 
-3 ADVANCESCAN VERSION 1.0 2002/05
+4 ADVANCESCAN VERSION 1.0 2002/05
 =================================
 
 * First public release.
@@ -34,7 +48,7 @@
 * Other minor fixes.
 
 
-4 ADVANCESCAN VERSION 0.6-BETA 2002/05
+5 ADVANCESCAN VERSION 0.6-BETA 2002/05
 ======================================
 
 * Major revision.
@@ -44,37 +58,37 @@
 * Added the AdvanceDIFF and AdvanceZIP utility.
 
 
-5 MAMESCAN VERSION 0.5 2001/08
+6 MAMESCAN VERSION 0.5 2001/08
 ==============================
 
 * Removed the options -fix, -cat, -collision.
 
 
-6 MAMESCAN VERSION 0.4 2000/02
+7 MAMESCAN VERSION 0.4 2000/02
 ==============================
 
 * Added configure for msdos.
 
 
-7 MAMESCAN VERSION 0.3
+8 MAMESCAN VERSION 0.3
 ======================
 
 * Minor revison.
 
 
-8 MAMESCAN VERSION 0.2
+9 MAMESCAN VERSION 0.2
 ======================
 
 * Minor revison.
 
 
-9 MAMESCAN VERSION 0.1 1999/07
-==============================
+10 MAMESCAN VERSION 0.1 1999/07
+===============================
 
 * First version.
 
 
-10 MAMESCAN VERSION 0.0 1998/11
+11 MAMESCAN VERSION 0.0 1998/11
 ===============================
 
 * Posted in the MAME list the new listinfo command.

@@ -20,9 +20,10 @@
 
 #include "portable.h"
 
+#include "lib/endianrw.h"
+#include "lib/mng.h"
+
 #include "pngex.h"
-#include "mng.h"
-#include "endianrw.h"
 
 #include <iostream>
 #include <iomanip>
@@ -235,7 +236,7 @@ void png_print_chunk(unsigned type, unsigned char* data, unsigned size) {
 				cout << " width:" << be_uint32_read(data + 4) << " height:" << be_uint32_read(data + 8);
 			}
 			if (size >= 20) {
-				cout << " x:" << be_uint32_read(data + 12) << " y:" << be_uint32_read(data + 16);
+				cout << " x:" << (int)be_uint32_read(data + 12) << " y:" << (int)be_uint32_read(data + 16);
 			}
 		break;
 		case MNG_CN_FRAM :
@@ -311,7 +312,7 @@ void png_print_chunk(unsigned type, unsigned char* data, unsigned size) {
 				case 1 : cout << " type:add"; break;
 				default : cout << " type:?"; break;
 			}
-			cout << " x:" << be_uint32_read(data + 5) << " y:" << be_uint32_read(data + 9);
+			cout << " x:" << (int)be_uint32_read(data + 5) << " y:" << (int)be_uint32_read(data + 9);
 			break;
 		case MNG_CN_PPLT :
 			switch (data[0]) {

@@ -24,7 +24,8 @@
 #include "utility.h"
 #include "compress.h"
 #include "siglock.h"
-#include "endianrw.h"
+
+#include "lib/endianrw.h"
 
 #include <iostream>
 #include <iomanip>
@@ -87,7 +88,7 @@ bool reduce_image(unsigned char** out_ptr, unsigned* out_scanline, unsigned char
 	return true;
 }
 
-void write_image_raw(FZ* f, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size) {
+void write_image_raw(adv_fz* f, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size, unsigned char* rns_ptr, unsigned rns_size) {
 	unsigned char ihdr[13];
 	data_ptr z_ptr;
 	unsigned z_size;
@@ -117,6 +118,12 @@ void write_image_raw(FZ* f, unsigned pix_width, unsigned pix_height, unsigned pi
 		}
 	}
 
+	if (rns_size) {
+		if (png_write_chunk(f, PNG_CN_tRNS, rns_ptr, rns_size, 0) != 0) {
+			throw error_png();
+		}
+	}
+
 	png_compress(opt_level, z_ptr, z_size, pix_ptr, pix_scanline, pix_pixel, 0, 0, pix_width, pix_height);
 
 	if (png_write_chunk(f, PNG_CN_IDAT, z_ptr, z_size, 0) != 0) {
@@ -128,26 +135,34 @@ void write_image_raw(FZ* f, unsigned pix_width, unsigned pix_height, unsigned pi
 	}
 }
 
-void write_image(FZ* f,  unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size) {
+void write_image(adv_fz* f, unsigned pix_width, unsigned pix_height, unsigned pix_pixel, unsigned char* pix_ptr, unsigned pix_scanline, unsigned char* pal_ptr, unsigned pal_size, unsigned char* rns_ptr, unsigned rns_size) {
 	if (pix_pixel == 1) {
-		write_image_raw(f, pix_width, pix_height, pix_pixel, pix_ptr, pix_scanline, pal_ptr, pal_size);
+		write_image_raw(f, pix_width, pix_height, pix_pixel, pix_ptr, pix_scanline, pal_ptr, pal_size, rns_ptr, rns_size);
 	} else {
 		unsigned char ovr_ptr[256*3];
 		unsigned ovr_count;
 		unsigned char* new_ptr;
 		unsigned new_scanline;
 
-		if (!reduce_image(&new_ptr, &new_scanline, ovr_ptr, &ovr_count, pix_width, pix_height, pix_ptr, pix_scanline)) {
-			return write_image_raw(f, pix_width, pix_height, pix_pixel, pix_ptr, pix_scanline, 0, 0);
-		}
+		new_ptr = 0;
 
-		write_image_raw(f, pix_width, pix_height, 1, new_ptr, new_scanline, ovr_ptr, ovr_count * 3);
+		try {
+			if (rns_size == 0
+				&& reduce_image(&new_ptr, &new_scanline, ovr_ptr, &ovr_count, pix_width, pix_height, pix_ptr, pix_scanline)) {
+				write_image_raw(f, pix_width, pix_height, 1, new_ptr, new_scanline, ovr_ptr, ovr_count * 3, 0, 0);
+			} else {
+				write_image_raw(f, pix_width, pix_height, pix_pixel, pix_ptr, pix_scanline, 0, 0, rns_ptr, rns_size);
+			}
+		} catch (...) {
+			data_free(new_ptr);
+			throw;
+		}
 
 		data_free(new_ptr);
 	}
 }
 
-void convert_f(FZ* f_in, FZ* f_out) {
+void convert_f(adv_fz* f_in, adv_fz* f_out) {
 	unsigned char* dat_ptr;
 	unsigned dat_size;
 	unsigned pix_pixel;
@@ -155,14 +170,17 @@ void convert_f(FZ* f_in, FZ* f_out) {
 	unsigned pix_height;
 	unsigned char* pal_ptr;
 	unsigned pal_size;
+	unsigned char* rns_ptr;
+	unsigned rns_size;
 	unsigned char* pix_ptr;
 	unsigned pix_scanline;
 
-	if (png_read(
+	if (png_read_rns(
 		&pix_width, &pix_height, &pix_pixel,
 		&dat_ptr, &dat_size,
 		&pix_ptr, &pix_scanline,
 		&pal_ptr, &pal_size,
+		&rns_ptr, &rns_size,
 		f_in
 	) != 0) {
 		throw error_png();
@@ -173,21 +191,24 @@ void convert_f(FZ* f_in, FZ* f_out) {
 			f_out,
 			pix_width, pix_height, pix_pixel,
 			pix_ptr, pix_scanline,
-			pal_ptr, pal_size
+			pal_ptr, pal_size,
+			rns_ptr, rns_size
 		);
 	} catch (...) {
 		free(dat_ptr);
 		free(pal_ptr);
+		free(rns_ptr);
 		throw;
 	}
 
 	free(dat_ptr);
 	free(pal_ptr);
+	free(rns_ptr);
 }
 
 void convert_inplace(const string& path) {
-	FZ* f_in;
-	FZ* f_out;
+	adv_fz* f_in;
+	adv_fz* f_out;
 
 	// temp name of the saved file
 	string path_dst = file_basepath(path) + ".tmp";
@@ -243,7 +264,7 @@ void convert_inplace(const string& path) {
 void png_print(const string& path) {
 	unsigned type;
 	unsigned size;
-	FZ* f_in;
+	adv_fz* f_in;
 
 	f_in = fzopen(path.c_str(),"rb");
 	if (!f_in) {

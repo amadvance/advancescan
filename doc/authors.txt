@@ -9,7 +9,13 @@
 * Andrea Mazzoleni
 
 
-2 LIBRARIES
+2 ACKNOWLEDGMENTS
+=================
+
+* Filipe Estima
+
+
+3 LIBRARIES
 ===========
 
 zlib - Copyright Jean-loup Gailly and Mark Adler

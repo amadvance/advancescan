@@ -21,7 +21,8 @@
 #include "portable.h"
 
 #include "game.h"
-#include "readinfo.h"
+
+#include "lib/readinfo.h"
 
 using namespace std;
 

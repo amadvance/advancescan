@@ -19,12 +19,12 @@ Synopsis
 	:advscan [-h, --help] [-V, --version]
 
 Description
-	advscan is a command line utility for maintaining a rom
-	and sample zip archive for the MAME, XMAME, AdvanceMAME
-	and Raine emulators. The goal of advscan is to obtain a
-	complete and perfect rom and sample zip archive with
+	advscan is a command line utility for maintaining a zipped
+	archive of roms and sample zip archive for the MAME, XMAME,
+	AdvanceMAME and Raine emulators. The goal of advscan is to
+	obtain a complete and perfect rom and sample zip archive with
 	differential merging. Differential merging means that any
-	game has his zip archive, which contains all the rom
+	game has its zip archive, which contains all the rom
 	files, which are not already in the parent zip archive (if
 	exists).
 
@@ -72,12 +72,12 @@ Options
 
 	-a,--add-zip
 		Add the missing rom zips. Any missing zip archive
-		for which at least one rom is available is created.
+		for which at least one rom is available will be created.
 
 	-b,--add-bin
 		Add, rename and substitute all the necessary files
 		in the existing zip archives. No new zip archives
-		are created, only the already present zips are
+		are created, only the already present zip files are
 		modified. No file is deleted. Anyway, some files may
 		be overwritten. Any file overwritten is saved in
 		the `rom_unknown' or `sample_unknown' directory in
@@ -165,9 +165,9 @@ Identification
 	are not really decompressed, but the crc value stored on
 	the zip archives is used. If a rom has an incorrect crc or
 	size, but it has a correct name, it's maintained if
-	doesn't exists a valid alternative.
+	doesn't exist a valid alternative.
 
-	Sample files are identified only by their name. This
+	Sample files are identified only by their names. This
 	limits the possible operations. Essentially advscan can
 	report only missing samples.
 
@@ -202,10 +202,10 @@ Configuration
 
 		:advmame -listinfo | advscan [options]
 
-	The configuration file is a text files that describes your
+	The configuration file is a text file that describes your
 	directories structure. You can use absolute path or
-	relative path. Relative path are relative to the current
-	directory when you run advscan.
+	relative path. Relative path is relative to the current
+	directory from where you run advscan.
 
 	On Unix the PATH separator is `:'. On DOS the PATH
 	separator is `;'. The following options are expressed with the
@@ -213,7 +213,7 @@ Configuration
 
 	=rom PATH:PATH...
 		List of paths where the roms are placed. These are
-		the zip archives, which are modified fixed.
+		the zip archives, which are modified and fixed.
 
 	=rom_new PATH
 		Single path where the new created zip archives are
@@ -222,7 +222,7 @@ Configuration
 		next run the zip archives are recreated.
 
 	=rom_import PATH:PATH...
-		List of directory tree where other roms files are
+		List of directory trees where other roms files are
 		placed. These are used for importing rom file missing
 		in rompath. These files are only read and never
 		modified in any way. It's very useful to insert
@@ -239,7 +239,7 @@ Configuration
 		`rom_import' options.
 
 	=sample PATH:PATH...
-		List of path where the samples are placed. These
+		List of paths where the samples are placed. These
 		are the zip archives, which are modified and fixed.
 
 	=sample_unknown PATH
@@ -255,15 +255,15 @@ Configuration
 
 Report
 	The report generated with the -p option contains some text
-	tag explicated here:
+	tag explained here:
 
 	=rom_good
-		A recognized good rom. The rom is recognized by his
+		A recognized good rom. The rom is recognized by its
 		name, crc and size.
 
 	=rom_bad
 		A recognized bad rom with an incorrect size or crc.
-		The rom is recognized by his name.
+		The rom is recognized by its name.
 
 	=rom_miss
 		A missing rom.
@@ -273,13 +273,13 @@ Report
 
 	=nodump_bad
 		A recognized "NO GOOD DUMP KNOWN" rom. The rom is
-		recognized by his name and size.
+		recognized by its name and size.
 
 	=redump_bad
 		A recognized "ROM NEEDS REDUMP" rom. The rom is
-		recognized by his name, size and negate crc. The
+		recognized by its name, size and negate crc. The
 		negate crc is the special convention used by MAME
-		to sign known bad dump.
+		to sign a known bad dump.
 
 	=text
 		An unknown text file.
@@ -290,12 +290,12 @@ Report
 	=garbage
 		A recognized garbage file. A garbage file is an
 		advertising text file added generally by a rom
-		site. The file is recognized by his name, size and
+		site. The file is recognized by its name, size and
 		crc.
 
 	=sound_good
 		A recognized good sound sample. The sample is
-		recognized by his name.
+		recognized by its name.
 
 	=sound_miss
 		A missing sound sample.
@@ -314,18 +314,18 @@ Examples
 
 		:advscan -R -n < info.lst
 
-	which show only the operations.
+	which only show the operations.
 
 	To only generate an extensive report of your rom set you
 	can use the command:
 
 		:advscan -r -p < info.lst > report.txt
 
-	To increase the verbosity of the information printed you
+	To increase the verbosity of the printed information you
 	can add the -v switch.
 
 Copyright
-	This file is Copyright (C) 2002 Andrea Mazzoleni
+	This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advdiff(1)

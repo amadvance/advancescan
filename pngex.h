@@ -21,15 +21,17 @@
 #ifndef __PNGEX_H
 #define __PNGEX_H
 
-#include "png.h"
-#include "error.h"
+#include "except.h"
 #include "compress.h"
 #include "utility.h"
 
+#include "lib/png.h"
+#include "lib/error.h"
+
 class error_png : public error {
 public:
-	error_png() : error(png_error_unsupported_get() != 0) {
-		operator<<(png_error_get());
+	error_png() : error(error_unsupported_get() != 0) {
+		operator<<(error_get());
 	}
 };
 
