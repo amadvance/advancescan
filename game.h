@@ -103,15 +103,15 @@ public:
 	bool is_romset_required() const { return rs_get().begin() != rs_get().end(); }
 	bool is_sampleset_required() const { return ss_get().begin() != ss_get().end(); }
 
-	bool good_romzip_has() const;
-	unsigned good_romzip_size() const;
-	std::string good_romzip_get() const;
-        bool bad_romzip_has() const;
-	bool usable_romzip_has() const;
-	
-	bool good_samplezip_has() const;
-	unsigned good_samplezip_size() const;
-        bool bad_samplezip_has() const;
+	bool has_good_rom() const;
+	unsigned good_rom_size() const;
+	std::string good_rom_get() const;
+        bool has_bad_rom() const;
+	bool has_usable_rom() const;
+
+	bool has_good_sample() const;
+	unsigned good_sample_size() const;
+        bool has_bad_sample() const;
 
 	unsigned size_get() const;
 };
@@ -170,6 +170,8 @@ public:
 	const_iterator end() const { return map.end(); }
 
 	const_iterator find(const game& A) const;
+	string_container find_working_clones(const game& A) const;
+	bool has_working_clone_with_rom(const game& A) const;
 
 	void load(std::istream& f);
 	void filter(filter_proc* p);

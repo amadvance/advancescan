@@ -957,7 +957,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 	// add zips
 	if (oper.active_add() || oper.output_add()) {
 		for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-			if (i->is_romset_required() && !i->usable_romzip_has()) {
+			if (i->is_romset_required() && !i->has_usable_rom()) {
 				string path = cfg.romnewpath_get().file_get() + "/" + i->name_get() + ".zip";
 
 				ziparchive::iterator j;
@@ -1168,18 +1168,18 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long ok_clone_size = 0;
 	unsigned long long ok_clone_size_zip = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (!i->is_romset_required() || i->good_romzip_has()) {
+		if (!i->is_romset_required() || i->has_good_rom()) {
 			if (i->cloneof_get().length()) {
 				++ok_clone;
 				if (i->is_romset_required()) {
 					ok_clone_size += i->size_get();
-					ok_clone_size_zip += i->good_romzip_size();
+					ok_clone_size_zip += i->good_rom_size();
 				}
 			} else {
 				++ok_parent;
 				if (i->is_romset_required()) {
 					ok_parent_size += i->size_get();
-					ok_parent_size_zip += i->good_romzip_size();
+					ok_parent_size_zip += i->good_rom_size();
 				}
 			}
 			out.state_gamerom("game_rom_good", *i, gar, false);
@@ -1197,7 +1197,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned wrong_parent = 0;
 	unsigned long long wrong_parent_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (i->is_romset_required() && !i->good_romzip_has() && i->bad_romzip_has()) {
+		if (i->is_romset_required() && !i->has_good_rom() && i->has_bad_rom()) {
 			if (i->cloneof_get().length()) {
 				++wrong_clone;
 				wrong_clone_size += i->size_get();
@@ -1244,44 +1244,90 @@ void report_rom_set(const gamearchive& gar, output& out) {
 }
 
 void report_rom_set_zip(const gamearchive& gar, output& out) {
+	bool has_duplicate = false;
+	bool has_preliminary = false;
+	bool has_incomplete = false;
+	bool has_missing = false;
+
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		if (i->is_romset_required() && i->rzs_get().size() > 0) {
 			if (i->rzs_get().size() > 1) {
-				out() << i->name_get() << " with duplicate zip";
+				has_duplicate = true;
+				out() << "Rom '" << i->name_get() << "' has duplicate zips";
 				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
-					out() << " " << j->file_get();
+					out() << " '" << j->file_get() << "'";
 				}
-				out() << "\n";
+				out() << ".\n\n";
 			}
 
 			string romof = i->romof_get();
 			while (romof.length()) {
 				gamearchive::const_iterator j = gar.find(romof);
 				if (j == gar.end()) {
-					out() << i->name_get() << " requires missing rom " << romof << "\n";
+					has_missing = true;
+					out() << "Rom '" << i->name_get() << "' requires missing rom '" << romof << "'.\n\n";
 					romof = "";
 				} else {
 					if (j->rzs_get().size() == 0) {
-						out() << i->name_get() << " requires missing rom " << romof << "\n";
+						has_missing = true;
+						out() << "Rom '" << i->name_get() << "' requires missing rom '" << romof << "'.\n\n";
 					}
 					romof = j->romof_get();
 				}
 			}
 
-			/* WARNING note that if a filter is applied the working_subset relation may be wrong, */
-			/* because it refers to the whole set and not to a partial set */
-			if (!i->working_subset_get()) {
-				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
-					out() << i->name_get() << " preliminary zip " << j->file_get() << "\n";
-				}
-			} else {
-				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
-					if (!j->good_get()) {
-						out() << i->name_get() << " with wrong zip " <<j->file_get() << "\n";
+			if (!i->working_get()) {
+				if (!gar.has_working_clone_with_rom(*i)) {
+					has_preliminary = true;
+					out() << "Rom '" << i->name_get() << "' has a preliminary driver";
+
+					// search for a working clone
+					string_container clone = gar.find_working_clones(*i);
+					if (clone.size()) {
+						if (clone.size() == 1)
+							out() << " but has also a working clone";
+						else
+							out() << " but has also working clones";
+						for(string_container::const_iterator j=clone.begin();j!=clone.end();++j) {
+							out() << " '" << *j << "'";
+						}
 					}
+					out() << ".\n\n";
+				}
+			}
+
+			for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
+				if (!j->good_get()) {
+					has_incomplete = true;
+					out() << "Rom '" << i->name_get() << "' has an incomplete zip '" << j->file_get() << "'.\n\n";
 				}
 			}
 		}
+	}
+
+	if (!has_preliminary) {
+		out() << "All the roms are for working drivers.\n";
+	}
+	if (!has_incomplete) {
+		out() << "All the roms are complete.\n";
+	}
+	if (!has_missing) {
+		out() << "All the dependencies are satisfied.\n";
+	}
+	if (!has_duplicate) {
+		out() << "All the roms are without duplicates.\n";
+	}
+	if (has_preliminary) {
+		out() << "Roms with a preliminary driver are unplayable, you can remove them.\n";
+	}
+	if (has_incomplete) {
+		out() << "Roms with an incomplete zip must be redownloaded.\n";
+	}
+	if (has_missing) {
+		out() << "Missing roms must be added, otherwise other roms may not work.\n";
+	}
+	if (has_duplicate) {
+		out() << "Duplicate roms can be removed.\n";
 	}
 	out() << "\n";
 }
@@ -1308,9 +1354,9 @@ void report_sample_set(const gamearchive& gar, output& out) {
 	unsigned ok = 0;
 	unsigned long long ok_size_zip = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (i->good_samplezip_has()) {
+		if (i->has_good_sample()) {
 			++ok;
-			ok_size_zip += i->good_samplezip_size();
+			ok_size_zip += i->good_sample_size();
 			out.state_gamesample("game_sample_good", *i);
 		}
 	}
@@ -1321,7 +1367,7 @@ void report_sample_set(const gamearchive& gar, output& out) {
 
 	unsigned wrong = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (!i->good_samplezip_has() && i->bad_samplezip_has()) {
+		if (!i->has_good_sample() && i->has_bad_sample()) {
 			++wrong;
 			out.state_gamesample("game_sample_bad", *i);
 		}

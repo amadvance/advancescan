@@ -43,11 +43,6 @@
    system headers may assume the cdecl convention.
 */
 #ifndef XMLCALL
-#if defined(XML_USE_MSC_EXTENSIONS)
-#define XMLCALL __cdecl
-#elif defined(__GNUC__)
-#define XMLCALL __attribute__((cdecl))
-#else
 /* For any platform which uses this definition and supports more than
    one calling convention, we need to extend this definition to
    declare the convention used on that platform, if it's possible to
@@ -59,7 +54,6 @@
    platform's malloc() implementation.
 */
 #define XMLCALL
-#endif
 #endif  /* not defined XMLCALL */
 
 

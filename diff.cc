@@ -49,7 +49,12 @@ bool include(const rom_by_name_set& A, const rom_by_name_set& B) {
 }
 
 std::ostream& output_info(std::ostream& os, const rom& A) {
-	os << "rom ( name " << A.name_get() << " size " << std::dec << A.size_get() << " crc " << std::hex << setw(8) << setfill('0') << A.crc_get() << " )";
+	os << "rom ( name " << A.name_get() << " size " << std::dec << A.size_get();
+	if (A.nodump_get())
+		os << " flags nodump";
+	else
+		os << " crc " << std::hex << setw(8) << setfill('0') << A.crc_get();
+	os << " )";
 	return os;
 }
 
@@ -66,7 +71,12 @@ std::ostream& output_info(std::ostream &os, const game& A) {
 }
 
 std::ostream& output_xml(std::ostream& os, const rom& A) {
-	os << "<rom name=\"" << A.name_get() << "\" size=\"" << std::dec << A.size_get() << "\" crc=\"" << std::hex << setw(8) << setfill('0') << A.crc_get() << "\"/>";
+	os << "<rom name=\"" << A.name_get() << "\" size=\"" << std::dec << A.size_get() << "\"";
+	if (A.nodump_get())
+		os << " status=\"nodump\"";
+	else
+		os << " crc=\"" << std::hex << setw(8) << setfill('0') << A.crc_get() << "\"";
+	os << "/>";
 	return os;
 }
 

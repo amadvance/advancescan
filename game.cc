@@ -64,7 +64,7 @@ game::game(const game& A) :
 game::~game() {
 }
 
-unsigned game::good_romzip_size() const {
+unsigned game::good_rom_size() const {
 	unsigned size = 0;
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get() && (!size || i->size_get() < size))
@@ -72,28 +72,28 @@ unsigned game::good_romzip_size() const {
 	return size;
 }
 
-bool game::good_romzip_has() const {
+bool game::has_good_rom() const {
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get())
 			return true;
 	return false;
 }
 
-string game::good_romzip_get() const {
+string game::good_rom_get() const {
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (i->good_get())
 			return i->file_get();
 	return "";
 }
 
-bool game::bad_romzip_has() const {
+bool game::has_bad_rom() const {
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i)
 		if (!i->good_get())
 			return true;
 	return false;
 }
 
-bool game::usable_romzip_has() const {
+bool game::has_usable_rom() const {
 	for(zippath_container::const_iterator i=rzs_get().begin();i!=rzs_get().end();++i) {
 		if (i->good_get())
 			return true;
@@ -103,14 +103,14 @@ bool game::usable_romzip_has() const {
 	return false;
 }
 
-bool game::good_samplezip_has() const {
+bool game::has_good_sample() const {
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (i->good_get())
 			return true;
 	return false;
 }
 
-unsigned game::good_samplezip_size() const {
+unsigned game::good_sample_size() const {
 	unsigned size = 0;
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (i->good_get() && (!size || i->size_get() < size))
@@ -118,7 +118,7 @@ unsigned game::good_samplezip_size() const {
 	return size;
 }
 
-bool game::bad_samplezip_has() const {
+bool game::has_bad_sample() const {
 	for(zippath_container::const_iterator i=szs_get().begin();i!=szs_get().end();++i)
 		if (!i->good_get())
 			return true;
@@ -225,6 +225,16 @@ unsigned game::size_get() const {
 // ------------------------------------------------------------------------
 // Game archive
 
+gamearchive::gamearchive() {
+}
+
+gamearchive::~gamearchive() {
+}
+
+gamearchive::const_iterator gamearchive::find(const game& A) const {
+	return map.find( A );
+}
+
 bool gamearchive::is_game_parent(const game& g) {
 	const_iterator j = find( g.romof_get() );
 	return j == end() || j->resource_get();
@@ -280,14 +290,39 @@ bool gamearchive::game_working_parent_subset_compute(const game& g) {
 	return result;
 }
 
-gamearchive::gamearchive() {
+string_container gamearchive::find_working_clones(const game& g) const
+{
+	string_container r;
+
+	if (g.working_get())
+		r.insert(r.end(), g.name_get());
+
+	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
+		gamearchive::iterator j = find( *i );
+		if (j!=end()) {
+			string_container s = find_working_clones(*j);
+			for(string_container::const_iterator k=s.begin();k!=s.end();++k) {
+				r.insert(r.end(), *k);
+			}
+		}
+	}
+
+	return r;
 }
 
-gamearchive::~gamearchive() {
-}
+bool gamearchive::has_working_clone_with_rom(const game& g) const
+{
+	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
+		gamearchive::iterator j = find( *i );
+		if (j!=end()) {
+			if (j->working_get() && j->has_good_rom())
+				return true;
+			if (has_working_clone_with_rom(*j))
+				return true;
+		}
+	}
 
-gamearchive::const_iterator gamearchive::find(const game& A) const {
-	return map.find( A );
+	return false;
 }
 
 void gamearchive::load(istream& f) {
