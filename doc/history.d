@@ -1,6 +1,11 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.4 2002/12
+	) Fixed a bug in the advmng utility when it was called with
+		more than one file in the command line. The program
+		was incorrectly adding a PLTE chunk at rgb images.
+
 AdvanceSCAN Version 1.3 2002/11
 	) Fixed a bug in the advscan utility. When a .zip file was completly
 		removed the program was aborting with a "Failed stat" message

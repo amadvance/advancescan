@@ -397,21 +397,21 @@ struct write {
 	unsigned width; /* frame size in pixel */
 	unsigned height;
 	unsigned pixel; /* pixel size in bytes */
+	unsigned line; /* line size in bytes */
 
 	int scroll_x; /* initial position of the first image in the scroll buffer */
 	int scroll_y;
 	unsigned scroll_width; /* extra scroll buffer size */
 	unsigned scroll_height;
 
-	unsigned line; /* line size in bytes */
 	unsigned char* scroll_ptr; /* global image data */
 
 	unsigned char* current_ptr; /* pointer at the current frame in the scroll buffer */
 	int current_x; /* current scroll position */
 	int current_y;
 
-	unsigned char pal_ptr[256*3]; /* palette */
 	unsigned pal_size; /* palette size in bytes */
+	unsigned char pal_ptr[256*3]; /* palette */
 	int pal_used[256]; /* flag vector for the used entries in the palette */
 
 	unsigned tick; /* last tick used */
@@ -562,17 +562,22 @@ void write_header(adv_fz* f, unsigned* fc, unsigned width, unsigned height, unsi
 		throw error_png();
 	}
 
+	WRITE.first = 1;
+
 	WRITE.width = width;
 	WRITE.height = height;
 	WRITE.pixel = 0;
+	WRITE.line = 0;
 
 	WRITE.scroll_x = scroll_x;
 	WRITE.scroll_y = scroll_y;
 	WRITE.scroll_width = scroll_width;
 	WRITE.scroll_height = scroll_height;
+
 	WRITE.scroll_ptr = 0;
 
-	WRITE.first = 1;
+	WRITE.pal_size = 0;
+
 	WRITE.tick = 1;
 }
 

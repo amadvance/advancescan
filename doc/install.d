@@ -35,7 +35,7 @@ Requirements
 		:GNU gcc 2.95.3
 		:GNU gcc 3.0.4
 		:GNU gcc 3.1, 3.1.1
-		:GNU gcc 3.2
+		:GNU gcc 3.2, 3.2.1
 
 	The build process in DOS and Windows isn't tested. The DOS
 	and Windows binaries are generated in Linux cross compiling.
