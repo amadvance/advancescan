@@ -54,7 +54,7 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
 	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
 	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
-	configure.dos configure.windows configure.darwin autogen.sh noautomake.sh \
+	autogen.sh noautomake.sh \
 	test/test.xml \
 	test/test.lst \
 	test/testd.xml \
@@ -72,7 +72,6 @@ noinst_HEADERS = \
 	conf.h \
 	ziprom.h \
 	game.h \
-	gamediff.h \
 	zip.h \
 	except.h \
 	output.h \

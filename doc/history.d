@@ -1,5 +1,9 @@
 Name
-        advscan - History For AdvanceSCAN
+	advscan - History For AdvanceSCAN
+
+AdvanceSCAN Version 1.11 2004/09
+	) Minor changes at the source. Removed the gamediff.* files.
+	) Fixed a compilation problem with gcc 3.4.
 
 AdvanceSCAN Version 1.10 2004/08
 	) Added support for .chd files. Check the new -K option.

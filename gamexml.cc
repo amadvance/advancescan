@@ -276,8 +276,8 @@ static void process_samplename(struct state_t* state, enum token_t t, const char
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		sample s(string(s, len));
-		state->g->ss_get().insert(s);
+		sample sm(string(s, len));
+		state->g->ss_get().insert(sm);
 	}
 }
 
