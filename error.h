@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -18,8 +18,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef __ZIPERROR_H
-#define __ZIPERROR_H
+#ifndef __ERROR_H
+#define __ERROR_H
 
 #include <string>
 #include <sstream>
@@ -29,12 +29,17 @@ class error {
 	std::string file;
 	unsigned line;
 	std::string desc;
+	bool ignore;
 public:
-	error() : line(0)
+	error() : line(0), ignore(false)
 	{
 	}
 
-	error(const char* Afunction, const char* Afile, unsigned Aline) : function(Afunction), file(Afile), line(Aline)
+	error(bool Aignore) : line(0), ignore(Aignore)
+	{
+	}
+
+	error(const char* Afunction, const char* Afile, unsigned Aline) : function(Afunction), file(Afile), line(Aline), ignore(false)
 	{
 	}
 
@@ -56,6 +61,11 @@ public:
 	unsigned line_get() const
 	{
 		return line;
+	}
+
+	bool ignore_get() const
+	{
+		return ignore;
 	}
 
 	error& operator<<(const char* A)
@@ -80,14 +90,25 @@ public:
 
 };
 
-#define error() \
+class error_ignore : public error {
+public:
+	error_ignore() : error(true)
+	{
+	}
+};
+
+#ifndef NDEBUG
+#define error_trace() \
 	error(__PRETTY_FUNCTION__,__FILE__,__LINE__)
+#else
+#define error_trace() error()
+#endif
 
 static inline std::ostream& operator<<(std::ostream& os, const error& e) {
 	os << e.desc_get();
-#ifndef NDEBUG
-	os << " [at " << e.function_get() << ":" << e.file_get() << ":" << e.line_get() << "]";
-#endif
+
+	if (e.function_get().length() || e.file_get().length() || e.line_get())
+		os << " [at " << e.function_get() << ":" << e.file_get() << ":" << e.line_get() << "]";
 
 	return os;
 }

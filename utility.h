@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -21,7 +21,7 @@
 #ifndef __UTILITY_H
 #define __UTILITY_H
 
-#include "ziperr.h"
+#include "error.h"
 
 #include <iostream>
 #include <string>
@@ -125,5 +125,47 @@ std::string file_basepath(const std::string& file) throw ();
 std::string file_ext(const std::string& file) throw ();
 int file_compare(const std::string& path1, const std::string& path2) throw ();
 std::string file_adjust(const std::string& path) throw ();
+
+// ------------------------------------------------------------------------
+// data
+
+unsigned char* data_dup(const unsigned char* Adata, unsigned Asize);
+unsigned char* data_alloc(unsigned size);
+void data_free(unsigned char* data);
+
+class data_ptr {
+	unsigned char* data;
+	bool own;
+public:
+	data_ptr() : data(0), own(false) { }
+
+	data_ptr(data_ptr& A)
+	{
+		data = A.data;
+		own = A.own;
+		A.own = false;
+	}
+
+	data_ptr(unsigned char* Adata, bool Aown = true) : data(Adata), own(Aown) { }
+
+	~data_ptr() { if (own) data_free(data); }
+
+	void operator=(data_ptr& A)
+	{
+		if (own) data_free(data);
+		data = A.data;
+		own = A.own;
+		A.own = false;
+	}
+
+	void operator=(unsigned char* Adata)
+	{
+		if (own) data_free(data);
+		data = Adata;
+		own = true;
+	}
+
+	operator unsigned char*() { return data; }
+};
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -1666,7 +1666,6 @@ void run(int argc, char* argv[]) {
 	// set of all game
 	gamearchive gar;
 
-	info_reset();
 	if (!gar.load(stdin))
 		throw error() << "Failed read at row " << info_row_get()+1 << " at column " << info_col_get()+1 << " on the info file";
 	if (gar.begin() == gar.end())

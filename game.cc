@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -228,6 +228,13 @@ gamearchive::const_iterator gamearchive::find(const game& A) const {
 }
 
 bool gamearchive::load(FILE* f) {
+	info_init();
+	bool r = load_internal(f);
+	info_done();
+	return r;
+}
+
+bool gamearchive::load_internal(FILE* f) {
 	info_t token = info_token_get(f);
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;

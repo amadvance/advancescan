@@ -1,7 +1,7 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 1999-2002 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,13 @@ enum info_t {
 	info_string      /* c string automatically converted */
 };
 
+void info_init(void);
+void info_done(void);
+
 const char* info_text_get(void);
 enum info_t info_token_get(FILE* f);
 enum info_t info_skip_value(FILE* f);
 
-void info_reset(void);
 unsigned info_row_get(void);
 unsigned info_col_get(void);
 unsigned info_pos_get(void);

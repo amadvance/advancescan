@@ -5,8 +5,8 @@
 
 class ISequentialInStream
 {
-	unsigned size;
 	const char* data;
+	unsigned size;
 public:
 	ISequentialInStream(const char* Adata, unsigned Asize) : data(Adata), size(Asize) { }
 
@@ -15,8 +15,8 @@ public:
 
 class ISequentialOutStream
 {
-	unsigned size;
 	char* data;
+	unsigned size;
 	bool overflow;
 	unsigned total;
 public:

@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -40,15 +40,21 @@
 
 using namespace std;
 
-void rezip(bool quiet, const string& file, unsigned long long& total_0, unsigned long long& total_1, bool standard, shrink_t level) {
+// --------------------------------------------------------------------------
+// Command interface
+
+void rezip_single(const string& file, unsigned long long& total_0, unsigned long long& total_1, bool quiet, bool standard, shrink_t level) {
 	zip z(file);
 
-	struct stat st_0;
-	struct stat st_1;
+	unsigned size_0;
+	unsigned size_1;
+
+	if (!file_exists(file)) {
+		throw error() << "File " << file << " doesn't exist";
+	}
 
 	try {
-		if (stat(file.c_str(),&st_0)!=0)
-			throw error() << "Failed stat";
+		size_0 = file_size(file);
 
 		z.open();
 		z.load();
@@ -59,16 +65,15 @@ void rezip(bool quiet, const string& file, unsigned long long& total_0, unsigned
 
 		z.close();
 
-		if (stat(file.c_str(),&st_1)!=0)
-			throw error() << "Failed stat";
+		size_1 = file_size(file);
 	} catch (error& e) {
 		throw e << " on " << file;
 	}
 
 	if (!quiet) {
-		cout << setw(12) << st_0.st_size << setw(12) << st_1.st_size << " ";
-		if (st_0.st_size) {
-			unsigned perc = st_1.st_size * 100LL / st_0.st_size;
+		cout << setw(12) << size_0 << setw(12) << size_1 << " ";
+		if (size_0) {
+			unsigned perc = size_1 * 100LL / size_0;
 			cout << setw(3) << perc;
 		} else {
 			cout << "  0";
@@ -76,16 +81,16 @@ void rezip(bool quiet, const string& file, unsigned long long& total_0, unsigned
 		cout << "% " << file << endl;
 	}
 
-	total_0 += st_0.st_size;
-	total_1 += st_1.st_size;
+	total_0 += size_0;
+	total_1 += size_1;
 }
 
-void rezip_all(bool quiet, int argc, char* argv[], bool standard, shrink_t level) {
+void rezip_all(int argc, char* argv[], bool quiet, bool standard, shrink_t level) {
 	unsigned long long total_0 = 0;
 	unsigned long long total_1 = 0;
 
 	for(int i=0;i<argc;++i)
-		rezip(quiet, argv[i], total_0, total_1, standard, level);
+		rezip_single(argv[i], total_0, total_1, quiet, standard, level);
 
 	if (!quiet) {
 		cout << setw(12) << total_0 << setw(12) << total_1 << " ";
@@ -99,28 +104,25 @@ void rezip_all(bool quiet, int argc, char* argv[], bool standard, shrink_t level
 	}
 }
 
-void listcont_all(int argc, char* argv[]) {
-	if (argc > 1)
-		throw error() << "Too many archives specified";
-	if (argc < 1)
-		throw error() << "No archive specified";
-
-	string file(argv[0]);
+void list_single(const string& file) {
+	if (!file_exists(file)) {
+		throw error() << "File " << file << " doesn't exist";
+	}
 
 	zip z(file);
 
 /*
 Archive:  /mnt/bag/home/am/data/src/advscan/prova.zip
- Length   Method    Size  Ratio   Date   Time   CRC-32    Name
---------  ------  ------- -----   ----   ----   ------    ----
-    4366  Unk:012    1030  76%  04-20-02 13:58  58ab4966  test/advmame.lst
-     268  Defl:X       89  67%  04-18-02 18:13  e6527450  test/advscan.rc
-      29  Stored       29   0%  04-22-02 19:28  d3f60a47  test/test
-  101057  Unk:012   90765  10%  04-20-02 14:55  c42107d7  test/unknow/40love_reject.zip
-   96730  Unk:012   95538   1%  04-20-02 14:55  cafec0cf  test/unknow/40love2.zip
-   96730  Unk:012   95538   1%  04-20-02 14:55  cafec0cf  test/rom/40love.zip
---------          -------  ---                            -------
-  299180           282989   5%                            6 files
+  Length   Method    Size  Ratio   Date   Time   CRC-32    Name
+ --------  ------  ------- -----   ----   ----   ------    ----
+     4366  Unk:012    1030  76%  04-20-02 13:58  58ab4966  test/advmame.lst
+      268  Defl:X       89  67%  04-18-02 18:13  e6527450  test/advscan.rc
+       29  Stored       29   0%  04-22-02 19:28  d3f60a47  test/test
+   101057  Unk:012   90765  10%  04-20-02 14:55  c42107d7  test/unknow/40love_reject.zip
+    96730  Unk:012   95538   1%  04-20-02 14:55  cafec0cf  test/unknow/40love2.zip
+    96730  Unk:012   95538   1%  04-20-02 14:55  cafec0cf  test/rom/40love.zip
+ --------          -------  ---                            -------
+   299180           282989   5%                            6 files
 */
 
 	try {
@@ -130,15 +132,15 @@ Archive:  /mnt/bag/home/am/data/src/advscan/prova.zip
 		unsigned long long uncompressed_size = 0;
 
 		cout << "Archive:  " << file << endl;
-		cout << " Length   Method    Size  Ratio   Date   Time   CRC-32    Name" << endl;
-		cout << "--------  ------  ------- -----   ----   ----   ------    ----" << endl;
+		cout << "  Length   Method    Size  Ratio   Date   Time   CRC-32    Name" << endl;
+		cout << " --------  ------  ------- -----   ----   ----   ------    ----" << endl;
 
 		for(zip::iterator i=z.begin();i!=z.end();++i) {
 
 			// not optimal code for g++ 2.95.3
 			cout.setf(ios::right, ios::adjustfield);
 
-			cout << dec << setw(8) << setfill(' ') << i->uncompressed_size_get();
+			cout << dec << setw(9) << setfill(' ') << i->uncompressed_size_get();
 
 			cout << "  ";
 
@@ -172,7 +174,8 @@ Archive:  /mnt/bag/home/am/data/src/advscan/prova.zip
 
 			cout.setf(ios::left, ios::adjustfield);
 
-			cout << setw(7) << m;
+			// not optimal code for g++ 2.95.3
+			cout << setw(7) << m.c_str();
 
 			cout.setf(ios::right, ios::adjustfield);
 
@@ -218,13 +221,13 @@ Archive:  /mnt/bag/home/am/data/src/advscan/prova.zip
 			compressed_size += i->compressed_size_get();
 		}
 
-		cout << "--------          -------  ---                            -------" << endl;
+		cout << " --------          -------  ---                            -------" << endl;
 
-		cout << dec << setw(8) << setfill(' ') << uncompressed_size;
+		cout << dec << setw(9) << setfill(' ') << uncompressed_size;
 
-		cout << "         ";
+		cout << "        ";
 
-		cout << dec << setw(8) << setfill(' ') << compressed_size;
+		cout << dec << setw(9) << setfill(' ') << compressed_size;
 
 		cout << " ";
 
@@ -246,8 +249,19 @@ Archive:  /mnt/bag/home/am/data/src/advscan/prova.zip
 	}
 }
 
-void test(bool quiet, const string& file) {
+void list_all(int argc, char* argv[]) {
+	string file(argv[0]);
+	for(int i=0;i<argc;++i) {
+		list_single(argv[i]);
+	}
+}
+
+void test_single(const string& file, bool quiet) {
 	zip z(file);
+
+	if (!file_exists(file)) {
+		throw error() << "File " << file << " doesn't exist";
+	}
 
 	if (!quiet)
 		cout << file << endl;
@@ -262,12 +276,12 @@ void test(bool quiet, const string& file) {
 	}
 }
 
-void test_all(bool quiet, int argc, char* argv[]) {
+void test_all(int argc, char* argv[], bool quiet) {
 	for(int i=0;i<argc;++i)
-		test(quiet, argv[i]);
+		test_single(argv[i], quiet);
 }
 
-void extract_all(bool quiet, int argc, char* argv[]) {
+void extract_all(int argc, char* argv[], bool quiet) {
 	if (argc > 1)
 		throw error() << "Too many archives specified";
 	if (argc < 1)
@@ -279,7 +293,7 @@ void extract_all(bool quiet, int argc, char* argv[]) {
 	z.load();
 
 	for(zip::iterator i=z.begin();i!=z.end();++i) {
-		char* data = (char*)operator new(i->uncompressed_size_get());
+		unsigned char* data = (unsigned char*)operator new(i->uncompressed_size_get());
 
 		try {
 			i->uncompressed_read(data);
@@ -321,7 +335,7 @@ void extract_all(bool quiet, int argc, char* argv[]) {
 	z.close();
 }
 
-void add(bool quiet, zip& z, const string& local, const string& common, bool standard, shrink_t level) {
+void add_single(zip& z, const string& local, const string& common, bool quiet, bool standard, shrink_t level) {
 	struct stat st;
 	string file = local + common;
 	string name = file_name(file);
@@ -340,7 +354,7 @@ void add(bool quiet, zip& z, const string& local, const string& common, bool sta
 		try {
 			struct dirent* dd;
 			while ((dd = readdir(d)) != 0) {
-				add(quiet, z, local, common + "/" + dd->d_name, standard, level);
+				add_single(z, local, common + "/" + dd->d_name, quiet, standard, level);
 			}
 		} catch (...) {
 			closedir(d);
@@ -348,7 +362,7 @@ void add(bool quiet, zip& z, const string& local, const string& common, bool sta
 		}
 		closedir(d);
 	} else {
-		char* data = (char*)operator new(st.st_size);
+		unsigned char* data = (unsigned char*)operator new(st.st_size);
 
 		try {
 			if (!quiet)
@@ -376,7 +390,7 @@ void add(bool quiet, zip& z, const string& local, const string& common, bool sta
 	}
 }
 
-void add_all(bool quiet, int argc, char* argv[], bool standard, shrink_t level) {
+void add_all(int argc, char* argv[], bool quiet, bool standard, shrink_t level) {
 	if (argc < 1)
 		throw error() << "No archive specified";
 	if (argc < 2)
@@ -392,7 +406,7 @@ void add_all(bool quiet, int argc, char* argv[], bool standard, shrink_t level) 
 		string local = file_dir(file);
 		string common = file_name(file);
 
-		add(quiet, z, local, common, standard, level);
+		add_single(z, local, common, quiet, standard, level);
 	}
 
 	z.save();
@@ -436,7 +450,7 @@ void usage() {
 	cout << "Modes:" << endl;
 	cout << "  -a, --add          Create a new archive with the specified files" << endl;
 	cout << "  -x, --extract      Extrace the content of an archive" << endl;
-	cout << "  -l, --list         List the content of the archive" << endl;
+	cout << "  -l, --list         List the content of the archives" << endl;
 	cout << "  -t, --test         Test the specified archives" << endl;
 	cout << "  -z, --recompress   Recompress the specified archives" << endl;
 	cout << "Options:" << endl;
@@ -543,19 +557,19 @@ void process(int argc, char* argv[]) {
 
 	switch (cmd) {
 	case cmd_recompress :
-		rezip_all(quiet, argc - optind, argv + optind, !notzip, level);
+		rezip_all(argc - optind, argv + optind, quiet, !notzip, level);
 		break;
 	case cmd_extract :
-		extract_all(quiet, argc - optind, argv + optind);
+		extract_all(argc - optind, argv + optind, quiet);
 		break;
 	case cmd_add :
-		add_all(quiet, argc - optind, argv + optind, !notzip, level);
+		add_all(argc - optind, argv + optind, quiet, !notzip, level);
 		break;
 	case cmd_test :
-		test_all(quiet, argc - optind, argv + optind);
+		test_all(argc - optind, argv + optind, quiet);
 		break;
 	case cmd_list :
-		listcont_all(argc - optind, argv + optind);
+		list_all(argc - optind, argv + optind);
 		break;
 	case cmd_unset :
 		throw error() << "No command specified";

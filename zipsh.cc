@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -24,41 +24,38 @@
 
 #include "zip.h"
 #include "zlib.h"
-
-#ifdef USE_7Z
-#include "7z/7z.h"
-#endif
+#include "utility.h"
 
 #include <iostream>
 
 using namespace std;
 
-void zip_entry::uncompressed_read(char* uncompressed_data) const {
+void zip_entry::uncompressed_read(unsigned char* uncompressed_data) const {
 	assert( data );
 
 	if (info.compression_method == ZIP_METHOD_DEFLATE) {
 		if (!decompress_deflate_zlib(data,compressed_size_get(),uncompressed_data,uncompressed_size_get())) {
-			operator delete(uncompressed_data);
+			data_free(uncompressed_data);
 			throw error() << "Invalid compressed data on file " << name_get();
 		}
 #ifdef USE_BZIP2
 	} else if (info.compression_method == ZIP_METHOD_BZIP2) {
 		if (!decompress_bzip2(data,compressed_size_get(),uncompressed_data,uncompressed_size_get())) {
-			operator delete(uncompressed_data);
+			data_free(uncompressed_data);
 			throw error() << "Invalid compressed data on file " << name_get();
 		}
 #endif
 #ifdef USE_LZMA
 	} else if (info.compression_method == ZIP_METHOD_LZMA) {
 		if (!decompress_lzma_7z(data,compressed_size_get(),uncompressed_data,uncompressed_size_get())) {
-			operator delete(uncompressed_data);
+			data_free(uncompressed_data);
 			throw error() << "Invalid compressed data on file " << name_get();
 		}
 #endif
 	} else if (info.compression_method == ZIP_METHOD_STORE) {
 		memcpy(uncompressed_data, data, uncompressed_size_get());
 	} else {
-		operator delete(uncompressed_data);
+		data_free(uncompressed_data);
 		throw error() << "Unsupported compression method on file " << name_get();
 	}
 }
@@ -66,23 +63,23 @@ void zip_entry::uncompressed_read(char* uncompressed_data) const {
 void zip_entry::test() const {
 	assert( data );
 
-	char* uncompressed_data = (char*)operator new(uncompressed_size_get());
+	unsigned char* uncompressed_data = data_alloc(uncompressed_size_get());
 
 	try {
 		uncompressed_read(uncompressed_data);
 
-		if (info.crc32 != crc32(0, (const unsigned char*)uncompressed_data, uncompressed_size_get())) {
+		if (info.crc32 != crc32(0, uncompressed_data, uncompressed_size_get())) {
 				throw error() << "Invalid crc on file " << name_get();
 		}
 	} catch (...) {
-		operator delete(uncompressed_data);
+		data_free(uncompressed_data);
 		throw;
 	}
 
-	operator delete(uncompressed_data);
+	data_free(uncompressed_data);
 }
 
-static bool got(char* c0_data, unsigned c0_size, unsigned c0_met, char* c1_data, unsigned c1_size, unsigned c1_met, bool substitute_if_equal, bool standard, bool store) {
+static bool got(unsigned char* c0_data, unsigned c0_size, unsigned c0_met, unsigned char* c1_data, unsigned c1_size, unsigned c1_met, bool substitute_if_equal, bool standard, bool store) {
 	bool c0_acceptable = c0_data!=0;
 	bool c1_acceptable = c1_data!=0;
 
@@ -119,37 +116,37 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 	// remove unneeded data
 	if (info.local_extra_field_length != 0)
 		modify = true;
-	operator delete(local_extra_field);
+	data_free(local_extra_field);
 	local_extra_field = 0;
 	info.local_extra_field_length = 0;
 
 	if (info.central_extra_field_length != 0)
 		modify = true;
-	operator delete(central_extra_field);
+	data_free(central_extra_field);
 	central_extra_field = 0;
 	info.central_extra_field_length = 0;
 
 	if (info.file_comment_length != 0)
 		modify = true;
-	operator delete(file_comment);
+	data_free(file_comment);
 	file_comment = 0;
 	info.file_comment_length = 0;
 
-	char* uncompressed_data = (char*)operator new(uncompressed_size_get());
+	unsigned char* uncompressed_data = data_alloc(uncompressed_size_get());
 
 	try {
 		uncompressed_read(uncompressed_data);
 
-		if (info.crc32 != crc32(0, (const unsigned char*)uncompressed_data, uncompressed_size_get())) {
+		if (info.crc32 != crc32(0, uncompressed_data, uncompressed_size_get())) {
 			throw error() << "Invalid crc on file " << name_get();
 		}
 
 	} catch (...) {
-		operator delete(uncompressed_data);
+		data_free(uncompressed_data);
 		throw;
 	}
 
-	char* c0_data;
+	unsigned char* c0_data;
 	unsigned c0_size;
 	unsigned c0_ver;
 	unsigned c0_met;
@@ -164,7 +161,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 
 	if (level != shrink_none) {
 		// test compressed data
-		char* c1_data;
+		unsigned char* c1_data;
 		unsigned c1_size;
 		unsigned c1_ver;
 		unsigned c1_met;
@@ -192,22 +189,24 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				lzma_dictsize = 1 << 24;
 				lzma_fastbytes = 255;
 				break;
+			case shrink_none:
+				assert(0);
 			}
 
 			// compress with lzma
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_LZMA;
 			c1_fla = 0;
 
 			if (!compress_lzma_7z(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,lzma_algo,lzma_dictsize,lzma_fastbytes)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -215,7 +214,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 #endif
@@ -241,19 +240,19 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 			}
 
 			// compress with bzip2
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_BZIP2;
 			c1_fla = 0;
 
 			if (!compress_bzip2(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,bzip2_level,bzip2_workfactor)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -261,7 +260,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 #endif
@@ -290,21 +289,23 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				sz_passes = 5;
 				sz_fastbytes = 255;
 				break;
+			case shrink_none:
+				assert(0);
 			}
 
 			// compress with 7z
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_DEFLATE;
 			c1_fla = ZIP_GEN_FLAGS_DEFLATE_MAXIMUM;
 			if (!compress_deflate_7z(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,sz_passes,sz_fastbytes)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -312,7 +313,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 #else
@@ -320,18 +321,18 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 
 		if (1) {
 			// compress with zlib Z_BEST_COMPRESSION/Z_DEFAULT_STRATEGY/MAX_MEM_LEVEL
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_DEFLATE;
 			c1_fla = ZIP_GEN_FLAGS_DEFLATE_MAXIMUM;
 			if (!compress_deflate_zlib(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,libz_level,Z_DEFAULT_STRATEGY,MAX_MEM_LEVEL)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -339,24 +340,24 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 
 		if (1) {
 			// compress with zlib Z_BEST_COMPRESSION/Z_DEFAULT_STRATEGY/6
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_DEFLATE;
 			c1_fla = ZIP_GEN_FLAGS_DEFLATE_MAXIMUM;
 			if (!compress_deflate_zlib(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,libz_level,Z_DEFAULT_STRATEGY,6)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -364,24 +365,24 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 
 		if (1) {
 			// compress with zlib Z_BEST_COMPRESSION/Z_FILTERED/MAX_MEM_LEVEL
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_DEFLATE;
 			c1_fla = ZIP_GEN_FLAGS_DEFLATE_MAXIMUM;
 			if (!compress_deflate_zlib(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,libz_level,Z_FILTERED,MAX_MEM_LEVEL)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -389,24 +390,24 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 
 		if (1) {
 			// compress with zlib Z_BEST_COMPRESSION/Z_HUFFMAN_ONLY/MAX_MEM_LEVEL
-			c1_data = (char*)operator new(uncompressed_size_get());
+			c1_data = data_alloc(uncompressed_size_get());
 			c1_size = uncompressed_size_get();
 			c1_ver = 20;
 			c1_met = ZIP_METHOD_DEFLATE;
 			c1_fla = ZIP_GEN_FLAGS_DEFLATE_MAXIMUM;
 			if (!compress_deflate_zlib(uncompressed_data,uncompressed_size_get(),c1_data,c1_size,libz_level,Z_HUFFMAN_ONLY,MAX_MEM_LEVEL)) {
-				operator delete(c1_data);
+				data_free(c1_data);
 				c1_data = 0;
 			}
 
 			if (got(c0_data, c0_size, c0_met, c1_data, c1_size, c1_met, true, standard, level == shrink_none)) {
-				operator delete(c0_data);
+				data_free(c0_data);
 				c0_data = c1_data;
 				c0_size = c1_size;
 				c0_ver = c1_ver;
@@ -414,7 +415,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				c0_fla = c1_fla;
 				modify = true;
 			} else {
-				operator delete(c1_data);
+				data_free(c1_data);
 			}
 		}
 #endif
@@ -422,7 +423,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 
 	// store
 	if (got(c0_data, c0_size, c0_met, uncompressed_data, uncompressed_size_get(), ZIP_METHOD_STORE, true, standard, level == shrink_none)) {
-		operator delete(c0_data);
+		data_free(c0_data);
 		c0_data = uncompressed_data;
 		c0_size = uncompressed_size_get();
 		c0_ver = 10;
@@ -430,7 +431,7 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 		c0_fla = 0;
 		modify = true;
 	} else {
-		operator delete(uncompressed_data);
+		data_free(uncompressed_data);
 	}
 
 	// set the best option found
@@ -456,7 +457,7 @@ void zip::shrink(bool standard, shrink_t level) {
 	// remove unneeded data
 	if (info.zipfile_comment_length != 0)
 		flag.modify = true;
-	operator delete(zipfile_comment);
+	data_free(zipfile_comment);
 	zipfile_comment = 0;
 	info.zipfile_comment_length = 0;
 

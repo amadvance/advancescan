@@ -81,7 +81,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-bin_PROGRAMS = advscan advzip advdiff
+bin_PROGRAMS = advscan advdiff advzip advpng advmng
 
 advdiff_SOURCES = \
 	diff.cc \
@@ -94,6 +94,7 @@ advzip_SOURCES = \
 	zip.cc \
 	utility.cc \
 	siglock.cc \
+	compress.cc \
 	zipsh.cc \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
@@ -130,25 +131,89 @@ advscan_SOURCES = \
 	siglock.cc
 
 
+advpng_SOURCES = \
+	repng.cc \
+	fz.c \
+	png.c \
+	pngex.cc \
+	utility.cc \
+	siglock.cc \
+	compress.cc \
+	7z/7zdeflate.cc \
+	7z/7zlzma.cc \
+	7z/AriBitCoder.cc \
+	7z/CRC.cc \
+	7z/DeflateDecoder.cc \
+	7z/DeflateEncoder.cc \
+	7z/HuffmanEncoder.cc \
+	7z/IInOutStreams.cc \
+	7z/InByte.cc \
+	7z/LSBFDecoder.cc \
+	7z/LSBFEncoder.cc \
+	7z/LZMA.cc \
+	7z/LZMADecoder.cc \
+	7z/LZMAEncoder.cc \
+	7z/LenCoder.cc \
+	7z/LiteralCoder.cc \
+	7z/OutByte.cc \
+	7z/WindowIn.cc \
+	7z/WindowOut.cc
+
+
+advmng_SOURCES = \
+	remng.cc \
+	fz.c \
+	png.c \
+	mng.c \
+	pngex.cc \
+	utility.cc \
+	siglock.cc \
+	compress.cc \
+	7z/7zdeflate.cc \
+	7z/7zlzma.cc \
+	7z/AriBitCoder.cc \
+	7z/CRC.cc \
+	7z/DeflateDecoder.cc \
+	7z/DeflateEncoder.cc \
+	7z/HuffmanEncoder.cc \
+	7z/IInOutStreams.cc \
+	7z/InByte.cc \
+	7z/LSBFDecoder.cc \
+	7z/LSBFEncoder.cc \
+	7z/LZMA.cc \
+	7z/LZMADecoder.cc \
+	7z/LZMAEncoder.cc \
+	7z/LenCoder.cc \
+	7z/LiteralCoder.cc \
+	7z/OutByte.cc \
+	7z/WindowIn.cc \
+	7z/WindowOut.cc
+
+
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	README AUTHORS HISTORY COPYING BUILD INSTALL \
-	advscan.1 advzip.1 advdiff.1 \
+	advscan.1 advdiff.1 advzip.1 advpng.1 advmng.1 \
 	configure.msdos \
 	7z/README \
 	check.lst
 
 
 noinst_HEADERS = \
+	png.h \
+	mng.h \
+	fz.h \
+	endianrw.h \
 	readinfo.h \
+	pngex.h \
+	compress.h \
 	rom.h \
-	types.h \
 	utility.h \
 	conf.h \
 	ziprom.h \
 	game.h \
 	gamediff.h \
 	zip.h \
-	ziperr.h \
+	error.h \
 	output.h \
 	operatio.h \
 	analyze.h \
@@ -195,12 +260,12 @@ noinst_HEADERS = \
 	7z/WindowOut.h
 
 
-man_MANS = advscan.1 advzip.1 advdiff.1
+man_MANS = advscan.1 advdiff.1 advzip.1 advpng.1 advmng.1
 
 DISTDOS = \
 	README AUTHORS HISTORY \
-	advscan.txt advzip.txt advdiff.txt \
-	advscan.exe advzip.exe advdiff.exe \
+	advscan.txt advdiff.txt advzip.txt advpng.txt advmng.txt \
+	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
 	advscan.rc
 
 subdir = .
@@ -208,7 +273,8 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
-bin_PROGRAMS = advscan$(EXEEXT) advzip$(EXEEXT) advdiff$(EXEEXT)
+bin_PROGRAMS = advscan$(EXEEXT) advdiff$(EXEEXT) advzip$(EXEEXT) \
+	advpng$(EXEEXT) advmng$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_advdiff_OBJECTS = diff.$(OBJEXT) gamediff.$(OBJEXT) \
@@ -217,6 +283,33 @@ advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
 advdiff_DEPENDENCIES =
 advdiff_LDFLAGS =
+am_advmng_OBJECTS = remng.$(OBJEXT) fz.$(OBJEXT) png.$(OBJEXT) \
+	mng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
+	siglock.$(OBJEXT) compress.$(OBJEXT) 7zdeflate.$(OBJEXT) \
+	7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) \
+	DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
+	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
+	InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) LSBFEncoder.$(OBJEXT) \
+	LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) LZMAEncoder.$(OBJEXT) \
+	LenCoder.$(OBJEXT) LiteralCoder.$(OBJEXT) OutByte.$(OBJEXT) \
+	WindowIn.$(OBJEXT) WindowOut.$(OBJEXT)
+advmng_OBJECTS = $(am_advmng_OBJECTS)
+advmng_LDADD = $(LDADD)
+advmng_DEPENDENCIES =
+advmng_LDFLAGS =
+am_advpng_OBJECTS = repng.$(OBJEXT) fz.$(OBJEXT) png.$(OBJEXT) \
+	pngex.$(OBJEXT) utility.$(OBJEXT) siglock.$(OBJEXT) \
+	compress.$(OBJEXT) 7zdeflate.$(OBJEXT) 7zlzma.$(OBJEXT) \
+	AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) DeflateDecoder.$(OBJEXT) \
+	DeflateEncoder.$(OBJEXT) HuffmanEncoder.$(OBJEXT) \
+	IInOutStreams.$(OBJEXT) InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) \
+	LSBFEncoder.$(OBJEXT) LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) \
+	LZMAEncoder.$(OBJEXT) LenCoder.$(OBJEXT) LiteralCoder.$(OBJEXT) \
+	OutByte.$(OBJEXT) WindowIn.$(OBJEXT) WindowOut.$(OBJEXT)
+advpng_OBJECTS = $(am_advpng_OBJECTS)
+advpng_LDADD = $(LDADD)
+advpng_DEPENDENCIES =
+advpng_LDFLAGS =
 am_advscan_OBJECTS = scan.$(OBJEXT) readinfo.$(OBJEXT) rom.$(OBJEXT) \
 	utility.$(OBJEXT) conf.$(OBJEXT) ziprom.$(OBJEXT) \
 	game.$(OBJEXT) zip.$(OBJEXT) output.$(OBJEXT) analyze.$(OBJEXT) \
@@ -226,9 +319,9 @@ advscan_LDADD = $(LDADD)
 advscan_DEPENDENCIES =
 advscan_LDFLAGS =
 am_advzip_OBJECTS = rezip.$(OBJEXT) zip.$(OBJEXT) utility.$(OBJEXT) \
-	siglock.$(OBJEXT) zipsh.$(OBJEXT) 7zdeflate.$(OBJEXT) \
-	7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) \
-	DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
+	siglock.$(OBJEXT) compress.$(OBJEXT) zipsh.$(OBJEXT) \
+	7zdeflate.$(OBJEXT) 7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) \
+	CRC.$(OBJEXT) DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
 	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
 	InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) LSBFEncoder.$(OBJEXT) \
 	LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) LZMAEncoder.$(OBJEXT) \
@@ -257,7 +350,8 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(advdiff_SOURCES) $(advscan_SOURCES) $(advzip_SOURCES)
+DIST_SOURCES = $(advdiff_SOURCES) $(advmng_SOURCES) $(advpng_SOURCES) \
+	$(advscan_SOURCES) $(advzip_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
@@ -265,9 +359,9 @@ HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = README $(noinst_HEADERS) AUTHORS COPYING INSTALL \
 	Makefile.am Makefile.in aclocal.m4 config.guess config.h.in \
-	config.sub configure configure.ac install-sh missing \
+	config.sub configure configure.ac depcomp install-sh missing \
 	mkinstalldirs
-SOURCES = $(advdiff_SOURCES) $(advscan_SOURCES) $(advzip_SOURCES)
+SOURCES = $(advdiff_SOURCES) $(advmng_SOURCES) $(advpng_SOURCES) $(advscan_SOURCES) $(advzip_SOURCES)
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -333,9 +427,6 @@ clean-binPROGRAMS:
 advdiff$(EXEEXT): $(advdiff_OBJECTS) $(advdiff_DEPENDENCIES) 
 	@rm -f advdiff$(EXEEXT)
 	$(CXXLINK) $(advdiff_LDFLAGS) $(advdiff_OBJECTS) $(advdiff_LDADD) $(LIBS)
-advscan$(EXEEXT): $(advscan_OBJECTS) $(advscan_DEPENDENCIES) 
-	@rm -f advscan$(EXEEXT)
-	$(CXXLINK) $(advscan_LDFLAGS) $(advscan_OBJECTS) $(advscan_LDADD) $(LIBS)
 7zdeflate.$(OBJEXT): 7z/7zdeflate.cc
 7zlzma.$(OBJEXT): 7z/7zlzma.cc
 AriBitCoder.$(OBJEXT): 7z/AriBitCoder.cc
@@ -355,6 +446,15 @@ LiteralCoder.$(OBJEXT): 7z/LiteralCoder.cc
 OutByte.$(OBJEXT): 7z/OutByte.cc
 WindowIn.$(OBJEXT): 7z/WindowIn.cc
 WindowOut.$(OBJEXT): 7z/WindowOut.cc
+advmng$(EXEEXT): $(advmng_OBJECTS) $(advmng_DEPENDENCIES) 
+	@rm -f advmng$(EXEEXT)
+	$(CXXLINK) $(advmng_LDFLAGS) $(advmng_OBJECTS) $(advmng_LDADD) $(LIBS)
+advpng$(EXEEXT): $(advpng_OBJECTS) $(advpng_DEPENDENCIES) 
+	@rm -f advpng$(EXEEXT)
+	$(CXXLINK) $(advpng_LDFLAGS) $(advpng_OBJECTS) $(advpng_LDADD) $(LIBS)
+advscan$(EXEEXT): $(advscan_OBJECTS) $(advscan_DEPENDENCIES) 
+	@rm -f advscan$(EXEEXT)
+	$(CXXLINK) $(advscan_LDFLAGS) $(advscan_OBJECTS) $(advscan_LDADD) $(LIBS)
 advzip$(EXEEXT): $(advzip_OBJECTS) $(advzip_DEPENDENCIES) 
 	@rm -f advzip$(EXEEXT)
 	$(CXXLINK) $(advzip_LDFLAGS) $(advzip_OBJECTS) $(advzip_LDADD) $(LIBS)
@@ -742,8 +842,10 @@ clean-local:
 	rm -f *~
 	rm -f new.lst check.zip
 	rm -f advscan.exe advscan.txt advscan.html advscan.rc
-	rm -f advzip.exe advzip.txt advzip.html
 	rm -f advdiff.exe advdiff.txt advdiff.html
+	rm -f advzip.exe advzip.txt advzip.html
+	rm -f advpng.exe advpng.txt advpng.html
+	rm -f advmng.exe advmng.txt advmng.html
 
 # DOS archive
 
@@ -754,12 +856,16 @@ clean-local:
 	$(GROFF) -man -Thtml $(srcdir)/$< > $@
 
 advscan.txt: advscan.1
-advzip.txt: advzip.1
 advdiff.txt: advdiff.1
+advzip.txt: advzip.1
+advpng.html: advpng.1
+advmng.html: advmng.1
 
 advscan.html: advscan.1
-advzip.html: advzip.1
 advdiff.html: advdiff.1
+advzip.html: advzip.1
+advpng.html: advpng.1
+advmng.html: advmng.1
 
 advscan.rc: advscan.rc.dos
 	cp $(srcdir)/advscan.rc.dos advscan.rc
@@ -788,8 +894,10 @@ check-local: advzip check.lst
 
 distdos: $(DISTDOS)
 	-upx -q -q advscan.exe
-	-upx -q -q advzip.exe
 	-upx -q -q advdiff.exe
+	-upx -q -q advzip.exe
+	-upx -q -q advpng.exe
+	-upx -q -q advmng.exe
 	rm -f $(PACKAGE)-$(VERSION)-dos-i586.zip
 	zip $(PACKAGE)-$(VERSION)-dos-i586.zip $(DISTDOS)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([advancescan],[1.1])
-AM_INIT_AUTOMAKE([advancescan], [1.1])
+AC_INIT([advancescan],[1.2])
+AM_INIT_AUTOMAKE([advancescan], [1.2])
 AM_CONFIG_HEADER([config.h])
 AC_CONFIG_SRCDIR([scan.cc])
 AC_CANONICAL_HOST
@@ -34,7 +34,7 @@ AC_ARG_ENABLE(
 	AC_CHECK_LIB([bz2],[BZ2_bzBuffToBuffCompress])
 )
 
-# Define DATADIR
+# Define PREFIX
 CPPFLAGS="$CPPFLAGS -DPREFIX=\\\"\$(prefix)\\\""
 
 AC_CONFIG_FILES([Makefile])

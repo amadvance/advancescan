@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1999-2002 Andrea Mazzoleni
  *
@@ -24,7 +24,7 @@
 
 #include "gamediff.h"
 #include "readinfo.h"
-#include "ziperr.h"
+#include "error.h"
 
 #include <iostream>
 
@@ -101,7 +101,6 @@ void process(int argc, char* argv[]) {
 	string f0 = argv[optind+0];
 	string f1 = argv[optind+1];
 
-	info_reset();
 	f = fopen(f0.c_str(),"r");
 	if (!f)
 		throw error() << "Failed open of " << f0;
@@ -109,7 +108,6 @@ void process(int argc, char* argv[]) {
 		throw error() << "Failed read of " << f0 << " at row " << info_row_get()+1 << " at column " << info_col_get()+1;
 	fclose(f);
 
-	info_reset();
 	f = fopen(f1.c_str(),"r");
 	if (!f)
 		throw error() << "Failed open of " << f1;

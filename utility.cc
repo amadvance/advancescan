@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -445,3 +445,26 @@ void file_mktree(const std::string& path) throw (error) {
 		}
 	}
 }
+
+// ------------------------------------------------------------------------
+// data
+
+unsigned char* data_dup(const unsigned char* Adata, unsigned Asize) {
+	if (Adata) {
+		unsigned char* data = (unsigned char*)operator new(Asize);
+		if (Asize)
+			memcpy(data,Adata,Asize);
+		return data;
+	} else {
+		return 0;
+	}
+}
+
+unsigned char* data_alloc(unsigned size) {
+	return (unsigned char*)operator new(size);
+}
+
+void data_free(unsigned char* data) {
+	operator delete(data);
+}
+

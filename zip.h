@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -21,23 +21,14 @@
 #ifndef __ZIP_H
 #define __ZIP_H
 
-#include "ziperr.h"
-#include "types.h"
+#include "error.h"
+#include "compress.h"
 
 #include <list>
 #include <sstream>
 
 #include <ctime>
 #include <cstdio>
-
-// --------------------------------------------------------------------------
-// Compression
-
-bool decompress_deflate_zlib(const char* in_data, unsigned in_size, char* out_data, unsigned out_size);
-bool compress_deflate_zlib(const char* in_data, unsigned in_size, char* out_data, unsigned& out_size, int compression_level, int strategy, int mem_level);
-
-bool decompress_bzip2(const char* in_data, unsigned in_size, char* out_data, unsigned out_size);
-bool compress_bzip2(const char* in_data, unsigned in_size, char* out_data, unsigned& out_size, int blocksize, int workfactor);
 
 // --------------------------------------------------------------------------
 // Zip format
@@ -154,20 +145,13 @@ bool compress_bzip2(const char* in_data, unsigned in_size, char* out_data, unsig
 #define ZIP_LO_filename				0x1E
 
 // Convert time_t to zip format
-void time2zip(time_t tod, uint16& date, uint16& time);
+void time2zip(time_t tod, unsigned& date, unsigned& time);
 
 // Convert zip time to to time_t
-time_t zip2time(uint16 date, uint16 time);
+time_t zip2time(unsigned date, unsigned time);
 
 // --------------------------------------------------------------------------
 // zip_entry
-
-enum shrink_t {
-	shrink_none,
-	shrink_normal,
-	shrink_extra,
-	shrink_extreme
-};
 
 class zip;
 
@@ -182,35 +166,35 @@ public:
 	};
 private:
 	struct {
-		uint8 version_made_by;
-		uint8 host_os;
-		uint8 version_needed_to_extract;
-		uint8 os_needed_to_extract;
-		uint16 general_purpose_bit_flag;
-		uint16 compression_method;
-		uint16 last_mod_file_time;
-		uint16 last_mod_file_date;
-		uint32 crc32;
-		uint32 compressed_size;
-		uint32 uncompressed_size;
-		uint16 filename_length;
-		uint16 central_extra_field_length;
-		uint16 local_extra_field_length;
-		uint16 file_comment_length;
-		uint16 internal_file_attrib;
-		uint32 external_file_attrib;
-		uint32 relative_offset_of_local_header;
+		unsigned version_made_by;
+		unsigned host_os;
+		unsigned version_needed_to_extract;
+		unsigned os_needed_to_extract;
+		unsigned general_purpose_bit_flag;
+		unsigned compression_method;
+		unsigned last_mod_file_time;
+		unsigned last_mod_file_date;
+		unsigned crc32;
+		unsigned compressed_size;
+		unsigned uncompressed_size;
+		unsigned filename_length;
+		unsigned central_extra_field_length;
+		unsigned local_extra_field_length;
+		unsigned file_comment_length;
+		unsigned internal_file_attrib;
+		unsigned external_file_attrib;
+		unsigned relative_offset_of_local_header;
 	} info;
 
 	std::string parent_name; // parent
-	char* file_name;
-	char* file_comment;
-	char* local_extra_field;
-	char* central_extra_field;
-	char* data;
+	unsigned char* file_name;
+	unsigned char* file_comment;
+	unsigned char* local_extra_field;
+	unsigned char* central_extra_field;
+	unsigned char* data;
 
-	void check_cent(const char* buf) const;
-	void check_local(const char* buf) const;
+	void check_cent(const unsigned char* buf) const;
+	void check_local(const unsigned char* buf) const;
 
 	// abstract
 	zip_entry();
@@ -223,14 +207,14 @@ public:
 	zip_entry(const zip_entry& A);
 	~zip_entry();
 
-	void load_local(const char* buf, FILE* f);
+	void load_local(const unsigned char* buf, FILE* f);
 	void save_local(FILE* f);
-	void load_cent(const char* buf, unsigned& skip);
+	void load_cent(const unsigned char* buf, unsigned& skip);
 	void save_cent(FILE* f);
 	void unload();
 
 	method_t method_get() const;
-	void set(method_t method, const std::string& name, const char* compdata, unsigned compsize, unsigned size, uint32 crc, uint16 date, uint16 time, bool is_text);
+	void set(method_t method, const std::string& name, const unsigned char* compdata, unsigned compsize, unsigned size, unsigned crc, unsigned date, unsigned time, bool is_text);
 
 	unsigned compressed_size_get() const { return info.compressed_size; }
 	unsigned uncompressed_size_get() const { return info.uncompressed_size; }
@@ -238,16 +222,16 @@ public:
 	bool is_text() const;
 
 	void compressed_seek(FILE* f) const;
-	void compressed_read(char* outdata) const;
-	void uncompressed_read(char* outdata) const;
+	void compressed_read(unsigned char* outdata) const;
+	void uncompressed_read(unsigned char* outdata) const;
 
 	const std::string& parentname_get() const { return parent_name; }
 	void name_set(const std::string& Aname);
 	std::string name_get() const;
 	unsigned offset_get() const { return info.relative_offset_of_local_header; }
 
-	uint16 zipdate_get() const { return info.last_mod_file_date; }
-	uint16 ziptime_get() const { return info.last_mod_file_time; }
+	unsigned zipdate_get() const { return info.last_mod_file_date; }
+	unsigned ziptime_get() const { return info.last_mod_file_time; }
 	time_t time_get() const;
 	void time_set(time_t tod);
 
@@ -269,11 +253,11 @@ class zip {
 	} flag;
 
 	struct {
-		uint32 offset_to_start_of_cent_dir;
-		uint16 zipfile_comment_length;
+		unsigned offset_to_start_of_cent_dir;
+		unsigned zipfile_comment_length;
 	} info;
 
-	char* zipfile_comment;
+	unsigned char* zipfile_comment;
 	zip_entry_list map;
 	std::string path;
 
@@ -282,7 +266,7 @@ class zip {
 	bool operator==(const zip&) const;
 	bool operator!=(const zip&) const;
 
-	void skip_local(const char* buf, FILE* f);
+	void skip_local(const unsigned char* buf, FILE* f);
 
 	static bool pedantic;
 public:
@@ -323,7 +307,7 @@ public:
 	void rename(iterator i, const std::string& Aname);
 
 	iterator insert(const zip_entry& A, const std::string& Aname);
-	iterator insert_uncompressed(const std::string& Aname, const char* data, unsigned size, uint32 crc, time_t tod, bool is_text);
+	iterator insert_uncompressed(const std::string& Aname, const unsigned char* data, unsigned size, unsigned crc, time_t tod, bool is_text);
 
 	void shrink(bool standard, shrink_t level);
 	void test() const;

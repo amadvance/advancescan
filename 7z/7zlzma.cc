@@ -3,7 +3,7 @@
 #include "LZMAEncoder.h"
 #include "LZMADecoder.h"
 
-bool compress_lzma_7z(const char* in_data, unsigned in_size, char* out_data, unsigned& out_size, unsigned algo, unsigned dictionary_size, unsigned num_fast_bytes) throw () {
+bool compress_lzma_7z(const unsigned char* in_data, unsigned in_size, unsigned char* out_data, unsigned& out_size, unsigned algo, unsigned dictionary_size, unsigned num_fast_bytes) throw () {
 	try {
 		NCompress::NLZMA::CEncoder cc;
 
@@ -20,8 +20,8 @@ bool compress_lzma_7z(const char* in_data, unsigned in_size, char* out_data, uns
 		if (cc.SetEncoderAlgorithm(algo) != S_OK)
 			return false;
 
-		ISequentialInStream in(in_data, in_size);
-		ISequentialOutStream out(out_data, out_size);
+		ISequentialInStream in(reinterpret_cast<const char*>(in_data), in_size);
+		ISequentialOutStream out(reinterpret_cast<char*>(out_data), out_size);
 
 		UINT64 in_size_l = in_size;
 
@@ -42,12 +42,12 @@ bool compress_lzma_7z(const char* in_data, unsigned in_size, char* out_data, uns
 	}
 }
 
-bool decompress_lzma_7z(const char* in_data, unsigned in_size, char* out_data, unsigned out_size) throw () {
+bool decompress_lzma_7z(const unsigned char* in_data, unsigned in_size, unsigned char* out_data, unsigned out_size) throw () {
 	try {
 		NCompress::NLZMA::CDecoder cc;
 
-		ISequentialInStream in(in_data, in_size);
-		ISequentialOutStream out(out_data, out_size);
+		ISequentialInStream in(reinterpret_cast<const char*>(in_data), in_size);
+		ISequentialOutStream out(reinterpret_cast<char*>(out_data), out_size);
 
 		UINT64 in_size_l = in_size;
 		UINT64 out_size_l = out_size;

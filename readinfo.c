@@ -1,7 +1,7 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 1999-2002 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,24 +29,27 @@
 #define INFO_BUF_MIN 64
 
 /* Buffer used for storing last token */
-static unsigned info_buf_mac = 0;
-static unsigned info_buf_max = 0;
-static char* info_buf_map = 0;
+static unsigned info_buf_mac;
+static unsigned info_buf_max;
+static char* info_buf_map;
 
 /* Position in the stream */
-static unsigned info_pos = 0; /* Char */
-static unsigned info_row = 0; /* Row */
-static unsigned info_col = 0; /* Column */
+static unsigned info_pos; /* Char */
+static unsigned info_row; /* Row */
+static unsigned info_col; /* Column */
 
-/* Reset all */
-void info_reset(void) {
-	free(info_buf_map);
-
+/* Initialize */
+void info_init(void) {
 	info_buf_max = 0;
 	info_buf_map = 0;
 	info_pos = 0;
 	info_row = 0;
 	info_col = 0;
+}
+
+/* Deinitialize */
+void info_done(void) {
+	free(info_buf_map);
 }
 
 /* Get information of file position */

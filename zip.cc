@@ -1,5 +1,5 @@
 /*
- * This file is part of the AdvanceSCAN project.
+ * This file is part of the Advance project.
  *
  * Copyright (C) 1998-2002 Andrea Mazzoleni
  *
@@ -24,17 +24,9 @@
 
 #include "zip.h"
 #include "zlib.h"
-#include "types.h"
 #include "siglock.h"
 #include "utility.h"
-
-#ifdef USE_7Z
-#include "7z/7z.h"
-#endif
-
-#ifdef USE_BZIP2
-#include "bzlib.h"
-#endif
+#include "endianrw.h"
 
 #include <iostream>
 #include <string>
@@ -50,122 +42,8 @@
 using namespace std;
 
 // -------------------------------------------------------------------------
-// compression/decompression
 
-bool decompress_deflate_zlib(const char* in_data, unsigned in_size, char* out_data, unsigned out_size) {
-
-	z_stream stream;
-	stream.next_in = (unsigned char*)in_data; /* const cast */
-	stream.avail_in = in_size;
-	stream.next_out = (unsigned char*)out_data;
-	stream.avail_out = out_size;
-	stream.zalloc = (alloc_func)Z_NULL;
-	stream.zfree = (free_func)Z_NULL;
-	stream.opaque = Z_NULL;
-
-	/* !! ZLIB UNDOCUMENTED FEATURE !! (used in gzio.c module )
-	 * windowBits is passed < 0 to tell that there is no zlib header.
-         * Note that in this case inflate *requires* an extra "dummy" byte
-         * after the compressed stream in order to complete decompression and
-         * return Z_STREAM_END.
-         */
-	/* The zlib code effectively READ the dummy byte,
-         * this imply that the pointer MUST point to a valid data region.
-         * The dummy byte is not always needed, only if inflate return Z_OK
-         * instead of Z_STREAM_END.
-         */
-
-	if (inflateInit2(&stream,-15) != Z_OK) {
-		return false;
-	}
-
-	int err = inflate(&stream, Z_SYNC_FLUSH);
-
-	if (err == Z_OK) {
-		/* dummy byte */
-		unsigned char dummy = 0;
-		stream.next_in = &dummy;
-		stream.avail_in = 1;
-
-		err = inflate(&stream, Z_SYNC_FLUSH);
-	}
-
-	if (err != Z_STREAM_END || stream.total_in != in_size || stream.total_out != out_size) {
-		inflateEnd(&stream);
-		return false;
-	}
-
-	if (inflateEnd(&stream) != Z_OK) {
-		return false;
-	}
-
-	return true;
-}
-
-bool compress_deflate_zlib(const char* in_data, unsigned in_size, char* out_data, unsigned& out_size, int compression_level, int strategy, int mem_level) {
-	z_stream stream;
-
-	stream.next_in = (unsigned char*)in_data;
-	stream.avail_in = in_size;
-	stream.next_out = (unsigned char*)out_data;
-	stream.avail_out = out_size;
-	stream.zalloc = Z_NULL;
-	stream.zfree = Z_NULL;
-	stream.opaque = Z_NULL;
-
-	int compression_window;
-	unsigned required_window = in_size;
-
-	// don't use the 8 bit window due a bug in the zlib 1.1.3 and previous
-	if (required_window <= 512) compression_window = 9;
-	else if (required_window <= 1024) compression_window = 10;
-	else if (required_window <= 2048) compression_window = 11;
-	else if (required_window <= 4096) compression_window = 12;
-	else if (required_window <= 8192) compression_window = 13;
-	else if (required_window <= 16384) compression_window = 14;
-	else compression_window = 15;
-
-	if (compression_window > MAX_WBITS)
-		compression_window = MAX_WBITS;
-
-	/* windowBits is passed < 0 to suppress the zlib header */
-	if (deflateInit2(&stream, compression_level, Z_DEFLATED, -compression_window, mem_level, strategy) != Z_OK) {
-		return false;
-	}
-
-	if (deflate(&stream, Z_FINISH) != Z_STREAM_END) {
-		deflateEnd(&stream);
-		return false;
-	}
-
-	out_size = stream.total_out;
-
-	deflateEnd(&stream);
-
-	return true;
-}
-
-#ifdef USE_BZIP2
-bool compress_bzip2(const char* in_data, unsigned in_size, char* out_data, unsigned& out_size, int blocksize, int workfactor) {
-	return BZ2_bzBuffToBuffCompress(out_data,&out_size,const_cast<char*>(in_data),in_size,blocksize,0,workfactor) == BZ_OK;
-}
-
-bool decompress_bzip2(const char* in_data, unsigned in_size, char* out_data, unsigned out_size) {
-	unsigned size = out_size;
-
-	if (BZ2_bzBuffToBuffDecompress(out_data,&size,const_cast<char*>(in_data),in_size,0,0)!=BZ_OK)
-		return false;
-
-	if (size != out_size)
-		return false;
-
-	return true;
-}
-#endif
-
-// -------------------------------------------------------------------------
-
-bool ecd_compare_sig(const char *buffer) {
+bool ecd_compare_sig(const unsigned char *buffer) {
 	static char ecdsig[] = { 'P', 'K', 0x05, 0x06 };
 	return memcmp(buffer, ecdsig, 4) == 0;
 }
@@ -175,7 +53,7 @@ bool ecd_compare_sig(const char *buffer) {
 //   offset offset of cent dir start in buffer
 // return:
 //   true found;
-bool ecd_find_sig (const char *buffer, unsigned buflen, unsigned& offset) {
+bool ecd_find_sig (const unsigned char *buffer, unsigned buflen, unsigned& offset) {
 	for (int i=buflen-22; i>=0; i--) {
 		if (ecd_compare_sig(buffer+i)) {
 			offset = i;
@@ -192,7 +70,7 @@ bool ecd_find_sig (const char *buffer, unsigned buflen, unsigned& offset) {
 
 #define ECD_READ_BUFFER_SIZE 4096
 
-bool cent_read(FILE* f, unsigned length, char*& data, unsigned& size) {
+bool cent_read(FILE* f, unsigned length, unsigned char*& data, unsigned& size) {
 	unsigned buf_length;
 
 	if (length <= ECD_READ_BUFFER_SIZE) {
@@ -211,11 +89,11 @@ bool cent_read(FILE* f, unsigned length, char*& data, unsigned& size) {
 		}
 
 		// allocate buffer
-		char* buf = (char*)operator new( buf_length );
+		unsigned char* buf = data_alloc( buf_length );
 		assert( buf );
 
 		if (fread( buf, buf_length, 1, f ) != 1) {
-			operator delete(buf);
+			data_free(buf);
 			return false;
 		}
 
@@ -225,29 +103,29 @@ bool cent_read(FILE* f, unsigned length, char*& data, unsigned& size) {
 			unsigned buf_pos = length - buf_length;
 
 			if (start_of_cent_dir >= length) {
-				operator delete(buf);
+				data_free(buf);
 				return false;
 			}
 
 			size = length - start_of_cent_dir;
 
-			data = (char*)operator new( size );
+			data = data_alloc( size );
 			assert( data );
 
 			if (buf_pos <= start_of_cent_dir) {
 				memcpy(data, buf + (start_of_cent_dir - buf_pos), size);
-				operator delete(buf);
+				data_free(buf);
 			} else {
-				operator delete(buf);
+				data_free(buf);
 
 				if (fseek(f, start_of_cent_dir, SEEK_SET) != 0) {
-					operator delete(data);
+					data_free(data);
 					data = 0;
 					return false;
 				}
 
 				if (fread( data, size, 1, f ) != 1) {
-					operator delete(data);
+					data_free(data);
 					data = 0;
 					return false;
 				}
@@ -255,7 +133,7 @@ bool cent_read(FILE* f, unsigned length, char*& data, unsigned& size) {
 			return true;
 		}
 
-		operator delete(buf);
+		data_free(buf);
 
 		if (buf_length < 8 * ECD_READ_BUFFER_SIZE && buf_length < length) {
 			/* grow buffer */
@@ -271,7 +149,7 @@ bool cent_read(FILE* f, unsigned length, char*& data, unsigned& size) {
 #define ZIP_UNIQUE_DISK 0
 
 // Convert time_t to zip format
-void time2zip(time_t tod, uint16& date, uint16& time) {
+void time2zip(time_t tod, unsigned& date, unsigned& time) {
 	struct tm* tm = gmtime(&tod);
 	assert( tm );
 	unsigned day = tm->tm_mday; // 1-31
@@ -285,7 +163,7 @@ void time2zip(time_t tod, uint16& date, uint16& time) {
 }
 
 // Convert zip time to to time_t
-time_t zip2time(uint16 date, uint16 time) {
+time_t zip2time(unsigned date, unsigned time) {
 	struct tm tm;
 	// reset all entry
 	memset(&tm,0,sizeof(tm));
@@ -301,17 +179,6 @@ time_t zip2time(uint16 date, uint16 time) {
 
 // -------------------------------------------------------------------------
 // zip_entry
-
-static char* datanew(const char* Adata, unsigned Asize) {
-	if (Adata) {
-		char* data = (char*)operator new(Asize);
-		if (Asize)
-			memcpy(data,Adata,Asize);
-		return data;
-	} else {
-		return 0;
-	}
-}
 
 zip_entry::zip_entry(const zip& Aparent) {
 	memset(&info,0xFF,sizeof(info));
@@ -337,19 +204,19 @@ zip_entry::zip_entry(const zip& Aparent) {
 zip_entry::zip_entry(const zip_entry& A) {
 	info = A.info;
 	parent_name = A.parent_name;
-	file_name = datanew(A.file_name, info.filename_length);;
-	local_extra_field = datanew(A.local_extra_field, info.local_extra_field_length);
-	central_extra_field = datanew(A.central_extra_field, info.central_extra_field_length);
-	file_comment = datanew(A.file_comment, info.file_comment_length);
-	data = datanew( A.data, A.info.compressed_size );
+	file_name = data_dup(A.file_name, info.filename_length);;
+	local_extra_field = data_dup(A.local_extra_field, info.local_extra_field_length);
+	central_extra_field = data_dup(A.central_extra_field, info.central_extra_field_length);
+	file_comment = data_dup(A.file_comment, info.file_comment_length);
+	data = data_dup( A.data, A.info.compressed_size );
 }
 
 zip_entry::~zip_entry() {
-	operator delete(file_name);
-	operator delete(local_extra_field);
-	operator delete(central_extra_field);
-	operator delete(file_comment);
-	operator delete(data);
+	data_free(file_name);
+	data_free(local_extra_field);
+	data_free(central_extra_field);
+	data_free(file_comment);
+	data_free(data);
 }
 
 zip_entry::method_t zip_entry::method_get() const {
@@ -411,7 +278,7 @@ void zip_entry::compressed_seek(FILE* f) const {
 	}
 
 	// read local header
-	char buf[ZIP_LO_FIXED];
+	unsigned char buf[ZIP_LO_FIXED];
 	if (fread(buf, ZIP_LO_FIXED, 1, f)!=1) {
 		throw error() << "Failed read " << parentname_get();
 	}
@@ -427,7 +294,7 @@ void zip_entry::compressed_seek(FILE* f) const {
 	}
 }
 
-void zip_entry::compressed_read(char* outdata) const {
+void zip_entry::compressed_read(unsigned char* outdata) const {
 
 	if (data) {
 		memcpy(outdata,data, compressed_size_get());
@@ -463,7 +330,7 @@ void zip_entry::time_set(time_t tod) {
 	time2zip(tod,info.last_mod_file_date,info.last_mod_file_time);
 }
 
-void zip_entry::set(method_t method, const string& Aname, const char* compdata, unsigned compsize, unsigned size, uint32 crc, uint16 date, uint16 time, bool is_text) {
+void zip_entry::set(method_t method, const string& Aname, const unsigned char* compdata, unsigned compsize, unsigned size, unsigned crc, unsigned date, unsigned time, bool is_text) {
 	info.version_needed_to_extract = 20; // Version 2.0
 	info.os_needed_to_extract = 0; // MSDOS
 	info.version_made_by = 20; // Version 2.0
@@ -547,29 +414,29 @@ void zip_entry::set(method_t method, const string& Aname, const char* compdata, 
 			throw error() << "Compression method not supported";
 	}
 
-	operator delete(data);
+	data_free(data);
 	info.compressed_size = compsize;
-	data = datanew(compdata, info.compressed_size);
+	data = data_dup(compdata, info.compressed_size);
 
 	name_set(Aname);
 
-	operator delete(local_extra_field);
+	data_free(local_extra_field);
 	info.local_extra_field_length = 0;
 	local_extra_field = 0;
 
-	operator delete(central_extra_field);
+	data_free(central_extra_field);
 	info.central_extra_field_length = 0;
 	central_extra_field = 0;
 
-	operator delete(file_comment);
+	data_free(file_comment);
 	info.file_comment_length = 0;
 	file_comment = 0;
 }
 
 void zip_entry::name_set(const string& Aname) {
-	operator delete(file_name);
+	data_free(file_name);
 	info.filename_length = Aname.length();
-	file_name = (char*)operator new(info.filename_length);
+	file_name = data_alloc(info.filename_length);
 	memcpy(file_name, Aname.c_str(), info.filename_length);
 }
 
@@ -578,7 +445,7 @@ string zip_entry::name_get() const {
 }
 
 // Check central directory entry
-void zip_entry::check_cent(const char* buf) const {
+void zip_entry::check_cent(const unsigned char* buf) const {
 	// check signature
 	if (le_uint32_read(buf+ZIP_CO_central_file_header_signature) != ZIP_C_signature) {
 		throw error() << "Invalid central directory signature";
@@ -591,7 +458,7 @@ void zip_entry::check_cent(const char* buf) const {
 }
 
 // Check local file header comparing with internal information
-void zip_entry::check_local(const char* buf) const {
+void zip_entry::check_local(const unsigned char* buf) const {
 	if (le_uint32_read(buf+ZIP_LO_local_file_header_signature) != ZIP_L_signature) {
 		throw error() << "Invalid signature in local header";
 	}
@@ -624,12 +491,12 @@ void zip_entry::check_local(const char* buf) const {
 
 // Unload compressed/uncomressed data
 void zip_entry::unload() {
-	operator delete(data);
+	data_free(data);
 	data = 0;
 }
 
 // Skip local file header and data
-void zip::skip_local(const char* buf, FILE* f) {
+void zip::skip_local(const unsigned char* buf, FILE* f) {
 	unsigned local_extra_field_length = le_uint16_read(buf+ZIP_LO_extra_field_length);
 	unsigned filename_length = le_uint16_read(buf+ZIP_LO_filename_length);
 	unsigned compressed_size = le_uint32_read(buf+ZIP_LO_compressed_size);
@@ -653,7 +520,7 @@ void zip::skip_local(const char* buf, FILE* f) {
 //   f file seeked after the fixed size local header
 // return:
 //   true ok
-void zip_entry::load_local(const char* buf, FILE* f) {
+void zip_entry::load_local(const unsigned char* buf, FILE* f) {
 	check_local(buf);
 
 	// use the local extra_field_length. It may be different than the
@@ -665,8 +532,8 @@ void zip_entry::load_local(const char* buf, FILE* f) {
 		throw error() << "Failed seek";
 	}
 
-	operator delete(data);
-	data = (char*)operator new(info.compressed_size);
+	data_free(data);
+	data = data_alloc(info.compressed_size);
 
 	try {
 		if (info.compressed_size > 0) {
@@ -675,7 +542,7 @@ void zip_entry::load_local(const char* buf, FILE* f) {
 			}
 		}
 	} catch (...) {
-		operator delete(data);
+		data_free(data);
 		data = 0;
 		throw;
 	}
@@ -695,7 +562,7 @@ void zip_entry::save_local(FILE* f) {
 	info.relative_offset_of_local_header = offset;
 
 	// write header
-	char buf[ZIP_LO_FIXED];
+	unsigned char buf[ZIP_LO_FIXED];
 	le_uint32_write(buf+ZIP_LO_local_file_header_signature, ZIP_L_signature);
 	le_uint8_write(buf+ZIP_LO_version_needed_to_extract,info.version_needed_to_extract);
 	le_uint8_write(buf+ZIP_LO_os_needed_to_extract,info.os_needed_to_extract);
@@ -740,8 +607,8 @@ void zip_entry::save_local(FILE* f) {
 // return:
 //   true ok
 //   false the object MUST be destroyed
-void zip_entry::load_cent(const char* _buf, unsigned& skip) {
-	const char* buf = _buf;
+void zip_entry::load_cent(const unsigned char* _buf, unsigned& skip) {
+	const unsigned char* buf = _buf;
 
 	check_cent(buf);
 
@@ -766,19 +633,19 @@ void zip_entry::load_cent(const char* _buf, unsigned& skip) {
 	buf += ZIP_CO_FIXED;
 
 	// read filename
-	operator delete(file_name);
-	file_name = (char*)operator new(info.filename_length);
+	data_free(file_name);
+	file_name = data_alloc(info.filename_length);
 	memcpy( file_name, buf, info.filename_length );
 	buf += info.filename_length;
 
 	// read extra field
-	operator delete(central_extra_field);
-	central_extra_field = datanew(buf, info.central_extra_field_length);
+	data_free(central_extra_field);
+	central_extra_field = data_dup(buf, info.central_extra_field_length);
 	buf += info.central_extra_field_length;
 
 	// read comment
-	operator delete(file_comment);
-	file_comment = datanew( buf, info.file_comment_length);
+	data_free(file_comment);
+	file_comment = data_dup( buf, info.file_comment_length);
 	buf += info.file_comment_length;
 
 	skip = buf - _buf;
@@ -790,7 +657,7 @@ void zip_entry::load_cent(const char* _buf, unsigned& skip) {
 // return:
 //   true ok
 void zip_entry::save_cent(FILE* f) {
-	char buf[ZIP_CO_FIXED];
+	unsigned char buf[ZIP_CO_FIXED];
 
 	le_uint32_write(buf+ZIP_CO_central_file_header_signature, ZIP_C_signature);
 	le_uint8_write(buf+ZIP_CO_version_made_by,info.version_made_by);
@@ -847,7 +714,7 @@ zip::zip(const std::string& Apath) : path(Apath)  {
 zip::zip(const zip& A) : map(A.map), path(A.path) {
 	flag = A.flag;
 	info = A.info;
-	zipfile_comment = datanew( A.zipfile_comment, A.info.zipfile_comment_length );
+	zipfile_comment = data_dup( A.zipfile_comment, A.info.zipfile_comment_length );
 }
 
 zip::~zip() {
@@ -860,7 +727,7 @@ void zip::create() {
 
 	info.offset_to_start_of_cent_dir = 0;
 	info.zipfile_comment_length = 0;
-	operator delete(zipfile_comment);
+	data_free(zipfile_comment);
 	zipfile_comment = 0;
 
 	flag.read = true;
@@ -889,7 +756,7 @@ void zip::open() {
 	if (!f)
 		throw error() << "Failed open for reading";
 
-	char* data = 0;
+	unsigned char* data = 0;
 	unsigned data_size = 0;
 
 	try {
@@ -934,17 +801,17 @@ void zip::open() {
 			throw error() << "Invalid end of central directory start address";
 
 		// comment
-		operator delete(zipfile_comment);
-		zipfile_comment = datanew( data+data_pos, info.zipfile_comment_length);
+		data_free(zipfile_comment);
+		zipfile_comment = data_dup( data+data_pos, info.zipfile_comment_length);
 		data_pos += info.zipfile_comment_length;
 
 	} catch (...) {
-		operator delete(data);
+		data_free(data);
 		throw;
 	}
 
 	// delete cent data
-	operator delete(data);
+	data_free(data);
 
 	if (pedantic) {
 		// don't accept garbage at the end of file
@@ -964,7 +831,7 @@ void zip::close() {
 	flag.open = false;
 	flag.read = false;
 	flag.modify = false;
-	operator delete(zipfile_comment);
+	data_free(zipfile_comment);
 	zipfile_comment = 0;
 	path = "";
 	map.erase( map.begin(), map.end() );
@@ -1009,7 +876,7 @@ void zip::load() {
 		unsigned count = 0;
 
 		while (static_cast<unsigned long>(offset) < info.offset_to_start_of_cent_dir) {
-			char buf[ZIP_LO_FIXED];
+			unsigned char buf[ZIP_LO_FIXED];
 
 			if (fread(buf,ZIP_LO_FIXED,1,f)!=1)
 				throw error() << "Failed read";
@@ -1128,7 +995,7 @@ void zip::save() {
 				throw error() << "Failed tell";
 
 			// write end of cent dir
-			char buf[ZIP_EO_FIXED];
+			unsigned char buf[ZIP_EO_FIXED];
 			le_uint32_write(buf+ZIP_EO_end_of_central_dir_signature, ZIP_E_signature);
 			le_uint16_write(buf+ZIP_EO_number_of_this_disk, ZIP_UNIQUE_DISK);
 			le_uint16_write(buf+ZIP_EO_number_of_disk_start_cent_dir, ZIP_UNIQUE_DISK);
@@ -1206,7 +1073,7 @@ zip::iterator zip::insert(const zip_entry& A, const string& Aname) {
 
 	assert( flag.read );
 
-	char* data = (char*)operator new( A.compressed_size_get() );
+	unsigned char* data = data_alloc( A.compressed_size_get() );
 	assert( data );
 
 	try {
@@ -1224,11 +1091,11 @@ zip::iterator zip::insert(const zip_entry& A, const string& Aname) {
 		flag.modify = true;
 
 	} catch (...) {
-		operator delete(data);
+		data_free(data);
 		throw;
 	}
 
-	operator delete(data);
+	data_free(data);
 
 	return i;
 }
@@ -1239,14 +1106,14 @@ zip::iterator zip::insert(const zip_entry& A, const string& Aname) {
 // note:
 //   data is deflated or stored
 //   no filename overwrite check
-zip::iterator zip::insert_uncompressed(const string& Aname, const char* data, unsigned size, uint32 crc, time_t tod, bool is_text) {
+zip::iterator zip::insert_uncompressed(const string& Aname, const unsigned char* data, unsigned size, unsigned crc, time_t tod, bool is_text) {
 	iterator i;
 
 	assert( flag.read );
 	assert( crc == crc32(0, (const unsigned char*)data, size) );
 
-	uint16 date = 0;
-	uint16 time = 0;
+	unsigned date = 0;
+	unsigned time = 0;
 	time2zip(tod,date,time);
 
 	i = map.insert( map.end(), zip_entry(path) );
