@@ -81,42 +81,13 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-bin_PROGRAMS = advscan advdiff advzip advpng advmng
+bin_PROGRAMS = advscan advdiff
 
 advdiff_SOURCES = \
 	diff.cc \
 	gamediff.cc \
 	portable.c \
 	lib/readinfo.c
-
-
-advzip_SOURCES = \
-	rezip.cc \
-	zip.cc \
-	utility.cc \
-	siglock.cc \
-	compress.cc \
-	zipsh.cc \
-	portable.c \
-	7z/7zdeflate.cc \
-	7z/7zlzma.cc \
-	7z/AriBitCoder.cc \
-	7z/CRC.cc \
-	7z/DeflateDecoder.cc \
-	7z/DeflateEncoder.cc \
-	7z/HuffmanEncoder.cc \
-	7z/IInOutStreams.cc \
-	7z/InByte.cc \
-	7z/LSBFDecoder.cc \
-	7z/LSBFEncoder.cc \
-	7z/LZMA.cc \
-	7z/LZMADecoder.cc \
-	7z/LZMAEncoder.cc \
-	7z/LenCoder.cc \
-	7z/LiteralCoder.cc \
-	7z/OutByte.cc \
-	7z/WindowIn.cc \
-	7z/WindowOut.cc
 
 
 advscan_SOURCES = \
@@ -134,83 +105,16 @@ advscan_SOURCES = \
 	lib/readinfo.c
 
 
-advpng_SOURCES = \
-	repng.cc \
-	pngex.cc \
-	utility.cc \
-	siglock.cc \
-	compress.cc \
-	portable.c \
-	lib/fz.c \
-	lib/png.c \
-	lib/error.c \
-	7z/7zdeflate.cc \
-	7z/7zlzma.cc \
-	7z/AriBitCoder.cc \
-	7z/CRC.cc \
-	7z/DeflateDecoder.cc \
-	7z/DeflateEncoder.cc \
-	7z/HuffmanEncoder.cc \
-	7z/IInOutStreams.cc \
-	7z/InByte.cc \
-	7z/LSBFDecoder.cc \
-	7z/LSBFEncoder.cc \
-	7z/LZMA.cc \
-	7z/LZMADecoder.cc \
-	7z/LZMAEncoder.cc \
-	7z/LenCoder.cc \
-	7z/LiteralCoder.cc \
-	7z/OutByte.cc \
-	7z/WindowIn.cc \
-	7z/WindowOut.cc
-
-
-advmng_SOURCES = \
-	remng.cc \
-	pngex.cc \
-	utility.cc \
-	siglock.cc \
-	compress.cc \
-	portable.c \
-	lib/fz.c \
-	lib/png.c \
-	lib/mng.c \
-	lib/error.c \
-	7z/7zdeflate.cc \
-	7z/7zlzma.cc \
-	7z/AriBitCoder.cc \
-	7z/CRC.cc \
-	7z/DeflateDecoder.cc \
-	7z/DeflateEncoder.cc \
-	7z/HuffmanEncoder.cc \
-	7z/IInOutStreams.cc \
-	7z/InByte.cc \
-	7z/LSBFDecoder.cc \
-	7z/LSBFEncoder.cc \
-	7z/LZMA.cc \
-	7z/LZMADecoder.cc \
-	7z/LZMAEncoder.cc \
-	7z/LenCoder.cc \
-	7z/LiteralCoder.cc \
-	7z/OutByte.cc \
-	7z/WindowIn.cc \
-	7z/WindowOut.cc
-
-
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	README AUTHORS HISTORY INSTALL COPYING \
-	doc/advscan.d doc/advdiff.d doc/advzip.d doc/advpng.d doc/advmng.d doc/history.d doc/readme.d doc/authors.d doc/install.d \
-	doc/advscan.1 doc/advdiff.1 doc/advzip.1 doc/advpng.1 doc/advmng.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
-	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
-	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
-	configure.msdos configure.windows autogen.sh noautomake.sh \
-	7z/README \
-	check.lst
+	doc/advscan.d doc/advdiff.d doc/history.d doc/readme.d doc/authors.d doc/install.d \
+	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
+	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
+	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
+	configure.msdos configure.windows autogen.sh noautomake.sh
 
 
 noinst_HEADERS = \
-	pngex.h \
-	compress.h \
 	rom.h \
 	utility.h \
 	conf.h \
@@ -225,80 +129,35 @@ noinst_HEADERS = \
 	analyze.dat \
 	siglock.h \
 	portable.h \
-	lib/png.h \
-	lib/mng.h \
-	lib/fz.h \
-	lib/endianrw.h \
 	lib/readinfo.h \
-	lib/error.h \
-	lib/extra.h \
-	7z/7z.h \
-	7z/AriBitCoder.h \
-	7z/AriConst.h \
-	7z/AriPrice.h \
-	7z/BinTree.h \
-	7z/BinTree2.h \
-	7z/BinTree2Main.h \
-	7z/BinTree3.h \
-	7z/BinTree3Main.h \
-	7z/BinTree3Z.h \
-	7z/BinTree3ZMain.h \
-	7z/BinTree4.h \
-	7z/BinTree4Main.h \
-	7z/BinTree4b.h \
-	7z/BinTree4bMain.h \
-	7z/BinTreeMF.h \
-	7z/BinTreeMFMain.h \
-	7z/BinTreeMain.h \
-	7z/BitTreeCoder.h \
-	7z/CRC.h \
-	7z/Const.h \
-	7z/DeflateDecoder.h \
-	7z/DeflateEncoder.h \
-	7z/HuffmanDecoder.h \
-	7z/HuffmanEncoder.h \
-	7z/IInOutStreams.h \
-	7z/InByte.h \
-	7z/LSBFDecoder.h \
-	7z/LSBFEncoder.h \
-	7z/LZMA.h \
-	7z/LZMADecoder.h \
-	7z/LZMAEncoder.h \
-	7z/LenCoder.h \
-	7z/LiteralCoder.h \
-	7z/OutByte.h \
-	7z/Portable.h \
-	7z/RCDefs.h \
-	7z/RangeCoder.h \
-	7z/WindowIn.h \
-	7z/WindowOut.h
+	lib/endianrw.h \
+	lib/extra.h
 
 
-man_MANS = doc/advscan.1 doc/advdiff.1 doc/advzip.1 doc/advpng.1 doc/advmng.1
+man_MANS = doc/advscan.1 doc/advdiff.1
 
 DISTDOS_ROOT = \
 	doc/readme.txt doc/authors.txt doc/history.txt doc/copying.txt \
-	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
+	advscan.exe advdiff.exe \
 	advscan.rc
 
 
 DISTDOS_DOC = \
-	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt \
+	doc/advscan.txt doc/advdiff.txt \
 	doc/readme.txt doc/authors.txt doc/history.txt \
-	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html \
+	doc/advscan.html doc/advdiff.html \
 	doc/readme.html doc/authors.html doc/history.html 
 
 
 DISTWEB = \
-	doc/advscan.hh doc/advdiff.hh doc/advzip.hh doc/advpng.hh doc/advmng.hh doc/history.hh
+	doc/advscan.hh doc/advdiff.hh doc/history.hh
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
-bin_PROGRAMS = advscan$(EXEEXT) advdiff$(EXEEXT) advzip$(EXEEXT) \
-	advpng$(EXEEXT) advmng$(EXEEXT)
+bin_PROGRAMS = advscan$(EXEEXT) advdiff$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_advdiff_OBJECTS = diff.$(OBJEXT) gamediff.$(OBJEXT) \
@@ -307,34 +166,6 @@ advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
 advdiff_DEPENDENCIES =
 advdiff_LDFLAGS =
-am_advmng_OBJECTS = remng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
-	siglock.$(OBJEXT) compress.$(OBJEXT) portable.$(OBJEXT) \
-	fz.$(OBJEXT) png.$(OBJEXT) mng.$(OBJEXT) error.$(OBJEXT) \
-	7zdeflate.$(OBJEXT) 7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) \
-	CRC.$(OBJEXT) DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
-	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
-	InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) LSBFEncoder.$(OBJEXT) \
-	LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) LZMAEncoder.$(OBJEXT) \
-	LenCoder.$(OBJEXT) LiteralCoder.$(OBJEXT) OutByte.$(OBJEXT) \
-	WindowIn.$(OBJEXT) WindowOut.$(OBJEXT)
-advmng_OBJECTS = $(am_advmng_OBJECTS)
-advmng_LDADD = $(LDADD)
-advmng_DEPENDENCIES =
-advmng_LDFLAGS =
-am_advpng_OBJECTS = repng.$(OBJEXT) pngex.$(OBJEXT) utility.$(OBJEXT) \
-	siglock.$(OBJEXT) compress.$(OBJEXT) portable.$(OBJEXT) \
-	fz.$(OBJEXT) png.$(OBJEXT) error.$(OBJEXT) 7zdeflate.$(OBJEXT) \
-	7zlzma.$(OBJEXT) AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) \
-	DeflateDecoder.$(OBJEXT) DeflateEncoder.$(OBJEXT) \
-	HuffmanEncoder.$(OBJEXT) IInOutStreams.$(OBJEXT) \
-	InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) LSBFEncoder.$(OBJEXT) \
-	LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) LZMAEncoder.$(OBJEXT) \
-	LenCoder.$(OBJEXT) LiteralCoder.$(OBJEXT) OutByte.$(OBJEXT) \
-	WindowIn.$(OBJEXT) WindowOut.$(OBJEXT)
-advpng_OBJECTS = $(am_advpng_OBJECTS)
-advpng_LDADD = $(LDADD)
-advpng_DEPENDENCIES =
-advpng_LDFLAGS =
 am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) conf.$(OBJEXT) \
 	utility.$(OBJEXT) ziprom.$(OBJEXT) game.$(OBJEXT) zip.$(OBJEXT) \
 	output.$(OBJEXT) analyze.$(OBJEXT) siglock.$(OBJEXT) \
@@ -343,19 +174,6 @@ advscan_OBJECTS = $(am_advscan_OBJECTS)
 advscan_LDADD = $(LDADD)
 advscan_DEPENDENCIES =
 advscan_LDFLAGS =
-am_advzip_OBJECTS = rezip.$(OBJEXT) zip.$(OBJEXT) utility.$(OBJEXT) \
-	siglock.$(OBJEXT) compress.$(OBJEXT) zipsh.$(OBJEXT) \
-	portable.$(OBJEXT) 7zdeflate.$(OBJEXT) 7zlzma.$(OBJEXT) \
-	AriBitCoder.$(OBJEXT) CRC.$(OBJEXT) DeflateDecoder.$(OBJEXT) \
-	DeflateEncoder.$(OBJEXT) HuffmanEncoder.$(OBJEXT) \
-	IInOutStreams.$(OBJEXT) InByte.$(OBJEXT) LSBFDecoder.$(OBJEXT) \
-	LSBFEncoder.$(OBJEXT) LZMA.$(OBJEXT) LZMADecoder.$(OBJEXT) \
-	LZMAEncoder.$(OBJEXT) LenCoder.$(OBJEXT) LiteralCoder.$(OBJEXT) \
-	OutByte.$(OBJEXT) WindowIn.$(OBJEXT) WindowOut.$(OBJEXT)
-advzip_OBJECTS = $(am_advzip_OBJECTS)
-advzip_LDADD = $(LDADD)
-advzip_DEPENDENCIES =
-advzip_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
@@ -375,8 +193,7 @@ CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(advdiff_SOURCES) $(advmng_SOURCES) $(advpng_SOURCES) \
-	$(advscan_SOURCES) $(advzip_SOURCES)
+DIST_SOURCES = $(advdiff_SOURCES) $(advscan_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
@@ -384,9 +201,9 @@ HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = README $(noinst_HEADERS) AUTHORS COPYING INSTALL \
 	Makefile.am Makefile.in aclocal.m4 config.guess config.h.in \
-	config.sub configure configure.ac depcomp install-sh missing \
+	config.sub configure configure.ac install-sh missing \
 	mkinstalldirs
-SOURCES = $(advdiff_SOURCES) $(advmng_SOURCES) $(advpng_SOURCES) $(advscan_SOURCES) $(advzip_SOURCES)
+SOURCES = $(advdiff_SOURCES) $(advscan_SOURCES)
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -453,41 +270,9 @@ readinfo.$(OBJEXT): lib/readinfo.c
 advdiff$(EXEEXT): $(advdiff_OBJECTS) $(advdiff_DEPENDENCIES) 
 	@rm -f advdiff$(EXEEXT)
 	$(CXXLINK) $(advdiff_LDFLAGS) $(advdiff_OBJECTS) $(advdiff_LDADD) $(LIBS)
-fz.$(OBJEXT): lib/fz.c
-png.$(OBJEXT): lib/png.c
-mng.$(OBJEXT): lib/mng.c
-error.$(OBJEXT): lib/error.c
-7zdeflate.$(OBJEXT): 7z/7zdeflate.cc
-7zlzma.$(OBJEXT): 7z/7zlzma.cc
-AriBitCoder.$(OBJEXT): 7z/AriBitCoder.cc
-CRC.$(OBJEXT): 7z/CRC.cc
-DeflateDecoder.$(OBJEXT): 7z/DeflateDecoder.cc
-DeflateEncoder.$(OBJEXT): 7z/DeflateEncoder.cc
-HuffmanEncoder.$(OBJEXT): 7z/HuffmanEncoder.cc
-IInOutStreams.$(OBJEXT): 7z/IInOutStreams.cc
-InByte.$(OBJEXT): 7z/InByte.cc
-LSBFDecoder.$(OBJEXT): 7z/LSBFDecoder.cc
-LSBFEncoder.$(OBJEXT): 7z/LSBFEncoder.cc
-LZMA.$(OBJEXT): 7z/LZMA.cc
-LZMADecoder.$(OBJEXT): 7z/LZMADecoder.cc
-LZMAEncoder.$(OBJEXT): 7z/LZMAEncoder.cc
-LenCoder.$(OBJEXT): 7z/LenCoder.cc
-LiteralCoder.$(OBJEXT): 7z/LiteralCoder.cc
-OutByte.$(OBJEXT): 7z/OutByte.cc
-WindowIn.$(OBJEXT): 7z/WindowIn.cc
-WindowOut.$(OBJEXT): 7z/WindowOut.cc
-advmng$(EXEEXT): $(advmng_OBJECTS) $(advmng_DEPENDENCIES) 
-	@rm -f advmng$(EXEEXT)
-	$(CXXLINK) $(advmng_LDFLAGS) $(advmng_OBJECTS) $(advmng_LDADD) $(LIBS)
-advpng$(EXEEXT): $(advpng_OBJECTS) $(advpng_DEPENDENCIES) 
-	@rm -f advpng$(EXEEXT)
-	$(CXXLINK) $(advpng_LDFLAGS) $(advpng_OBJECTS) $(advpng_LDADD) $(LIBS)
 advscan$(EXEEXT): $(advscan_OBJECTS) $(advscan_DEPENDENCIES) 
 	@rm -f advscan$(EXEEXT)
 	$(CXXLINK) $(advscan_LDFLAGS) $(advscan_OBJECTS) $(advscan_LDADD) $(LIBS)
-advzip$(EXEEXT): $(advzip_OBJECTS) $(advzip_DEPENDENCIES) 
-	@rm -f advzip$(EXEEXT)
-	$(CXXLINK) $(advzip_LDFLAGS) $(advzip_OBJECTS) $(advzip_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -507,149 +292,11 @@ readinfo.o: lib/readinfo.c
 readinfo.obj: lib/readinfo.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o readinfo.obj `cygpath -w lib/readinfo.c`
 
-fz.o: lib/fz.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fz.o `test -f lib/fz.c || echo '$(srcdir)/'`lib/fz.c
-
-fz.obj: lib/fz.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fz.obj `cygpath -w lib/fz.c`
-
-png.o: lib/png.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o png.o `test -f lib/png.c || echo '$(srcdir)/'`lib/png.c
-
-png.obj: lib/png.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o png.obj `cygpath -w lib/png.c`
-
-mng.o: lib/mng.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mng.o `test -f lib/mng.c || echo '$(srcdir)/'`lib/mng.c
-
-mng.obj: lib/mng.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mng.obj `cygpath -w lib/mng.c`
-
-error.o: lib/error.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o error.o `test -f lib/error.c || echo '$(srcdir)/'`lib/error.c
-
-error.obj: lib/error.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o error.obj `cygpath -w lib/error.c`
-
 .cc.o:
 	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 
 .cc.obj:
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
-
-7zdeflate.o: 7z/7zdeflate.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o 7zdeflate.o `test -f 7z/7zdeflate.cc || echo '$(srcdir)/'`7z/7zdeflate.cc
-
-7zdeflate.obj: 7z/7zdeflate.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o 7zdeflate.obj `cygpath -w 7z/7zdeflate.cc`
-
-7zlzma.o: 7z/7zlzma.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o 7zlzma.o `test -f 7z/7zlzma.cc || echo '$(srcdir)/'`7z/7zlzma.cc
-
-7zlzma.obj: 7z/7zlzma.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o 7zlzma.obj `cygpath -w 7z/7zlzma.cc`
-
-AriBitCoder.o: 7z/AriBitCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AriBitCoder.o `test -f 7z/AriBitCoder.cc || echo '$(srcdir)/'`7z/AriBitCoder.cc
-
-AriBitCoder.obj: 7z/AriBitCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o AriBitCoder.obj `cygpath -w 7z/AriBitCoder.cc`
-
-CRC.o: 7z/CRC.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CRC.o `test -f 7z/CRC.cc || echo '$(srcdir)/'`7z/CRC.cc
-
-CRC.obj: 7z/CRC.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CRC.obj `cygpath -w 7z/CRC.cc`
-
-DeflateDecoder.o: 7z/DeflateDecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DeflateDecoder.o `test -f 7z/DeflateDecoder.cc || echo '$(srcdir)/'`7z/DeflateDecoder.cc
-
-DeflateDecoder.obj: 7z/DeflateDecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DeflateDecoder.obj `cygpath -w 7z/DeflateDecoder.cc`
-
-DeflateEncoder.o: 7z/DeflateEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DeflateEncoder.o `test -f 7z/DeflateEncoder.cc || echo '$(srcdir)/'`7z/DeflateEncoder.cc
-
-DeflateEncoder.obj: 7z/DeflateEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DeflateEncoder.obj `cygpath -w 7z/DeflateEncoder.cc`
-
-HuffmanEncoder.o: 7z/HuffmanEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HuffmanEncoder.o `test -f 7z/HuffmanEncoder.cc || echo '$(srcdir)/'`7z/HuffmanEncoder.cc
-
-HuffmanEncoder.obj: 7z/HuffmanEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o HuffmanEncoder.obj `cygpath -w 7z/HuffmanEncoder.cc`
-
-IInOutStreams.o: 7z/IInOutStreams.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IInOutStreams.o `test -f 7z/IInOutStreams.cc || echo '$(srcdir)/'`7z/IInOutStreams.cc
-
-IInOutStreams.obj: 7z/IInOutStreams.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IInOutStreams.obj `cygpath -w 7z/IInOutStreams.cc`
-
-InByte.o: 7z/InByte.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InByte.o `test -f 7z/InByte.cc || echo '$(srcdir)/'`7z/InByte.cc
-
-InByte.obj: 7z/InByte.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InByte.obj `cygpath -w 7z/InByte.cc`
-
-LSBFDecoder.o: 7z/LSBFDecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LSBFDecoder.o `test -f 7z/LSBFDecoder.cc || echo '$(srcdir)/'`7z/LSBFDecoder.cc
-
-LSBFDecoder.obj: 7z/LSBFDecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LSBFDecoder.obj `cygpath -w 7z/LSBFDecoder.cc`
-
-LSBFEncoder.o: 7z/LSBFEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LSBFEncoder.o `test -f 7z/LSBFEncoder.cc || echo '$(srcdir)/'`7z/LSBFEncoder.cc
-
-LSBFEncoder.obj: 7z/LSBFEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LSBFEncoder.obj `cygpath -w 7z/LSBFEncoder.cc`
-
-LZMA.o: 7z/LZMA.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMA.o `test -f 7z/LZMA.cc || echo '$(srcdir)/'`7z/LZMA.cc
-
-LZMA.obj: 7z/LZMA.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMA.obj `cygpath -w 7z/LZMA.cc`
-
-LZMADecoder.o: 7z/LZMADecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMADecoder.o `test -f 7z/LZMADecoder.cc || echo '$(srcdir)/'`7z/LZMADecoder.cc
-
-LZMADecoder.obj: 7z/LZMADecoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMADecoder.obj `cygpath -w 7z/LZMADecoder.cc`
-
-LZMAEncoder.o: 7z/LZMAEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMAEncoder.o `test -f 7z/LZMAEncoder.cc || echo '$(srcdir)/'`7z/LZMAEncoder.cc
-
-LZMAEncoder.obj: 7z/LZMAEncoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LZMAEncoder.obj `cygpath -w 7z/LZMAEncoder.cc`
-
-LenCoder.o: 7z/LenCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LenCoder.o `test -f 7z/LenCoder.cc || echo '$(srcdir)/'`7z/LenCoder.cc
-
-LenCoder.obj: 7z/LenCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LenCoder.obj `cygpath -w 7z/LenCoder.cc`
-
-LiteralCoder.o: 7z/LiteralCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LiteralCoder.o `test -f 7z/LiteralCoder.cc || echo '$(srcdir)/'`7z/LiteralCoder.cc
-
-LiteralCoder.obj: 7z/LiteralCoder.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o LiteralCoder.obj `cygpath -w 7z/LiteralCoder.cc`
-
-OutByte.o: 7z/OutByte.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OutByte.o `test -f 7z/OutByte.cc || echo '$(srcdir)/'`7z/OutByte.cc
-
-OutByte.obj: 7z/OutByte.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o OutByte.obj `cygpath -w 7z/OutByte.cc`
-
-WindowIn.o: 7z/WindowIn.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WindowIn.o `test -f 7z/WindowIn.cc || echo '$(srcdir)/'`7z/WindowIn.cc
-
-WindowIn.obj: 7z/WindowIn.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WindowIn.obj `cygpath -w 7z/WindowIn.cc`
-
-WindowOut.o: 7z/WindowOut.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WindowOut.o `test -f 7z/WindowOut.cc || echo '$(srcdir)/'`7z/WindowOut.cc
-
-WindowOut.obj: 7z/WindowOut.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WindowOut.obj `cygpath -w 7z/WindowOut.cc`
 uninstall-info-am:
 
 man1dir = $(mandir)/man1
@@ -742,7 +389,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/7z $(distdir)/doc $(distdir)/lib
+	$(mkinstalldirs) $(distdir)/doc $(distdir)/lib
 	@for file in $(DISTFILES); do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -814,7 +461,6 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
 all-am: Makefile $(PROGRAMS) $(MANS) $(HEADERS) config.h
 
@@ -884,24 +530,23 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am uninstall-man
 
 uninstall-man: uninstall-man1
 
-.PHONY: GTAGS all all-am check check-am check-local clean \
-	clean-binPROGRAMS clean-generic clean-local dist dist-all \
-	dist-gzip distcheck distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-tags distcleancheck \
-	distdir dvi dvi-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-man1 install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic tags \
-	uninstall uninstall-am uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-man uninstall-man1
+.PHONY: GTAGS all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic clean-local dist dist-all dist-gzip distcheck \
+	distclean distclean-compile distclean-generic distclean-hdr \
+	distclean-tags distcleancheck distdir dvi dvi-am info info-am \
+	install install-am install-binPROGRAMS install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-man1 install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic tags uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-info-am uninstall-man \
+	uninstall-man1
 
 
 clean-local:
 	rm -f *~
-	rm -f new.lst check.zip
-	rm -f advscan.exe advscan.rc advdiff.exe advzip.exe advpng.exe advmng.exe
+	rm -f advscan.exe advscan.rc advdiff.exe
 	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
 	rm -f doc/*.hh
 
@@ -939,55 +584,23 @@ HISTORY: doc/history.txt
 doc/copying.txt: COPYING
 	cat $< | todos > $@
 
-check-local: advzip check.lst
-	@./advzip -a -1 check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip > new.lst
-	@./advzip -t -p check.zip
-	@./advzip -a -2 check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip >> new.lst
-	@./advzip -t -p check.zip
-	@./advzip -a -3 check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip >> new.lst
-	@./advzip -t -p check.zip
-	@./advzip -a -1 -N check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip >> new.lst
-	@./advzip -t -p check.zip
-	@./advzip -a -2 -N check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip >> new.lst
-	@./advzip -t -p check.zip
-	@./advzip -a -3 -N check.zip $(srcdir)/COPYING
-	@./advzip -l check.zip >> new.lst
-	@./advzip -t -p check.zip
-	@cmp new.lst $(srcdir)/check.lst
-	@echo Success!
-
 distdos: $(DISTDOS_ROOT) $(DISTDOS_DOC)
-	-upx -q -q advscan.exe
-	-upx -q -q advdiff.exe
-	-upx -q -q advzip.exe
-	-upx -q -q advpng.exe
-	-upx -q -q advmng.exe
-	rm -f $(PACKAGE)-$(VERSION)-dos-i586.zip
+	rm -f $(PACKAGE)-$(VERSION)-dos-pentium.zip
 	mkdir tmp
 	cp $(DISTDOS_ROOT) tmp
 	mkdir tmp/doc
 	cp $(DISTDOS_DOC) tmp/doc
-	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-dos-i586.zip *
+	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-dos-pentium.zip *
 	rm -r tmp
 
 distwindows: $(DISTDOS_ROOT) $(DISTDOS_DOC)
-	-upx -q -q advscan.exe
-	-upx -q -q advdiff.exe
-	-upx -q -q advzip.exe
-	-upx -q -q advpng.exe
-	-upx -q -q advmng.exe
-	rm -f $(PACKAGE)-$(VERSION)-windows-i586.zip
+	rm -f $(PACKAGE)-$(VERSION)-windows-pentium.zip
 	mkdir tmp
 	cp $(DISTDOS_ROOT) tmp
 	mkdir tmp/doc
 	cp support/zlib.dll tmp
 	cp $(DISTDOS_DOC) tmp/doc
-	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-windows-i586.zip *
+	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-windows-pentium.zip *
 	rm -r tmp
 
 web: $(DISTWEB)

@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([AdvanceSCAN],[1.4])
+AC_INIT([AdvanceSCAN],[1.5])
 AC_CONFIG_SRCDIR([scan.cc])
 AM_INIT_AUTOMAKE([foreign no-dependencies])
 AM_CONFIG_HEADER([config.h])
@@ -28,16 +28,6 @@ AC_CHECK_HEADERS([sys/utime.h])
 # Checks for library functions.
 AC_CHECK_FUNCS([getopt])
 AC_CHECK_FUNCS([getopt_long])
-
-AC_DEFINE(USE_7Z,1,[Use the 7z library])
-AC_DEFINE(USE_LZMA,1,[Use the lzma compression])
-
-AC_ARG_ENABLE(
-	bzip2,
-	[  --enable-bzip2       Use the bzip2 compression],
-	AC_DEFINE(USE_BZIP2,1,[Use the bzip2 compression])
-	AC_CHECK_LIB([bz2],[BZ2_bzBuffToBuffCompress])
-)
 
 # Configure the library
 CFLAGS="$CFLAGS -DUSE_ERROR_SILENT"

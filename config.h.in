@@ -12,9 +12,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `bz2' library (-lbz2). */
-#undef HAVE_LIBBZ2
-
 /* Define to 1 if you have the `z' library (-lz). */
 #undef HAVE_LIBZ
 
@@ -68,15 +65,6 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* Use the 7z library */
-#undef USE_7Z
-
-/* Use the bzip2 compression */
-#undef USE_BZIP2
-
-/* Use the lzma compression */
-#undef USE_LZMA
 
 /* Version number of package */
 #undef VERSION

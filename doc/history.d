@@ -1,6 +1,10 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.5 2003/02
+	) Removed the recompression utilities. Now they are in the
+		AdvanceCOMP package.
+
 AdvanceSCAN Version 1.4 2002/12
 	) Fixed a bug in the advmng utility when it was called with
 		more than one file in the command line. The program

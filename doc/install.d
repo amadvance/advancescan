@@ -22,23 +22,4 @@ Name
 
 		:man advscan
 		:man advdiff
-		:man advzip
-		:man advpng
-		:man advmng
-
-Requirements
-	To build AdvanceSCAN you need a C/C++ compiler.
-
-	Tested with the following compilers on a GNU/Linux
-	environment :
-
-		:GNU gcc 2.95.3
-		:GNU gcc 3.0.4
-		:GNU gcc 3.1, 3.1.1
-		:GNU gcc 3.2, 3.2.1
-
-	The build process in DOS and Windows isn't tested. The DOS
-	and Windows binaries are generated in Linux cross compiling.
-	If you have the cross compiler installed, you can try the
-	configure.msdos and configure.windows configuration scripts.
 

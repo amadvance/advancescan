@@ -268,7 +268,7 @@ bool gamearchive::load_internal(FILE* f) {
 				} else if (strcmp(info_text_get(),"rom")==0) {
 					if (info_token_get(f) != info_open)  return false;
 					rom r;
-					token =	info_token_get(f);
+					token = info_token_get(f);
 					while (token != info_close) {
 						if (token != info_symbol) return false;
 						if (strcmp(info_text_get(),"name")==0) {
@@ -288,7 +288,7 @@ bool gamearchive::load_internal(FILE* f) {
 					g.rs_get().insert( r );
 				} else if (strcmp(info_text_get(),"driver")==0) {
 					if (info_token_get(f) != info_open)  return false;
-					token =	info_token_get(f);
+					token = info_token_get(f);
 					while (token != info_close) {
 						if (token != info_symbol) return false;
 						if (strcmp(info_text_get(),"status")==0) {

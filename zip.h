@@ -22,7 +22,10 @@
 #define __ZIP_H
 
 #include "except.h"
+
+#ifdef USE_COMPRESS
 #include "compress.h"
+#endif
 
 #include <list>
 #include <sstream>
@@ -235,7 +238,9 @@ public:
 	time_t time_get() const;
 	void time_set(time_t tod);
 
+#ifdef USE_COMPRESS
 	bool shrink(bool standard, shrink_t level);
+#endif
 
 	void test() const;
 };
@@ -311,7 +316,10 @@ public:
 	iterator insert(const zip_entry& A, const std::string& Aname);
 	iterator insert_uncompressed(const std::string& Aname, const unsigned char* data, unsigned size, unsigned crc, time_t tod, bool is_text);
 
+#ifdef USE_COMPRESS
 	void shrink(bool standard, shrink_t level);
+#endif
+
 	void test() const;
 };
 

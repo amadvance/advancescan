@@ -1177,7 +1177,7 @@ void report_sample_zip(const filepath_container& zar, gamearchive& gar, output& 
 
 			z.open();
 
-			sample_report(z,*g,out,verbose,ana);
+			sample_report(z, *g, out, verbose, ana);
 
 			z.close();
 		}
