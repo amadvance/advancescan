@@ -1,6 +1,10 @@
 Name
 	advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.12 2004/10
+	) In -listinfo files are now allowed crc with the "0x"
+		prefix.
+
 AdvanceSCAN Version 1.11 2004/09
 	) Minor changes at the source. Removed the gamediff.* files.
 	) Fixed a compilation problem with gcc 3.4.

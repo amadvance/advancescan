@@ -90,8 +90,12 @@ bool gamearchive::load_info_internal()
 							r.size_set(v);
 						} else if (strcmp(info_text_get(), "crc")==0) {
 							const char* e;
+							const char* n;
 							if (info_token_get() != info_symbol) return false;
-							unsigned v = strhex(info_text_get(), &e);
+							n = info_text_get();
+							if (n[0] == '0' && n[1] == 'x')
+								n += 2;
+							unsigned v = strhex(n, &e);
 							if (*e != 0)
 								return false;
 							r.crc_set(v);
