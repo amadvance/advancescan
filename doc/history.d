@@ -1,6 +1,10 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.8 2003/10
+	) The rom report now differentiates preliminary roms.
+	) Added a filter capability able to filter in/out preliminary roms.
+
 AdvanceSCAN Version 1.7 2003/08
 	) Added support for reading XML info file.
 	) Updated with automake 1.7.6.

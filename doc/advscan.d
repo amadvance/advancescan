@@ -2,10 +2,11 @@ Name
 	advscan - The AdvanceSCAN roms manager
 
 Synopsis
-	:advscan [-c, --cfg config.rc] [-r, --rom] [-s, --sample]
+	:advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
 	:[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
 	:[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
 	:[-n, --print-only] [-p, --report]
+	:[-f, --filter FILTER]
 	:[-v, --verbose] < info.lst/xml
 
 	:advscan [-R, --rom-std] [-S, --sample-std] < info.lst/xml
@@ -51,7 +52,7 @@ Description
 	* Support only differential merging.
 
 Options
-	-c, --cfg config.rc
+	-c, --cfg CONFIG
 		Select the configuration file. If not specified is
 		assumed the file `advscan.rc' in the current
 		directory.
@@ -64,19 +65,19 @@ Options
 		char of the file is a `<', the file is assumed to be
 		xml, otherwise it's assumed to be the old listing format.
 
-	-r,--rom
+	-r, --rom
 		Operates on roms. All the next commands will
 		operate on your romset.
 
-	-s,--sample
+	-s, --sample
 		Operates on samples. All the next commands will
 		operate on your sampleset.
 
-	-a,--add-zip
+	-a, --add-zip
 		Add the missing rom zips. Any missing zip archive
 		for which at least one rom is available will be created.
 
-	-b,--add-bin
+	-b, --add-bin
 		Add, rename and substitute all the necessary files
 		in the existing zip archives. No new zip archives
 		are created, only the already present zip files are
@@ -86,12 +87,12 @@ Options
 		a zip archive with the same name of the original
 		one.
 
-	-d,--del-zip
+	-d, --del-zip
 		Remove any unknown zip archive. Any archive
 		removed is saved in the `rom_unknown' or
 		`sample_unknown' directory.
 
-	-u,--del-unknown
+	-u, --del-unknown
 		Remove any unknown file from the existing zip
 		archives. Any file removed is saved in the
 		`rom_unknown' or `sample_unknown' directory in a
@@ -99,42 +100,46 @@ Options
 		Only binary files are removed, all the text files
 		are kept.
 
-	-g,--del-garbage
+	-g, --del-garbage
 		Remove any garbage file from the zip archives. A
 		garbage file is an advertising text file added
 		generally by a rom site. The files removed are not
 		saved.
 
-	-t,--del-text
+	-t, --del-text
 		Remove any text file from the zip archives. Any
 		file removed is saved in the `rom_unknown' or
 		`sample_unknown' directory in a zip archive with the
 		same name of the original one.
 
-	-R,--rom-std
+	-R, --rom-std
 		Shortcut for the options -rabdug. It does all the
 		previous operations on roms except removing text
 		files.
 
-	-S,--sample-std
+	-S, --sample-std
 		Shortcut for the options -sabdug. It does all the
 		previous operations on samples except removing text
 		files.
 
-	-n,--print-only
+	-n, --print-only
 		Don't modify anything, it only shows operations.
 		This option prevents any changes made by the
 		previous commands. The operations are only printed and
 		NOT executed.
 
-	-p,--report
+	-p, --report
 		Write an extensive text report with the list of
 		good, bad and missing roms or/and samples. The
 		content of any zip archive with missing files is
 		printed. You must also specify the -r or/and -s
 		options.
 
-	-v,--verbose
+	-f, --filter FILTER
+		Apply a specific filter at the rom list. Check the
+		FILTERS chapter for a detailed list of filters available.
+
+	-v, --verbose
 		Print a more verbose report. The content of any zip
 		archive is printed also if it contains at least one
 		not rom file.
@@ -254,6 +259,18 @@ Configuration
 
 	The files advscan.rc.linux and advscan.rc.dos are two
 	examples of configuration files.
+
+Filters
+	As default advscan uses all the rom definition, including also
+	unplayable games. If you prefere you can use only a subset
+	of the roms defined with the --filter option.
+
+	The filters available are:
+		preliminary - Use only preliminary roms. A preliminary rom
+			is a rom marked with driver or sound or color preliminary,
+			and which doesn't have any good clone.
+		working - Use only NOT preliminary roms. This should be
+			the preferred filter which only store playable games.
 
 Report
 	The report generated with the -p option contains some text

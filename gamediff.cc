@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1999-2002 Andrea Mazzoleni
+ * Copyright (C) 2002 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ bool game_set_load::load(bool remove_merge) {
 						if (token != info_symbol) return false;
 						if (strcmp(info_text_get(),"size")==0) {
 							if (info_token_get() != info_symbol) return false;
-							r.size_set(atoi( info_text_get() ));				
+							r.size_set(atoi( info_text_get() ));
 						} else if (strcmp(info_text_get(),"crc")==0 || strcmp(info_text_get(),"crc32")==0) {
 							if (info_token_get() != info_symbol) return false;
 							r.crc_set(strtoul(info_text_get(), 0, 16));

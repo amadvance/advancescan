@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1153,7 +1153,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		if (i->rzs_get().size()>1) {
 			++duplicate;
-			out.state_gamerom("game_rom_dup", *i, gar);
+			out.state_gamerom("game_rom_dup", *i, gar, false);
 			for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
 				if (j->good_get())
 					out.ziptag("zip_rom_dup", j->file_get(), "good");
@@ -1175,7 +1175,6 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long ok_clone_size_zip = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		if (!i->romset_required() || i->good_romzip_has()) {
-			// increase counter
 			if (i->cloneof_get().length()) {
 				++ok_clone;
 				if (i->romset_required()) {
@@ -1189,7 +1188,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 					ok_parent_size_zip += i->good_romzip_size();
 				}
 			}
-			out.state_gamerom("game_rom_good", *i, gar);
+			out.state_gamerom("game_rom_good", *i, gar, false);
 		}
 	}
 	out() << endl;
@@ -1205,7 +1204,6 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long wrong_parent_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		if (i->romset_required() && !i->good_romzip_has() && i->bad_romzip_has()) {
-			// increase counter
 			if (i->cloneof_get().length()) {
 				++wrong_clone;
 				wrong_clone_size += i->size_get();
@@ -1213,7 +1211,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 				++wrong_parent;
 				wrong_parent_size += i->size_get();
 			}
-			out.state_gamerom("game_rom_bad", *i, gar);
+			out.state_gamerom("game_rom_bad", *i, gar, false);
 		}
 	}
 	out() << endl;
@@ -1224,13 +1222,12 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	out() << endl;
 
 	unsigned miss_parent = 0;
-	unsigned miss_clone = 0;
 	unsigned long long miss_parent_size = 0;
+	unsigned miss_clone = 0;
 	unsigned long long miss_clone_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		// only if have almost on rom and not exist any zip
 		if (i->romset_required() && i->rzs_get().size()==0) {
-			// increase counter
 			if (i->cloneof_get().length()) {
 				++miss_clone;
 				miss_clone_size += i->size_get();
@@ -1238,7 +1235,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 				++miss_parent;
 				miss_parent_size += i->size_get();
 			}
-			out.state_gamerom("game_rom_miss", *i, gar);
+			out.state_gamerom("game_rom_miss", *i, gar, true);
 		}
 	}
 	out() << endl;
@@ -1247,6 +1244,8 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	out.cs("total_game_rom_miss_clone", miss_clone, miss_clone_size);
 	out.cs("total_game_rom_miss", miss_parent+miss_clone, miss_clone_size+miss_parent_size);
 	out() << endl;
+
+	out.cp("total_percentage", (double)(ok_clone_size+ok_parent_size) / (miss_clone_size+miss_parent_size+wrong_clone_size+wrong_parent_size+ok_clone_size+ok_parent_size));
 }
 
 void report_sample_set(const gamearchive& gar, output& out) {
@@ -1308,6 +1307,32 @@ void report_sample_set(const gamearchive& gar, output& out) {
 	out.c("total_game_sample_miss", miss);
 
 	out() << endl;
+}
+
+// ----------------------------------------------------------------------------
+// filter
+
+bool filter_preliminary(const game& g) {
+	return !g.working_tree_get();
+}
+
+bool filter_not_preliminary(const game& g) {
+	return g.working_tree_get();
+}
+
+void filt(gamearchive& gar, const string& filter) {
+	filter_proc* p;
+	if (filter == "preliminary")
+		p = filter_preliminary;
+	else if (filter == "working")
+		p = filter_not_preliminary;
+	else if (filter == "")
+		return;
+	else {
+		throw error() << "Invalid filter " << filter;
+	}
+
+	gar.filter(p);
 }
 
 // ----------------------------------------------------------------------------
@@ -1454,6 +1479,8 @@ void usage() {
 	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h") "  Help of the program" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-V, --version    ", "-V") "  Version of the program" << endl;
 	cout << "Options:" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-c, --cfg FILE   ", "-c") "  Select a configuration file" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-f, --filter FILT", "-f") "  Filter the game list" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-p, --report     ", "-p") "  Write an extensive report" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-n, --print-only ", "-n") "  Only print operations, do nothing" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-v, --verbose    ", "-v") "  Verbose output" << endl;
@@ -1473,6 +1500,7 @@ struct option long_options[] = {
 	{"del-text", 0, 0, 't'},
 	{"del-garbage", 0, 0, 'g'},
 
+	{"filter", 1, 0, 'f'},
 	{"cfg", 1, 0, 'c'},
 
 	{"bbs", 0, 0, 'l'},
@@ -1490,7 +1518,7 @@ struct option long_options[] = {
 };
 #endif
 
-#define OPTIONS "rRsSabdutgc:leipnvhV"
+#define OPTIONS "rRsSabdutgf:c:leipnvhV"
 
 void run(int argc, char* argv[]) {
 	if (argc<=1) {
@@ -1515,6 +1543,7 @@ void run(int argc, char* argv[]) {
 	bool flag_ident = false;
 	operation oper;
 	string cfg_file;
+	string filter;
 
 	int c = 0;
 
@@ -1570,6 +1599,9 @@ void run(int argc, char* argv[]) {
 				break;
 			case 'c' :
 				cfg_file = optarg;
+				break;
+			case 'f' :
+				filter = optarg;
 				break;
 			case 'l' :
 				flag_bbs = true;
@@ -1628,6 +1660,8 @@ void run(int argc, char* argv[]) {
 	gamearchive gar;
 
 	gar.load(cin);
+
+	filt(gar, filter);
 
 	if (gar.begin() == gar.end())
 		throw error() << "Empty information file";

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 2002, 2003 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,14 @@
 using namespace std;
 
 #define OP_WIDTH 12 // Operation tag width
-#define TOTAL_WIDTH 26 // Total tag width
+#define TOTAL_WIDTH 32 // Total tag width
 #define CMD_WIDTH 12 // Command tag width
 #define NAME_WIDTH 8 // Rom name width
 #define ZIPSIZE_WIDTH 6 // Zip size width
 #define FILE_WIDTH 12 // File name width
 #define CRC_WIDTH 8 // Crc width
 #define SIZE_WIDTH 8 // File size width
-#define BIGSIZE_WIDTH 10 // Big file sie width
+#define BIGSIZE_WIDTH 12 // Big file size width
 #define COUNT_WIDTH 6 // Counter width
 
 ostream& output::op(const string& op) {
@@ -129,6 +129,19 @@ ostream& output::cs(const string& tag, unsigned count, unsigned long long size) 
 	return os;
 }
 
+ostream& output::cp(const string& tag, double v) {
+	total(tag);
+
+	os.setf(ios::left, ios::adjustfield);
+
+	os << dec << v;
+
+	os << endl;
+
+	return os;
+}
+
+
 ostream& output::csz(const string& tag, unsigned count, unsigned long long size, unsigned long long sizezip) {
 	total(tag);
 
@@ -184,7 +197,7 @@ ostream& output::state_gamesample(const string& tag, const game& g) {
 	return os;
 }
 
-ostream& output::state_gamerom(const string& tag, const game& g, const gamearchive& gar) {
+ostream& output::state_gamerom(const string& tag, const game& g, const gamearchive& gar, bool onecrc) {
 	free(tag);
 
 	// .c_str() is required by g++ 2.95.3
@@ -200,9 +213,34 @@ ostream& output::state_gamerom(const string& tag, const game& g, const gamearchi
 
 	gamearchive::const_iterator parent = gar.find( game( g.cloneof_get() ));
 	if (parent != gar.end()) {
-		os << " [cloneof " << (*parent).description_get();
-		os << " " << dec << (*parent).size_get()/1024 << "]";
+		os << " [cloneof ";
+		os << (*parent).name_get();
+		os << " " << dec << (*parent).size_get()/1024;
+		os << "]";
 	}
+
+	if (!g.working_tree_get()) {
+		os << " [preliminary]";
+	}
+
+	if (onecrc) {
+		unsigned crc = 0;
+		unsigned size = 0;
+
+		os << " [onecrc ";
+
+		for(rom_by_name_set::const_iterator i=g.rs_get().begin();i!=g.rs_get().end();++i) {
+			if (i->size_get() >= size) {
+				crc = i->crc_get();
+				size = i->size_get();
+			}
+		}
+
+		os << setw(CRC_WIDTH) << hex << setfill('0') << crc;
+
+		os << "]";
+	}
+
 
 	os << endl;
 

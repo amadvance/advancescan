@@ -2,7 +2,7 @@
 .SH NAME
 advscan \(hy The AdvanceSCAN roms manager
 .SH SYNOPSIS 
-advscan [\(hyc, \(hy\(hycfg config.rc] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysample]
+advscan [\(hyc, \(hy\(hycfg CONFIG] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysample]
 .PD 0
 .PP
 .PD
@@ -15,6 +15,10 @@ advscan [\(hyc, \(hy\(hycfg config.rc] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysamp
 .PP
 .PD
 [\(hyn, \(hy\(hyprint\(hyonly] [\(hyp, \(hy\(hyreport]
+.PD 0
+.PP
+.PD
+[\(hyf, \(hy\(hyfilter FILTER]
 .PD 0
 .PP
 .PD
@@ -89,7 +93,7 @@ Support only differential merging.
 .PD
 .SH OPTIONS 
 .TP
-.B \(hyc, \(hy\(hycfg config.rc
+.B \(hyc, \(hy\(hycfg CONFIG
 Select the configuration file. If not specified is
 assumed the file \(oqadvscan.rc\(cq in the current
 directory.
@@ -102,19 +106,19 @@ options of the emulator. If the first not space
 char of the file is a \(oq<\(cq, the file is assumed to be
 xml, otherwise it\(cqs assumed to be the old listing format.
 .TP
-.B \(hyr,\(hy\(hyrom
+.B \(hyr, \(hy\(hyrom
 Operates on roms. All the next commands will
 operate on your romset.
 .TP
-.B \(hys,\(hy\(hysample
+.B \(hys, \(hy\(hysample
 Operates on samples. All the next commands will
 operate on your sampleset.
 .TP
-.B \(hya,\(hy\(hyadd\(hyzip
+.B \(hya, \(hy\(hyadd\(hyzip
 Add the missing rom zips. Any missing zip archive
 for which at least one rom is available will be created.
 .TP
-.B \(hyb,\(hy\(hyadd\(hybin
+.B \(hyb, \(hy\(hyadd\(hybin
 Add, rename and substitute all the necessary files
 in the existing zip archives. No new zip archives
 are created, only the already present zip files are
@@ -124,12 +128,12 @@ the \(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in
 a zip archive with the same name of the original
 one.
 .TP
-.B \(hyd,\(hy\(hydel\(hyzip
+.B \(hyd, \(hy\(hydel\(hyzip
 Remove any unknown zip archive. Any archive
 removed is saved in the \(oqrom_unknown\(cq or
 \(oqsample_unknown\(cq directory.
 .TP
-.B \(hyu,\(hy\(hydel\(hyunknown
+.B \(hyu, \(hy\(hydel\(hyunknown
 Remove any unknown file from the existing zip
 archives. Any file removed is saved in the
 \(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in a
@@ -137,42 +141,46 @@ zip archive with the same name of the original one.
 Only binary files are removed, all the text files
 are kept.
 .TP
-.B \(hyg,\(hy\(hydel\(hygarbage
+.B \(hyg, \(hy\(hydel\(hygarbage
 Remove any garbage file from the zip archives. A
 garbage file is an advertising text file added
 generally by a rom site. The files removed are not
 saved.
 .TP
-.B \(hyt,\(hy\(hydel\(hytext
+.B \(hyt, \(hy\(hydel\(hytext
 Remove any text file from the zip archives. Any
 file removed is saved in the \(oqrom_unknown\(cq or
 \(oqsample_unknown\(cq directory in a zip archive with the
 same name of the original one.
 .TP
-.B \(hyR,\(hy\(hyrom\(hystd
+.B \(hyR, \(hy\(hyrom\(hystd
 Shortcut for the options \(hyrabdug. It does all the
 previous operations on roms except removing text
 files.
 .TP
-.B \(hyS,\(hy\(hysample\(hystd
+.B \(hyS, \(hy\(hysample\(hystd
 Shortcut for the options \(hysabdug. It does all the
 previous operations on samples except removing text
 files.
 .TP
-.B \(hyn,\(hy\(hyprint\(hyonly
+.B \(hyn, \(hy\(hyprint\(hyonly
 Don\(cqt modify anything, it only shows operations.
 This option prevents any changes made by the
 previous commands. The operations are only printed and
 NOT executed.
 .TP
-.B \(hyp,\(hy\(hyreport
+.B \(hyp, \(hy\(hyreport
 Write an extensive text report with the list of
 good, bad and missing roms or/and samples. The
 content of any zip archive with missing files is
 printed. You must also specify the \(hyr or/and \(hys
 options.
 .TP
-.B \(hyv,\(hy\(hyverbose
+.B \(hyf, \(hy\(hyfilter FILTER
+Apply a specific filter at the rom list. Check the
+FILTERS chapter for a detailed list of filters available.
+.TP
+.B \(hyv, \(hy\(hyverbose
 Print a more verbose report. The content of any zip
 archive is printed also if it contains at least one
 not rom file.
@@ -309,6 +317,25 @@ is read from ./advscan.rc.
 .PP
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
+.SH FILTERS 
+As default advscan uses all the rom definition, including also
+unplayable games. If you prefere you can use only a subset
+of the roms defined with the \(hy\(hyfilter option.
+.PP
+The filters available are:
+.RS 4
+.PD 0
+.HP 4
+.I preliminary
+Use only preliminary roms. A preliminary rom
+is a rom marked with driver or sound or color preliminary,
+and which doesn\(cqt have any good clone.
+.HP 4
+.I working
+Use only NOT preliminary roms. This should be
+the preferred filter which only store playable games.
+.PD
+.RE
 .SH REPORT 
 The report generated with the \(hyp option contains some text
 tag explained here:

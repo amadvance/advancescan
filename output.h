@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 2002, 2003 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,9 +46,10 @@ public:
 	std::ostream& cs(const std::string& op, unsigned count, unsigned long long size);
 	std::ostream& csz(const std::string& op, unsigned count, unsigned long long size, unsigned long long sizezip);
 	std::ostream& cz(const std::string& op, unsigned count, unsigned long long sizezip);
+	std::ostream& cp(const std::string& tag, double v);
 	
 	std::ostream& state_gamesample(const std::string& tag, const game& g);
-	std::ostream& state_gamerom(const std::string& tag, const game& g, const gamearchive& gar);
+	std::ostream& state_gamerom(const std::string& tag, const game& g, const gamearchive& gar, bool onecrc);
 
 	std::ostream& cmd_rom(const std::string& tag, const std::string& cmd, const rom& r);
 	std::ostream& cmd_rom(const std::string& tag, const std::string& cmd, const std::string& name, unsigned size, crc_t crc);

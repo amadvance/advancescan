@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,16 @@
 // Game
 
 #include <cstdio>
+#include <list>
+
+class game;
+
+typedef std::list<std::string> string_container;
 
 class game {
 	mutable rom_by_name_set rs; // rom set
 	mutable sample_by_name_set ss; // sample set
-	
+
 	mutable zippath_container rzs; // set of rom zip for the game
 	mutable zippath_container szs; // set of sample zip for the game
 
@@ -43,7 +48,12 @@ class game {
 	std::string description;
 	std::string year;
 	std::string manufacturer;
-	bool working;
+	mutable bool working;
+	mutable bool working_tree;
+
+	mutable string_container rom_son; // son
+	mutable std::string rom_parent; // parent
+
 public:
 	game();
 	game(const std::string& name);
@@ -57,8 +67,10 @@ public:
 	void description_set(const std::string& Ades);
 	void year_set(const std::string& Ayear);
 	void manufacturer_set(const std::string& Amanufacturer);
-	void working_set(bool Aworking);
+	void working_set(bool Aworking) const;
 	bool working_get() const { return working; }
+	void working_tree_set(bool Aworking) const;
+	bool working_tree_get() const { return working_tree; }
 
 	const rom_by_name_set& rs_get() const { return rs; }
 	const sample_by_name_set& ss_get() const { return ss; }
@@ -80,6 +92,9 @@ public:
 	const std::string& manufacturer_get() const { return manufacturer; }
 	const zippath_container& rzs_get() const { return rzs; }
 	const zippath_container& szs_get() const { return szs; }
+
+	string_container& rom_son_get() const { return rom_son; }
+	void rom_son_erase() const { rom_son.clear(); }
 
 	bool romset_required() const { return rs_get().begin() != rs_get().end(); }
 	bool sampleset_required() const { return ss_get().begin() != ss_get().end(); }
@@ -119,6 +134,10 @@ typedef std::set<game,game_by_output_less> game_by_output_set;
 // ------------------------------------------------------------------------
 // Game archive
 
+class gamearchive;
+
+typedef bool filter_proc(const game& g);
+
 class gamearchive {
 	game_by_name_set map;
 
@@ -145,8 +164,9 @@ public:
 	const_iterator find(const game& A) const;
 
 	void load(std::istream& f);
+	void filter(filter_proc* p);
 };
 
-bool is_game_neogeo(const game& g, const gamearchive& gar);
+bool is_game_working_tree(const game& g, const gamearchive& gar);
 
 #endif

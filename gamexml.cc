@@ -1,3 +1,23 @@
+/*
+ * This file is part of the Advance project.
+ *
+ * Copyright (C) 2003 Andrea Mazzoleni
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details. 
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 #include "game.h"
 #include "expat/intexpat.h"
 
@@ -233,7 +253,8 @@ static void process_driverstatus(struct state_t* state, enum token_t t, const ch
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->working_set( string(s, len) == "good" );
+		if (string(s, len) == "preliminary")
+			state->g->working_set(false);
 	}
 }
 
@@ -275,6 +296,8 @@ static struct conversion_t {
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "crc", 0 }, process_romcrc },
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "status", 0 }, process_romstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "driver", "status", 0 }, process_driverstatus },
+	{ 3, { match_mamemessraine, match_gamemachine, "driver", "color", 0 }, process_driverstatus },
+	{ 3, { match_mamemessraine, match_gamemachine, "driver", "sound", 0 }, process_driverstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "sample", "name", 0 }, process_samplename },
 	{ 0, { 0, 0, 0, 0, 0 }, 0 }
 };

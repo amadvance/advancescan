@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 1998-2002 Andrea Mazzoleni
+ * Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,13 @@ using namespace std;
 
 game::game() {
 	working = true;
+	working_tree = true;
 }
 
 game::game(const string& Aname) :
 	name(Aname) {
 	working = true;
+	working_tree = true;
 }
 
 game::game(const game& A) : 
@@ -48,7 +50,9 @@ game::game(const game& A) :
 	description(A.description), 
 	year(A.year), 
 	manufacturer(A.manufacturer),
-	working(A.working) {
+	working(A.working),
+	working_tree(A.working_tree),
+	rom_son(A.rom_son) {
 }
 
 game::~game() {
@@ -123,8 +127,12 @@ void game::szs_add(const zippath& Azip) const {
 	szs.insert( szs.end(), Azip );
 }
 
-void game::working_set(bool Aworking) {
+void game::working_set(bool Aworking) const {
 	working = Aworking;
+}
+
+void game::working_tree_set(bool Aworking) const {
+	working_tree = Aworking;
 }
 
 void game::name_set(const string& Aname) {
@@ -203,13 +211,15 @@ unsigned game::size_get() const {
 // ------------------------------------------------------------------------
 // Game archive
 
-// Check if a game is a neogeo game (use the neogeo BIOS)
-bool is_game_neogeo(const game& g, const gamearchive& gar) {
-	gamearchive::iterator romof = gar.find( g.romof_get() );
-	while (romof != gar.end()) {
-		if (romof->name_get() == "neogeo")
-			return true;
-		romof = gar.find( romof->romof_get() );
+bool is_game_working_tree(const game& g, const gamearchive& gar) {
+	if (g.working_get())
+		return true;
+	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
+		gamearchive::iterator j = gar.find( *i );
+		if (j!=gar.end()) {
+			if (is_game_working_tree(*j, gar))
+				return true;
+		}
 	}
 	return false;
 }
@@ -265,6 +275,54 @@ void gamearchive::load(istream& f) {
 				sampleof = j->sampleof_get();
 			} else
 				break;
+		}
+	}
+
+	// test romof relationship and compute the parent
+	for(iterator i=begin();i!=end();++i) {
+		i->rom_son_erase();
+
+		if (i->romof_get().length() != 0) {
+			const_iterator j = find( i->romof_get() );
+			if (j == end()) {
+				cerr << "Missing definition of romof '" << i->romof_get() << "' for game '" << i->name_get() << "'." << endl;
+				(const_cast<game*>((&*i)))->romof_set(string());
+			} else {
+				while (j != end()) {
+					if (&*j == &*i) {
+						cerr << "Circular romof reference for game '" << i->name_get() << "'." << endl;
+						(const_cast<game*>((&*i)))->romof_set(string());
+						break;
+					}
+					j = find( j->romof_get() );
+				}
+			}
+		}
+	}
+
+	// compute the romof list
+	for(iterator i=begin();i!=end();++i) {
+		iterator j = find( game( i->romof_get() ) );
+		if (j!=end()) {
+			j->rom_son_get().insert(j->rom_son_get().end(), i->name_get());
+		}
+	}
+
+	// compute the working tree info
+	for(iterator i=begin();i!=end();++i) {
+		i->working_tree_set( is_game_working_tree(*i, *this));
+	}
+}
+
+void gamearchive::filter(filter_proc* p) {
+	iterator i;
+
+	i = map.begin();
+	while (i != map.end()) {
+		iterator j = i;
+		++i;
+		if (!p(*j)) {
+			map.erase(j);
 		}
 	}
 }
