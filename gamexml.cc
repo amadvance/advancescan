@@ -465,3 +465,4 @@ void gamearchive::load_xml(istream& is)
 		throw error() << state.error_desc;
 	}
 }
+

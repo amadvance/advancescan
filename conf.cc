@@ -25,10 +25,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
 using namespace std;
 
 static void expand_tree(const string& path, filepath_container& ds) throw (error) {
@@ -118,21 +114,21 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 				base_romreadonlytree.insert( base_romreadonlytree.end(), filepath( file_adjust(dir) ) );
 			}
 		} else if (tag == "rom_unknown") {
-			if (romunknowpath.file_get().length())
+			if (romunknownpath.file_get().length())
 				throw error() << "Double specification of option `rom_unknown' in file " << cfg;
 			if (arg.length() == 0)
 				throw error() << "Empty specification of option `rom_unknown' in file " << cfg;
 			if (arg.find(DIR_SEP) != string::npos)
 				throw error() << "Multiple path specification in option `rom_unknown' in file " << cfg;
-			romunknowpath.file_set( file_adjust(arg) );
+			romunknownpath.file_set( file_adjust(arg) );
 		} else if (tag == "sample_unknown") {
-			if (sampleunknowpath.file_get().length())
+			if (sampleunknownpath.file_get().length())
 				throw error() << "Double specification of option `sample_unknown' in file " << cfg;
 			if (arg.length() == 0)
 				throw error() << "Empty specification of option `sample_unknown' in file " << cfg;
 			if (arg.find(DIR_SEP) != string::npos)
 				throw error() << "Multiple path specification in option `sample_unknown' in file " << cfg;
-			sampleunknowpath.file_set( file_adjust(arg) );
+			sampleunknownpath.file_set( file_adjust(arg) );
 		} else if (tag == "rom_new") {
 			if (romnewpath.file_get().length())
 				throw error() << "Double specification of option `rom_new' in file " << cfg;
@@ -142,7 +138,7 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 				throw error() << "Multiple path specification in option `rom_new' in file " << cfg;
 			romnewpath.file_set( file_adjust(arg) );
 		} else {
-			throw error() << "Unknow option `" << tag << "' in file " << cfg;
+			throw error() << "Unknown option `" << tag << "' in file " << cfg;
 		}
 	}
 
@@ -166,12 +162,12 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 				throw error() << "Not existing dir " << romnewpath.file_get() << " on `rom_new' option in file " << cfg;
 			if (access(romnewpath.file_get().c_str(), W_OK) != 0)
 				throw error() << "Access denied on dir " << romnewpath.file_get() << " on `rom_new' option in file " << cfg;
-			if (!romunknowpath.file_get().length())
+			if (!romunknownpath.file_get().length())
 				throw error() << "Missing `rom_unknown' option in file " << cfg;
-			if (access(romunknowpath.file_get().c_str(), F_OK) != 0)
-				throw error() << "Not existing dir " << romunknowpath.file_get() << " on `rom_unknown' option in file " << cfg;
-			if (access(romunknowpath.file_get().c_str(), W_OK) != 0)
-				throw error() << "Access denied on dir " << romunknowpath.file_get() << " on `rom_unknown' option in file " << cfg;
+			if (access(romunknownpath.file_get().c_str(), F_OK) != 0)
+				throw error() << "Not existing dir " << romunknownpath.file_get() << " on `rom_unknown' option in file " << cfg;
+			if (access(romunknownpath.file_get().c_str(), W_OK) != 0)
+				throw error() << "Access denied on dir " << romunknownpath.file_get() << " on `rom_unknown' option in file " << cfg;
 		}
 	}
 	if (need_sample) {
@@ -186,12 +182,12 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 				if (access(i->file_get().c_str(), W_OK) != 0)
 					throw error() << "Access denied on dir " << i->file_get() << " on `sample' option in file " << cfg;
 			}
-			if (!sampleunknowpath.file_get().length())
+			if (!sampleunknownpath.file_get().length())
 				throw error() << "Missing `sample_unknown' option in file " << cfg;
-			if (access(sampleunknowpath.file_get().c_str(), F_OK) != 0)
-				throw error() << "Not existing dir " << sampleunknowpath.file_get() << " on `sample_unknown' option in file " << cfg;
-			if (access(sampleunknowpath.file_get().c_str(), W_OK) != 0)
-				throw error() << "Access denied on dir " << sampleunknowpath.file_get() << " on `sample_unknown' option in file " << cfg;
+			if (access(sampleunknownpath.file_get().c_str(), F_OK) != 0)
+				throw error() << "Not existing dir " << sampleunknownpath.file_get() << " on `sample_unknown' option in file " << cfg;
+			if (access(sampleunknownpath.file_get().c_str(), W_OK) != 0)
+				throw error() << "Access denied on dir " << sampleunknownpath.file_get() << " on `sample_unknown' option in file " << cfg;
 		}
 	}
 

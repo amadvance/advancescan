@@ -25,11 +25,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <cctype>
-#include <cstdio>
-#include <cerrno>
-
-#include <sys/stat.h>
+#include <new>
 
 using namespace std;
 
@@ -562,9 +558,11 @@ void file_mktree(const std::string& path) throw (error)
 unsigned char* data_dup(const unsigned char* Adata, unsigned Asize)
 {
 	if (Adata) {
-		unsigned char* data = (unsigned char*)operator new(Asize);
+		unsigned char* data = (unsigned char*)malloc(Asize);
+		if (!data)
+			throw std::bad_alloc();
 		if (Asize)
-			memcpy(data,Adata,Asize);
+			memcpy(data, Adata, Asize);
 		return data;
 	} else {
 		return 0;
@@ -576,7 +574,9 @@ unsigned char* data_dup(const unsigned char* Adata, unsigned Asize)
  */
 unsigned char* data_alloc(unsigned size)
 {
-	return (unsigned char*)operator new(size);
+	unsigned char* data = (unsigned char*)malloc(size);
+	if (!data)
+		throw std::bad_alloc();
 }
 
 /**
@@ -584,6 +584,6 @@ unsigned char* data_alloc(unsigned size)
  */
 void data_free(unsigned char* data)
 {
-	operator delete(data);
+	free(data);
 }
 

@@ -2,7 +2,7 @@ Name
 	advscan - The AdvanceSCAN roms manager
 
 	AdvanceSCAN is a command line rom manager for MAME, MESS,
-	AdvanceMAME, AdvanceMESS and Raine.
+	xmame, AdvanceMAME, AdvanceMESS and Raine.
 
 	It runs in Linux, Mac OS X, DOS, Windows and in all the other
 	Unix like platforms.
@@ -13,5 +13,5 @@ Name
 
 	This package contains:
 		advscan - Rom manager
-		advdiff - Diff utility for rom info files
+		advdiff - Diff utility for rom list files
 

@@ -53,19 +53,19 @@ advscan [\(hyh, \(hy\(hyhelp] [\(hyV, \(hy\(hyversion]
 .PD
 .SH DESCRIPTION 
 advscan is a command line utility for maintaining a zipped
-archive of roms and sample zip archive for the MAME, XMAME,
-AdvanceMAME and Raine emulators. The goal of advscan is to
-obtain a complete and perfect rom and sample zip archive with
-differential merging. Differential merging means that any
-game has its zip archive, which contains all the rom
-files, which are not already in the parent zip archive (if
-exists).
+archive of roms and sample zip archive for the MAME, MESS,
+xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
+The goal of advscan is to obtain a complete and perfect rom
+and sample zip archive with differential merging.
+Differential merging means that any game has its zip archive,
+which contains all the rom files, which are not already in
+the parent zip archive (if exists).
 .PP
 advscan has these features:
 .PD 0
 .IP \(bu
 Directly read, write zip archives without decompressing
-and recompressing them for the best performance.
+and recompressing them for best performance.
 .IP \(bu
 Add, copy, move and rename files in the zip
 archives. Any rom that you have is placed
@@ -75,11 +75,11 @@ Recognize the text files added by rom sites and
 delete them.
 .IP \(bu
 Recognize the text files added by the rom dumpers
-and keep or delete them.
+and keep or delete them as your choice.
 .IP \(bu
 It\(cqs safe. On all the zip operations any file
 removed or overwritten is saved in the
-\(oqrom_unknown\(cq \(oqsample_unknown\(cq directories and kept
+\(oqrom_unknown\(cq \(oqsample_unknown\(cq directories and keep
 for future uses. This will prevent any unwanted
 remove operation.
 .PD
@@ -90,6 +90,8 @@ but also has these misfeatures:
 Support only rom and sample archives zipped.
 .IP \(bu
 Support only differential merging.
+.IP \(bu
+Doesn\(cqt support .chd files.
 .PD
 .SH OPTIONS 
 .TP
@@ -139,7 +141,7 @@ archives. Any file removed is saved in the
 \(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in a
 zip archive with the same name of the original one.
 Only binary files are removed, all the text files
-are kept.
+are keep.
 .TP
 .B \(hyg, \(hy\(hydel\(hygarbage
 Remove any garbage file from the zip archives. A
@@ -318,7 +320,7 @@ is read from ./advscan.rc.
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
 .SH FILTERS 
-As default advscan uses all the rom definition, including also
+As default advscan uses all the rom definitions, including also
 unplayable games. If you prefere you can use only a subset
 of the roms defined with the \(hy\(hyfilter option.
 .PP
@@ -329,12 +331,43 @@ The filters available are:
 .I preliminary
 Use only preliminary roms. A preliminary rom
 is a rom marked with driver or sound or color preliminary,
-and which doesn\(cqt have any good clone.
+and which doesn\(cqt have any working clone.
 .HP 4
 .I working
 Use only NOT preliminary roms. This should be
 the preferred filter which only store playable games.
 .PD
+.RE
+.PP
+If you want to keep preliminary and working roms in different
+directories, you can setup two different advscan.rc files with
+different directories but sharing the \(oqrom_unknown\(cq dir to allow
+automatic rom moving between the two sets.
+If this is your configuration, to update your romset, you need to
+run advscan three times:
+.RS 4
+.PD 0
+.HP 4
+.I on working set
+To export preliminary roms in the
+rom_unknown dir.
+.HP 4
+.I on preliminary set
+To import preliminary roms and export
+working roms in the rom_unknown dir.
+.HP 4
+.I on working set
+To import working rom from the
+rom_unknown dir.
+.PD
+.RE
+.PP
+For example:
+.PP
+.RS 4
+advscan \(hyR \(hyc advscan\(hywrk.rc \(hyf working < advmame.xml > rom_wrk.log
+advscan \(hyR \(hyc advscan\(hypre.rc \(hyf preliminary < advmame.xml > rom_pre.log
+advscan \(hyR \(hyc advscan\(hywrk.rc \(hyf working < advmame.xml > rom_wrk.log
 .RE
 .SH REPORT 
 The report generated with the \(hyp option contains some text
@@ -420,6 +453,6 @@ advscan \(hyr \(hyp < info.xml > report.txt
 To increase the verbosity of the printed information you
 can add the \(hyv switch.
 .SH COPYRIGHT 
-This file is Copyright (C) 2003 Andrea Mazzoleni, Filipe Estima
+This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
 .SH SEE ALSO 
 advdiff(1)

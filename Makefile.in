@@ -56,8 +56,11 @@ CONFIG_CLEAN_FILES =
 am__installdirs = $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_advdiff_OBJECTS = diff.$(OBJEXT) gamediff.$(OBJEXT) \
-	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT)
+am_advdiff_OBJECTS = diff.$(OBJEXT) rom.$(OBJEXT) utility.$(OBJEXT) \
+	ziprom.$(OBJEXT) game.$(OBJEXT) gameinfo.$(OBJEXT) \
+	gamexml.$(OBJEXT) zip.$(OBJEXT) siglock.$(OBJEXT) \
+	getopt.$(OBJEXT) snprintf.$(OBJEXT) readinfo.$(OBJEXT) \
+	xmlrole.$(OBJEXT) xmlparse.$(OBJEXT) xmltok.$(OBJEXT)
 advdiff_OBJECTS = $(am_advdiff_OBJECTS)
 advdiff_LDADD = $(LDADD)
 am_advscan_OBJECTS = scan.$(OBJEXT) rom.$(OBJEXT) conf.$(OBJEXT) \
@@ -177,10 +180,20 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 advdiff_SOURCES = \
 	diff.cc \
-	gamediff.cc \
+	rom.cc \
+	utility.cc \
+	ziprom.cc \
+	game.cc \
+	gameinfo.cc \
+	gamexml.cc \
+	zip.cc \
+	siglock.cc \
 	getopt.c \
 	snprintf.c \
-	lib/readinfo.c
+	lib/readinfo.c \
+	expat/xmlrole.c \
+	expat/xmlparse.c \
+	expat/xmltok.c
 
 advscan_SOURCES = \
 	scan.cc \

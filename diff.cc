@@ -20,17 +20,66 @@
 
 #include "portable.h"
 
-#include "gamediff.h"
+#include "rom.h"
+#include "game.h"
 #include "except.h"
-
-#include "lib/readinfo.h"
 
 #include <iostream>
 #include <fstream>
-
-#include <unistd.h>
+#include <iomanip>
 
 using namespace std;
+
+/**
+ * Check if A include B.
+ */
+bool include(const rom_by_name_set& A, const rom_by_name_set& B) {
+	rom_by_crc_set Ac;
+
+	for(rom_by_name_set::const_iterator i=A.begin();i!=A.end();++i)
+		Ac.insert(*i);
+
+	for(rom_by_name_set::const_iterator i=B.begin();i!=B.end();++i) {
+		rom_by_crc_set::const_iterator j = Ac.find(*i);
+		if (j==Ac.end())
+			return false;
+	}
+
+	return true;
+}
+
+std::ostream& output_info(std::ostream& os, const rom& A) {
+	os << "rom ( name " << A.name_get() << " size " << std::dec << A.size_get() << " crc " << std::hex << setw(8) << setfill('0') << A.crc_get() << " )";
+	return os;
+}
+
+std::ostream& output_info(std::ostream &os, const game& A) {
+	os << "game (\n";
+	os << "\tname " << A.name_get() << "\n";
+	for(rom_by_name_set::const_iterator i=A.rs_get().begin();i!=A.rs_get().end();++i) {
+		os << "\t";
+		output_info(os, *i);
+		os  << "\n";
+	}
+	os << ")\n";
+	return os;
+}
+
+std::ostream& output_xml(std::ostream& os, const rom& A) {
+	os << "<rom name=\"" << A.name_get() << "\" size=\"" << std::dec << A.size_get() << "\" crc=\"" << std::hex << setw(8) << setfill('0') << A.crc_get() << "\"/>";
+	return os;
+}
+
+std::ostream& output_xml(std::ostream &os, const game& A) {
+	os << "\t<game name=\"" << A.name_get() << "\">\n";
+	for(rom_by_name_set::const_iterator i=A.rs_get().begin();i!=A.rs_get().end();++i) {
+		os << "\t\t";
+		output_xml(os, *i);
+		os  << "\n";
+	}
+	os << "\t</game>\n";
+	return os;
+}
 
 void version() {
 	std::cout << PACKAGE " v" VERSION " by Andrea Mazzoleni" << std::endl;
@@ -39,34 +88,29 @@ void version() {
 void usage() {
 	version();
 
-	std::cout << "Usage: advdiff INFO1.txt INFO2.txt" << std::endl;
+	cout << "Usage: advdiff [-i] info1.lst/xml info2.lst/xml" << endl;
+	cout << endl;
+	cout << "Options:" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-i, --info  ", "-i") "  Output in info format" << endl;
 }
 
 #if HAVE_GETOPT_LONG
 struct option long_options[] = {
+	{"info", 0, 0, 'i'},
 	{"help", 0, 0, 'h'},
 	{"version", 0, 0, 'V'},
 	{0, 0, 0, 0}
 };
 #endif
 
-#define OPTIONS "hV"
-
-extern "C" int info_ext_get(void* _arg)
-{
-	istream* arg = static_cast<istream*>(_arg);
-	return arg->get();
-}
-
-extern "C" void info_ext_unget(void* _arg, char c)
-{
-	istream* arg = static_cast<istream*>(_arg);
-	arg->putback(c);
-}
+#define OPTIONS "ihV"
 
 void process(int argc, char* argv[]) {
-	game_set_load g0;
-	game_set_load g1;
+	gamearchive g0;
+	gamearchive g1;
+	bool opt_info;
+
+	opt_info = false;
 
 	if (argc <= 1) {
 		usage();
@@ -85,6 +129,9 @@ void process(int argc, char* argv[]) {
 #endif
 	!= EOF) {
 		switch (c) {
+			case 'i' :
+				opt_info = true;
+				break;
 			case 'h' :
 				usage();
 				return;
@@ -95,7 +142,7 @@ void process(int argc, char* argv[]) {
 				// not optimal code for g++ 2.95.3
 				string opt;
 				opt = (char)optopt;
-				throw error() << "Unknow option `" << opt << "'";
+				throw error() << "Unknown option `" << opt << "'";
 			}
 		} 
 	}
@@ -111,27 +158,29 @@ void process(int argc, char* argv[]) {
 	ifstream ff0(f0.c_str(), ios::in | ios::binary);
 	if (!ff0)
 		throw error() << "Failed open of " << f0;
-	info_init(info_ext_get, info_ext_unget, &ff0);
-	if (!g0.load(true))
-		throw error() << "Failed read of " << f0 << " at row " << info_row_get()+1 << " at column " << info_col_get()+1;
-	info_done();
+	g0.load(ff0);
 	ff0.close();
 
 	ifstream ff1(f1.c_str(), ios::in | ios::binary);
 	if (!ff1)
 		throw error() << "Failed open of " << f1;
-	info_init(info_ext_get, info_ext_unget, &ff1);
-	if (!g1.load(true))
-		throw error() << "Failed read of " << f1 << " at row " << info_row_get()+1 << " at column " << info_col_get()+1;
-	info_done();
+	g1.load(ff1);
 	ff1.close();
 
-	game_set::const_iterator i;
+	if (!opt_info)
+		std::cout << "<mame>\n";
+	gamearchive::const_iterator i;
 	for(i=g1.begin();i!=g1.end();++i) {
-		game_set::const_iterator j = g0.find(*i);
-		if (j==g0.end() || !include(j->roms_get(),i->roms_get()))
-			std::cout << *i << std::endl;
+		gamearchive::const_iterator j = g0.find(*i);
+		if (j==g0.end() || !include(j->rs_get(), i->rs_get())) {
+			if (opt_info)
+				output_info(std::cout, *i) << "\n";
+			else
+				output_xml(std::cout, *i) << "\n";
+		}
 	}
+	if (!opt_info)
+		std::cout << "/<mame>\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -145,7 +194,7 @@ int main(int argc, char* argv[]) {
 		cerr << "Low memory" << endl;
 		exit(EXIT_FAILURE);
 	} catch (...) {
-		cerr << "Unknow error" << endl;
+		cerr << "Unknown error" << endl;
 		exit(EXIT_FAILURE);
 	}
 

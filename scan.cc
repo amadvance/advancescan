@@ -33,11 +33,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include <dirent.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
 using namespace std;
 
 // ------------------------------------------------------------------------
@@ -218,7 +213,7 @@ void sample_stat(
 
 	for(ziprom::const_iterator z=zd.begin();z!=zd.end();++z) {
 		sample_by_name_set::iterator i = result.sample_miss.find( sample( z->name_get() ) );
-		if (i == result.sample_miss.end()) { // if name unknow
+		if (i == result.sample_miss.end()) { // if name unknown
 			sample s( z->name_get() );
 
 			analyze_type t = ana(z->name_get(), z->uncompressed_size_get(), z->crc_get());
@@ -679,7 +674,7 @@ void sample_scan(
 	reject.unload();
 }
 
-void unknow_scan(
+void unknown_scan(
 	ziprom& z,
 	const ziparchive& zar)
 {
@@ -696,7 +691,7 @@ void unknow_scan(
 		// search if the rom is present in a file in the own set
 		ziparchive::const_iterator j = zar.find(i->size_get(), i->crc_get(), zip_own, k);
 		if (j != zar.end()) {
-			// if present remove the duplicate in the unknow set
+			// if present remove the duplicate in the unknown set
 			z.remove(i->name_get());
 		}
 	}
@@ -906,8 +901,8 @@ void all_rom_load(ziparchive& zar, const config& cfg)
 		read_zip(i->file_get(), zar, zip_own, false);
 	}
 
-	// read unknow zip
-	read_zip(cfg.romunknowpath_get().file_get(), zar, zip_unknow, false);
+	// read unknown zip
+	read_zip(cfg.romunknownpath_get().file_get(), zar, zip_unknown, false);
 
 	// read import zip
 	for(filepath_container::const_iterator i=cfg.romreadonlytree_get().begin();i!=cfg.romreadonlytree_get().end();++i) {
@@ -934,7 +929,7 @@ void set_sample_load(filepath_container& zar, const config& cfg)
 // all_scan
 
 void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, const config& cfg, output& out, const analyze& ana) {
-	filepath_container unknow; // container of unknow zip
+	filepath_container unknown; // container of unknown zip
 
 	// scan zips
 	for(ziparchive::iterator i=zar.begin();i!=zar.end();++i) {
@@ -944,10 +939,10 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 			gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 
 			if (g == gar.end() || !g->romset_required()) {
-				// insert in the unknow set, processed later
-				unknow.insert( unknow.end(), filepath( i->file_get()) );
+				// insert in the unknown set, processed later
+				unknown.insert( unknown.end(), filepath( i->file_get()) );
 			} else {
-				ziprom reject( cfg.romunknowpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknow, false );
+				ziprom reject( cfg.romunknownpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknown, false );
 
 				try {
 					rom_scan(oper, *i, reject, *g, zar, out, ana);
@@ -986,13 +981,13 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 
 	// move zips
 	if (oper.active_move() || oper.output_move()) {
-		for(filepath_container::const_iterator i=unknow.begin();i!=unknow.end();++i) {
+		for(filepath_container::const_iterator i=unknown.begin();i!=unknown.end();++i) {
 
 			ziparchive::iterator j = zar.find( i->file_get() );
 			if (j == zar.end())
 				throw error() << "Failed internal check on moving the unknown zip " << i->file_get();
 
-			ziprom reject( cfg.romunknowpath_get().file_get() + "/" + file_name(j->file_get()), zip_unknow, false );
+			ziprom reject( cfg.romunknownpath_get().file_get() + "/" + file_name(j->file_get()), zip_unknown, false );
 
 			try {
 				rom_move(oper, *j, reject, out);
@@ -1016,7 +1011,7 @@ void set_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 			if (g == gar.end() || !g->romset_required()) {
 				// ignored
 			} else {
-				ziprom reject( cfg.romunknowpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknow, false );
+				ziprom reject( cfg.romunknownpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknown, false );
 
 				try {
 					rom_scan(oper, *i, reject, *g, zar, out, ana);
@@ -1031,19 +1026,19 @@ void set_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 }
 
 void all_sample_scan(const operation& oper, filepath_container& zar, gamearchive& gar, config& cfg, output& out, const analyze& ana) {
-	filepath_container unknow;
+	filepath_container unknown;
 
 	// scan zips
 	for(filepath_container::iterator i=zar.begin();i!=zar.end();++i) {
 		gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 		if (g == gar.end() || !g->sampleset_required()) {
-			unknow.insert( unknow.end(), filepath( i->file_get() ) );
+			unknown.insert( unknown.end(), filepath( i->file_get() ) );
 		} else {
 			ziprom z(i->file_get(), zip_own, false);
 
 			z.open();
 
-			ziprom reject( cfg.sampleunknowpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknow, false );
+			ziprom reject( cfg.sampleunknownpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknown, false );
 
 			try {
 				sample_scan(oper,z,reject,*g,out,ana);
@@ -1055,13 +1050,13 @@ void all_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 
 	// move zips
 	if (oper.active_move() || oper.output_move()) {
-		for(filepath_container::const_iterator i=unknow.begin();i!=unknow.end();++i) {
+		for(filepath_container::const_iterator i=unknown.begin();i!=unknown.end();++i) {
 
 			ziprom z(i->file_get(), zip_own, false);
 
 			z.open();
 
-			ziprom reject( cfg.sampleunknowpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknow, false );
+			ziprom reject( cfg.sampleunknownpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknown, false );
 
 			try {
 				sample_move(oper, z, reject, out);
@@ -1083,7 +1078,7 @@ void set_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 
 			z.open();
 
-			ziprom reject( cfg.sampleunknowpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknow, false );
+			ziprom reject( cfg.sampleunknownpath_get().file_get() + "/" + file_name(i->file_get()), zip_unknown, false );
 
 			try {
 				sample_scan(oper,z,reject,*g,out,ana);
@@ -1094,15 +1089,15 @@ void set_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 	}
 }
 
-void all_unknow_scan(ziparchive& zar, const config& cfg, output& out) {
+void all_unknown_scan(ziparchive& zar, const config& cfg, output& out) {
 
-	// scan unknow zips
+	// scan unknown zips
 	for(ziparchive::iterator i=zar.begin();i!=zar.end();++i) {
 		assert( i->is_open() );
 
-		if (i->type_get() == zip_unknow && !i->is_readonly()) {
+		if (i->type_get() == zip_unknown && !i->is_readonly()) {
 			try {
-				unknow_scan(*i, zar);
+				unknown_scan(*i, zar);
 			} catch (error& e) {
 				throw e << " scanning zip " << i->file_get();
 			}
@@ -1631,7 +1626,7 @@ void run(int argc, char* argv[]) {
 				// not optimal code for g++ 2.95.3
 				string opt;
 				opt = (char)optopt;
-				throw error() << "Unknow option `" << opt << "'";
+				throw error() << "Unknown option `" << opt << "'";
 			}
 		} 
 	}
@@ -1700,7 +1695,7 @@ void run(int argc, char* argv[]) {
 			}
 
 			if (flag_change)
-				all_unknow_scan(zar,cfg,out);
+				all_unknown_scan(zar,cfg,out);
 		}
 
 		if (flag_sample) {
@@ -1732,7 +1727,7 @@ int main(int argc, char* argv[]) {
 		cerr << "Low memory" << endl;
 		exit(EXIT_FAILURE);
 	} catch (...) {
-		cerr << "Unknow error" << endl;
+		cerr << "Unknown error" << endl;
 		exit(EXIT_FAILURE);
 	}
 

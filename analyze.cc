@@ -24,8 +24,6 @@
 
 #include "utility.h"
 
-#include <cstdio>
-
 using namespace std;
 
 analyze_entry_static GARBAGE[] = {
@@ -598,9 +596,9 @@ analyze::analyze(const gamearchive& gar) {
 		char t2[128];
 		char name[64];
 
-		sprintf(t0,"proudly presents %s.zip for your mame", i->name_get().c_str());
-		sprintf(t1,"\"%s\"", i->description_get().c_str());
-		sprintf(t2,"%s %s", i->manufacturer_get().c_str(), i->year_get().c_str());
+		snprintf(t0, sizeof(t0), "proudly presents %s.zip for your mame", i->name_get().c_str());
+		snprintf(t1, sizeof(t1), "\"%s\"", i->description_get().c_str());
+		snprintf(t2, sizeof(t2), "%s %s", i->manufacturer_get().c_str(), i->year_get().c_str());
 
 		sset(MAMEDK_DATA + 64*9 + 1, 60, t0);
 		sset(MAMEDK_DATA + 64*11 + 1, 60, t1);
@@ -608,7 +606,7 @@ analyze::analyze(const gamearchive& gar) {
 
 		analyze_entry_static e;
 
-		sprintf(name, "%s.txt", i->name_get().c_str());
+		snprintf(name, sizeof(name), "%s.txt", i->name_get().c_str());
 
 		e.name = name;
 		e.size = MAMEDK_SIZE;

@@ -151,3 +151,4 @@ bool game_set_load::load(bool remove_merge) {
 
 	return true;
 }
+

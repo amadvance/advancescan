@@ -30,7 +30,7 @@
 enum zip_type {
 	zip_own, // roms part of the set
 	zip_import, // roms of other sets used for importing
-	zip_unknow // roms unknow
+	zip_unknown // roms unknown
 };
 
 // Zip with readonly flag

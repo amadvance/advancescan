@@ -30,8 +30,8 @@ class config {
 	filepath_container rompath;
 	filepath_container romreadonlytree;
 	filepath_container samplepath;
-	filepath romunknowpath;
-	filepath sampleunknowpath;
+	filepath romunknownpath;
+	filepath sampleunknownpath;
 	filepath romnewpath;
 public:
 	config(const std::string& file, bool need_rom, bool need_sample, bool need_change);
@@ -39,11 +39,11 @@ public:
 
 	const filepath_container& rompath_get() const { return rompath; }
 	const filepath_container& romreadonlytree_get() const { return romreadonlytree; }
-	const filepath& romunknowpath_get() const { return romunknowpath; }
+	const filepath& romunknownpath_get() const { return romunknownpath; }
 	const filepath& romnewpath_get() const { return romnewpath; }
 
 	const filepath_container& samplepath_get() const { return samplepath; }
-	const filepath& sampleunknowpath_get() const { return sampleunknowpath; }
+	const filepath& sampleunknownpath_get() const { return sampleunknownpath; }
 };
 
 #endif

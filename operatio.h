@@ -24,11 +24,11 @@
 class operation {
 	bool flag_active; // execute the command
 	bool flag_output; // print the command
-	bool flag_move; // remove unknow zip
+	bool flag_move; // remove unknown zip
 	bool flag_add; // additive change on not existing zips
 	bool flag_fix; // additive change on existing zips
-	bool flag_remove_binary; // remove unknow binary files
-	bool flag_remove_text; // remove unknow text files
+	bool flag_remove_binary; // remove unknown binary files
+	bool flag_remove_text; // remove unknown text files
 	bool flag_remove_garbage; // remove garbage files
 public:
 	void active_set(bool A) {

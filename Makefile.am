@@ -4,10 +4,20 @@ bin_PROGRAMS = advscan advdiff
 
 advdiff_SOURCES = \
 	diff.cc \
-	gamediff.cc \
+	rom.cc \
+	utility.cc \
+	ziprom.cc \
+	game.cc \
+	gameinfo.cc \
+	gamexml.cc \
+	zip.cc \
+	siglock.cc \
 	getopt.c \
 	snprintf.c \
-	lib/readinfo.c
+	lib/readinfo.c \
+	expat/xmlrole.c \
+	expat/xmlparse.c \
+	expat/xmltok.c
 
 advscan_SOURCES =  \
 	scan.cc \

@@ -327,4 +327,3 @@ void gamearchive::filter(filter_proc* p) {
 	}
 }
 
-

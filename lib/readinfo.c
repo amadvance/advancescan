@@ -18,13 +18,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "readinfo.h"
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#include "portable.h"
+
+#include "readinfo.h"
 
 /* Start size of buffer */
 #define INFO_BUF_MIN 64

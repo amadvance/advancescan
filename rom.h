@@ -21,11 +21,11 @@
 #ifndef __ROM_H
 #define __ROM_H
 
+#include "utility.h"
+
 #include <set>
 #include <vector>
 #include <list>
-
-#include "utility.h"
 
 // ------------------------------------------------------------------------
 // rom

@@ -25,7 +25,6 @@
 #include <list>
 #include <vector>
 #include <string>
-#include <cstdio>
 
 // ------------------------------------------------------------------------
 // Game

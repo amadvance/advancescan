@@ -39,19 +39,19 @@ advscan [-h, --help] [-V, --version]
 Description
 </h2>
 advscan is a command line utility for maintaining a zipped
-archive of roms and sample zip archive for the MAME, XMAME,
-AdvanceMAME and Raine emulators. The goal of advscan is to
-obtain a complete and perfect rom and sample zip archive with
-differential merging. Differential merging means that any
-game has its zip archive, which contains all the rom
-files, which are not already in the parent zip archive (if
-exists).
+archive of roms and sample zip archive for the MAME, MESS,
+xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
+The goal of advscan is to obtain a complete and perfect rom
+and sample zip archive with differential merging.
+Differential merging means that any game has its zip archive,
+which contains all the rom files, which are not already in
+the parent zip archive (if exists).
 <p>
 advscan has these features:
 <ul>
 <li>
 Directly read, write zip archives without decompressing
-and recompressing them for the best performance.
+and recompressing them for best performance.
 </li>
 <li>
 Add, copy, move and rename files in the zip
@@ -64,12 +64,12 @@ delete them.
 </li>
 <li>
 Recognize the text files added by the rom dumpers
-and keep or delete them.
+and keep or delete them as your choice.
 </li>
 <li>
 It's safe. On all the zip operations any file
 removed or overwritten is saved in the
-`rom_unknown' `sample_unknown' directories and kept
+`rom_unknown' `sample_unknown' directories and keep
 for future uses. This will prevent any unwanted
 remove operation.
 </li>
@@ -82,6 +82,9 @@ Support only rom and sample archives zipped.
 </li>
 <li>
 Support only differential merging.
+</li>
+<li>
+Doesn't support .chd files.
 </li>
 </ul>
 <h2>3 
@@ -164,7 +167,7 @@ archives. Any file removed is saved in the
 `rom_unknown' or `sample_unknown' directory in a
 zip archive with the same name of the original one.
 Only binary files are removed, all the text files
-are kept.
+are keep.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -430,7 +433,7 @@ examples of configuration files.
 <h2>7 
 Filters
 </h2>
-As default advscan uses all the rom definition, including also
+As default advscan uses all the rom definitions, including also
 unplayable games. If you prefere you can use only a subset
 of the roms defined with the --filter option.
 <p>
@@ -441,7 +444,7 @@ preliminary
 </em></td><td width="90%">
 Use only preliminary roms. A preliminary rom
 is a rom marked with driver or sound or color preliminary,
-and which doesn't have any good clone.
+and which doesn't have any working clone.
 </td></tr>
 <tr valign="top" align="left"><td width="5%"></td><td width="5%"><em>
 working
@@ -450,6 +453,40 @@ Use only NOT preliminary roms. This should be
 the preferred filter which only store playable games.
 </td></tr>
 </table>
+<p>
+If you want to keep preliminary and working roms in different
+directories, you can setup two different advscan.rc files with
+different directories but sharing the `rom_unknown' dir to allow
+automatic rom moving between the two sets.
+If this is your configuration, to update your romset, you need to
+run advscan three times:
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr valign="top" align="left"><td width="5%"></td><td width="5%"><em>
+on working set
+</em></td><td width="90%">
+To export preliminary roms in the
+rom_unknown dir.
+</td></tr>
+<tr valign="top" align="left"><td width="5%"></td><td width="5%"><em>
+on preliminary set
+</em></td><td width="90%">
+To import preliminary roms and export
+working roms in the rom_unknown dir.
+</td></tr>
+<tr valign="top" align="left"><td width="5%"></td><td width="5%"><em>
+on working set
+</em></td><td width="90%">
+To import working rom from the
+rom_unknown dir.
+</td></tr>
+</table>
+<p>
+For example:
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
+advscan -R -c advscan-pre.rc -f preliminary &lt; advmame.xml &gt; rom_pre.log
+advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
+</td></tr></table>
 <h2>8 
 Report
 </h2>
@@ -581,7 +618,7 @@ can add the -v switch.
 <h2>10 
 Copyright
 </h2>
-This file is Copyright (C) 2003 Andrea Mazzoleni, Filipe Estima
+This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
 <h2>11 
 See Also
 </h2>

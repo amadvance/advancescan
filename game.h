@@ -26,7 +26,6 @@
 // ------------------------------------------------------------------------
 // Game
 
-#include <cstdio>
 #include <list>
 
 class game;
@@ -170,3 +169,4 @@ public:
 bool is_game_working_tree(const game& g, const gamearchive& gar);
 
 #endif
+

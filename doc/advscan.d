@@ -21,28 +21,28 @@ Synopsis
 
 Description
 	advscan is a command line utility for maintaining a zipped
-	archive of roms and sample zip archive for the MAME, XMAME,
-	AdvanceMAME and Raine emulators. The goal of advscan is to
-	obtain a complete and perfect rom and sample zip archive with
-	differential merging. Differential merging means that any
-	game has its zip archive, which contains all the rom
-	files, which are not already in the parent zip archive (if
-	exists).
+	archive of roms and sample zip archive for the MAME, MESS,
+	xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
+	The goal of advscan is to obtain a complete and perfect rom
+	and sample zip archive with differential merging.
+	Differential merging means that any game has its zip archive,
+	which contains all the rom files, which are not already in
+	the parent zip archive (if exists).
 
 	advscan has these features:
 
 	* Directly read, write zip archives without decompressing
-		and recompressing them for the best performance.
+		and recompressing them for best performance.
 	* Add, copy, move and rename files in the zip
 		archives. Any rom that you have is placed
 		automatically in the correct zip.
 	* Recognize the text files added by rom sites and
 		delete them.
 	* Recognize the text files added by the rom dumpers
-		and keep or delete them.
+		and keep or delete them as your choice.
 	* It's safe. On all the zip operations any file
 		removed or overwritten is saved in the
-		`rom_unknown' `sample_unknown' directories and kept
+		`rom_unknown' `sample_unknown' directories and keep
 		for future uses. This will prevent any unwanted
 		remove operation.
 
@@ -50,6 +50,7 @@ Description
 
 	* Support only rom and sample archives zipped.
 	* Support only differential merging.
+	* Doesn't support .chd files.
 
 Options
 	-c, --cfg CONFIG
@@ -98,7 +99,7 @@ Options
 		`rom_unknown' or `sample_unknown' directory in a
 		zip archive with the same name of the original one.
 		Only binary files are removed, all the text files
-		are kept.
+		are keep.
 
 	-g, --del-garbage
 		Remove any garbage file from the zip archives. A
@@ -261,16 +262,35 @@ Configuration
 	examples of configuration files.
 
 Filters
-	As default advscan uses all the rom definition, including also
+	As default advscan uses all the rom definitions, including also
 	unplayable games. If you prefere you can use only a subset
 	of the roms defined with the --filter option.
 
 	The filters available are:
 		preliminary - Use only preliminary roms. A preliminary rom
 			is a rom marked with driver or sound or color preliminary,
-			and which doesn't have any good clone.
+			and which doesn't have any working clone.
 		working - Use only NOT preliminary roms. This should be
 			the preferred filter which only store playable games.
+
+	If you want to keep preliminary and working roms in different
+	directories, you can setup two different advscan.rc files with
+	different directories but sharing the `rom_unknown' dir to allow
+	automatic rom moving between the two sets.
+	If this is your configuration, to update your romset, you need to
+	run advscan three times:
+
+		on working set - To export preliminary roms in the
+			rom_unknown dir.
+		on preliminary set - To import preliminary roms and export
+			working roms in the rom_unknown dir.
+		on working set - To import working rom from the
+			rom_unknown dir.
+
+	For example:
+		advscan -R -c advscan-wrk.rc -f working < advmame.xml > rom_wrk.log
+		advscan -R -c advscan-pre.rc -f preliminary < advmame.xml > rom_pre.log
+		advscan -R -c advscan-wrk.rc -f working < advmame.xml > rom_wrk.log
 
 Report
 	The report generated with the -p option contains some text
@@ -343,7 +363,8 @@ Examples
 	can add the -v switch.
 
 Copyright
-	This file is Copyright (C) 2003 Andrea Mazzoleni, Filipe Estima
+	This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
 
 See Also
 	advdiff(1)
+

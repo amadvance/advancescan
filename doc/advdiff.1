@@ -2,7 +2,7 @@
 .SH NAME
 advdiff \(hy The AdvanceDIFF roms diff
 .SH SYNOPSIS 
-advdiff ORIG_INFO DEST_INFO
+advdiff [\(hyi, \(hy\(hyinfo] ORIG_INFO DEST_INFO
 .PD 0
 .PP
 .PD
@@ -13,8 +13,8 @@ A game is considered contained if all his roms are present
 in a game with the same name.
 .PP
 The DEST_INFO and ORIG_INFO files are the rom information
-files generated with the \(hylistinfo or \(hygameinfo options of
-the emulators.
+files generated with the \(hylistinfo/\(hylistxml or \(hygameinfo
+options of the emulators.
 .PP
 You can use this utility to create differential romset.
 For example you can use this command:
@@ -34,15 +34,19 @@ which need to be updated between two emulator releases.
 For example you can use this command:
 .PP
 .RS 4
-advdiff mame59.lst mame60.lst > mame59\(hy60.lst
+advdiff mame79.xml mame80.xml > mame79\(hy80.xmlt
 .PD 0
 .PP
 .PD
 .RE
 .PP
 to create the list of roms needed to upgrade the MAME
-romset from the version 0.59 version to the version 0.60.
+romset from the version 0.79 version to the version 0.80.
+.SH OPTIONS 
+.TP
+.B \(hyi, \(hy\(hyinfo
+Output in the old info format instead of the XML format.
 .SH COPYRIGHT 
-This file is Copyright (C) 2002 Andrea Mazzoleni, Filipe Estima
+This file is Copyright (C) 2002, 2004 Andrea Mazzoleni, Filipe Estima
 .SH SEE ALSO 
 advscan(1)
