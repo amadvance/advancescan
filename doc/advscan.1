@@ -1,0 +1,399 @@
+.TH "The AdvanceSCAN roms manager" 1
+.SH NAME
+advscan \(hy The AdvanceSCAN roms manager
+.PD
+.RE
+.SH SYNOPSIS 
+advscan [\(hyc, \(hy\(hycfg config.rc] [\(hyr, \(hy\(hyrom] [\(hys, \(hy\(hysample]
+.PD 0
+.PP
+.PD
+[\(hya, \(hy\(hyadd\(hyzip] [\(hyb, \(hy\(hyadd\(hybin] [\(hyd, \(hy\(hydel\(hyzip]
+.PD 0
+.PP
+.PD
+[\(hyu, \(hy\(hydel\(hyunknown] [\(hyg, \(hy\(hydel\(hygarbage] [\(hyt,\(hy\(hydel\(hytext]
+.PD 0
+.PP
+.PD
+[\(hyn, \(hy\(hyprint\(hyonly] [\(hyp, \(hy\(hyreport]
+.PD 0
+.PP
+.PD
+[\(hyv, \(hy\(hyverbose] < info.lst
+.PD 0
+.PP
+.PD
+.PP
+advscan [\(hyR, \(hy\(hyrom\(hystd] [\(hyS, \(hy\(hysample\(hystd] < info.lst
+.PD 0
+.PP
+.PD
+.PP
+advscan [\(hyi, \(hy\(hyident] files... < info.lst
+.PD 0
+.PP
+.PD
+.PP
+advscan [\(hyl, \(hy\(hybbs] < info.lst
+.PD 0
+.PP
+.PD
+.PP
+advscan [\(hye, \(hy\(hyequal] < info.lst
+.PD 0
+.PP
+.PD
+.PP
+advscan [\(hyh, \(hy\(hyhelp] [\(hyV, \(hy\(hyversion]
+.PD 0
+.PP
+.PD
+.SH DESCRIPTION 
+advscan is a command line utility for maintaining a rom
+and sample zip archive for the MAME, XMAME, AdvanceMAME
+and Raine emulators. The goal of advscan is to obtain a
+complete and perfect rom and sample zip archive with
+differential merging. Differential merging means that any
+game has his zip archive, which contains all the rom
+files, which are not already in the parent zip archive (if
+exists).
+.PP
+advscan has these features:
+.PD 0
+.IP \(bu
+Directly read, write zip archives without decompressing
+and recompressing them for the best performance.
+.IP \(bu
+Add, copy, move and rename files in the zip
+archives. Any rom that you have is placed
+automatically in the correct zip.
+.IP \(bu
+Recognize the text files added by rom sites and
+delete them.
+.IP \(bu
+Recognize the text files added by the rom dumpers
+and keep or delete them.
+.IP \(bu
+It\(cqs safe. On all the zip operations any file
+removed or overwritten is saved in the
+\(oqrom_unknown\(cq \(oqsample_unknown\(cq directories and kept
+for future uses. This will prevent any unwanted
+remove operation.
+.PD
+.PP
+but also has these misfeatures:
+.PD 0
+.IP \(bu
+Support only rom and sample archives zipped.
+.IP \(bu
+Support only differential merging.
+.PD
+.SH OPTIONS 
+.TP
+.B \(hyc, \(hy\(hycfg config.rc
+Select the configuration file. If not specified is
+assumed the file \(oqadvscan.rc\(cq in the current
+directory.
+.TP
+.B < info.lst
+To operate advscan needs always as input a rom
+information file. It can be generally created with
+the \(hylistinfo (MAME) or \(hygameinfo (Raine) options
+of the emulator.
+.TP
+.B \(hyr,\(hy\(hyrom
+Operates on roms. All the next commands will
+operate on your romset.
+.TP
+.B \(hys,\(hy\(hysample
+Operates on samples. All the next commands will
+operate on your sampleset.
+.TP
+.B \(hya,\(hy\(hyadd\(hyzip
+Add the missing rom zips. Any missing zip archive
+for which at least one rom is available is created.
+.TP
+.B \(hyb,\(hy\(hyadd\(hybin
+Add, rename and substitute all the necessary files
+in the existing zip archives. No new zip archives
+are created, only the already present zips are
+modified. No file is deleted. Anyway, some files may
+be overwritten. Any file overwritten is saved in
+the \(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in
+a zip archive with the same name of the original
+one.
+.TP
+.B \(hyd,\(hy\(hydel\(hyzip
+Remove any unknown zip archive. Any archive
+removed is saved in the \(oqrom_unknown\(cq or
+\(oqsample_unknown\(cq directory.
+.TP
+.B \(hyu,\(hy\(hydel\(hyunknown
+Remove any unknown file from the existing zip
+archives. Any file removed is saved in the
+\(oqrom_unknown\(cq or \(oqsample_unknown\(cq directory in a
+zip archive with the same name of the original one.
+Only binary files are removed, all the text files
+are kept.
+.TP
+.B \(hyg,\(hy\(hydel\(hygarbage
+Remove any garbage file from the zip archives. A
+garbage file is an advertising text file added
+generally by a rom site. The files removed are not
+saved.
+.TP
+.B \(hyt,\(hy\(hydel\(hytext
+Remove any text file from the zip archives. Any
+file removed is saved in the \(oqrom_unknown\(cq or
+\(oqsample_unknown\(cq directory in a zip archive with the
+same name of the original one.
+.TP
+.B \(hyR,\(hy\(hyrom\(hystd
+Shortcut for the options \(hyrabdug. It does all the
+previous operations on roms except removing text
+files.
+.TP
+.B \(hyS,\(hy\(hysample\(hystd
+Shortcut for the options \(hysabdug. It does all the
+previous operations on samples except removing text
+files.
+.TP
+.B \(hyn,\(hy\(hyprint\(hyonly
+Don\(cqt modify anything, it only shows operations.
+This option prevents any changes made by the
+previous commands. The operations are only printed and
+NOT executed.
+.TP
+.B \(hyp,\(hy\(hyreport
+Write an extensive text report with the list of
+good, bad and missing roms or/and samples. The
+content of any zip archive with missing files is
+printed. You must also specify the \(hyr or/and \(hys
+options.
+.TP
+.B \(hyv,\(hy\(hyverbose
+Print a more verbose report. The content of any zip
+archive is printed also if it contains any not rom
+files.
+.SH INFORMATION OPTIONS 
+The following options are used only to print information.
+These options don\(cqt need or read the configuration file.
+.TP
+.B \(hyi, \(hy\(hyident files...
+Identify the files specified. Only the information
+present in the info file is used.
+.TP
+.B \(hyl, \(hy\(hybbs
+Print a standard \(oq.bbs\(cq files with the description
+of all the roms in the info file.
+.TP
+.B \(hye, \(hy\(hyequal
+Print a list of all the duplicate roms present in
+the info file. Only the information present in the
+info file is used.
+.TP
+.B \(hyh, \(hy\(hyhelp
+Print a short help screen.
+.TP
+.B \(hyV, \(hy\(hyversion
+Print the program version.
+.SH IDENTIFICATION 
+Rom files are identified by their crc and size. The roms
+are not really decompressed, but the crc value stored on
+the zip archives is used. If a rom has an incorrect crc or
+size, but it has a correct name, it\(cqs maintained if
+doesn\(cqt exists a valid alternative.
+.PP
+Sample files are identified only by their name. This
+limits the possible operations. Essentially advscan can
+report only missing samples.
+.PP
+Garbage files are identified by their size and crc.
+.PP
+All the others files are identified with this algo:
+.PD 0
+.IP \(bu
+If the name is like *.sam, *.wav it\(cqs considered an
+unknown binary file.
+.IP \(bu
+If the name is something like *.doc, *.txt, *.nfo,
+*.diz, readme.* it\(cqs considered a text file.
+.IP \(bu
+If the size is a power of 2 it\(cqs considered an
+unknown binary file.
+.IP \(bu
+It\(cqs considered a text file.
+.PD
+.SH CONFIGURATION 
+To run advscan you need two files. The rom information
+file and the configuration file.
+.PP
+The rom information file is the file that contains the
+information of all the roms used by the emulator. It can
+be made with the command:
+.PP
+.RS 4
+advmame \(hylistinfo > info.lst
+.PD 0
+.PP
+.PD
+.RE
+.PP
+This file is expected as input of advscan. So, you can use
+this command:
+.PP
+.RS 4
+advscan [options] < info.lst
+.PD 0
+.PP
+.PD
+.RE
+.PP
+Or combine the two commands together:
+.PP
+.RS 4
+advmame \(hylistinfo | advscan [options]
+.PD 0
+.PP
+.PD
+.RE
+.PP
+The configuration file is a text files that describes your
+directories structure. You can use absolute path or
+relative path. Relative path are relative to the current
+directory when you run advscan.
+.PP
+On Unix the PATH separator is \(oq:\(cq. On DOS the PATH
+separator is \(oq;\(cq. The following options are expressed with the
+Unix format.
+.TP
+.B rom PATH:PATH...
+List of paths where the roms are placed. These are
+the zip archives, which are modified fixed.
+.TP
+.B rom_new PATH
+Single path where the new created zip archives are
+placed. It\(cqs STRONGLY suggested to put this path
+ALSO in the \(oqrom\(cq specification. Otherwise at the
+next run the zip archives are recreated.
+.TP
+.B rom_import PATH:PATH...
+List of directory tree where other roms files are
+placed. These are used for importing rom file missing
+in rompath. These files are only read and never
+modified in any way. It\(cqs very useful to insert
+here any rom directories of any other arcade
+emulators. When a new game will be supported the rom
+archive will be made automatically.
+.TP
+.B rom_unknown PATH
+Single path where unknown rom zip archives will be
+moved. In this directory is inserted any rom file
+removed from the rom zip archives. However, any rom
+file is automatically deleted by advscan if it\(cqs
+duplicated in an archive listed on the \(oqrom\(cq or
+\(oqrom_import\(cq options.
+.TP
+.B sample PATH:PATH...
+List of path where the samples are placed. These
+are the zip archives, which are modified and fixed.
+.TP
+.B sample_unknown PATH
+Single path where unknown sample zip archives will
+be moved. In this directory is inserted any sample
+file removed from the sample zip archives.
+.PP
+If the \(hyc option is not specified the configuration file
+is read from ./advscan.rc.
+.PP
+The files advscan.rc.linux and advscan.rc.dos are two
+examples of configuration files.
+.SH REPORT 
+The report generated with the \(hyp option contains some text
+tag explicated here:
+.TP
+.B rom_good
+A recognized good rom. The rom is recognized by his
+name, crc and size.
+.TP
+.B rom_bad
+A recognized bad rom with an incorrect size or crc.
+The rom is recognized by his name.
+.TP
+.B rom_miss
+A missing rom.
+.TP
+.B nodump_miss
+A missing \(a"NO GOOD DUMP KNOWN\(a" rom.
+.TP
+.B nodump_bad
+A recognized \(a"NO GOOD DUMP KNOWN\(a" rom. The rom is
+recognized by his name and size.
+.TP
+.B redump_bad
+A recognized \(a"ROM NEEDS REDUMP\(a" rom. The rom is
+recognized by his name, size and negate crc. The
+negate crc is the special convention used by MAME
+to sign known bad dump.
+.TP
+.B text
+An unknown text file.
+.TP
+.B binary
+An unknown binary file.
+.TP
+.B garbage
+A recognized garbage file. A garbage file is an
+advertising text file added generally by a rom
+site. The file is recognized by his name, size and
+crc.
+.TP
+.B sound_good
+A recognized good sound sample. The sample is
+recognized by his name.
+.TP
+.B sound_miss
+A missing sound sample.
+.SH EXAMPLES 
+For the generic use you need to run advscan with the
+options:
+.PP
+.RS 4
+advscan \(hyR < info.lst
+.PD 0
+.PP
+.PD
+.RE
+.PP
+This command will fix your rom collection (without removing
+the precious text files).
+.PP
+To check in advance all the operations that will be done
+you can use the command:
+.PP
+.RS 4
+advscan \(hyR \(hyn < info.lst
+.PD 0
+.PP
+.PD
+.RE
+.PP
+which show only the operations.
+.PP
+To only generate an extensive report of your rom set you
+can use the command:
+.PP
+.RS 4
+advscan \(hyr \(hyp < info.lst > report.txt
+.PD 0
+.PP
+.PD
+.RE
+.PP
+To increase the verbosity of the information printed you
+can add the \(hyv switch.
+.SH COPYRIGHT 
+This file is Copyright (C) 2002 Andrea Mazzoleni
+.SH SEE ALSO 
+advdiff(1)

@@ -110,10 +110,12 @@ advmng_SOURCES = \
 	7z/WindowOut.cc
 
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
-	README AUTHORS HISTORY COPYING BUILD INSTALL \
-	advscan.1 advdiff.1 advzip.1 advpng.1 advmng.1 \
-	configure.msdos \
-	configure.windows \
+	README AUTHORS HISTORY INSTALL COPYING \
+	doc/advscan.d doc/advdiff.d doc/advzip.d doc/advpng.d doc/advmng.d doc/history.d doc/readme.d doc/authors.d doc/install.d \
+	doc/advscan.1 doc/advdiff.1 doc/advzip.1 doc/advpng.1 doc/advmng.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
+	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
+	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
+	configure.msdos configure.windows autogen.sh noautomake.sh \
 	7z/README \
 	check.lst
 
@@ -179,39 +181,48 @@ noinst_HEADERS = \
 	7z/WindowIn.h \
 	7z/WindowOut.h
 
-man_MANS = advscan.1 advdiff.1 advzip.1 advpng.1 advmng.1
+man_MANS = doc/advscan.1 doc/advdiff.1 doc/advzip.1 doc/advpng.1 doc/advmng.1
 
 clean-local:
 	rm -f *~
 	rm -f new.lst check.zip
-	rm -f advscan.exe advscan.txt advscan.html advscan.rc
-	rm -f advdiff.exe advdiff.txt advdiff.html
-	rm -f advzip.exe advzip.txt advzip.html
-	rm -f advpng.exe advpng.txt advpng.html
-	rm -f advmng.exe advmng.txt advmng.html
+	rm -f advscan.exe advscan.rc advdiff.exe advzip.exe advpng.exe advmng.exe
+	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
+	rm -f doc/*.hh
 
-# DOS archive
+# Docs
 
-%.txt : %.1
-	$(GROFF) -mandoc -Tascii $(srcdir)/$< | $(COL) -bx | todos > $@
+%.1 : %.d
+	advd2 man < $(srcdir)/$< > $@
 
-%.html : %.1
-	$(GROFF) -mandoc -Thtml -P-r -P-l $(srcdir)/$< > $@
+%.txt : %.d
+	advd2 txt < $(srcdir)/$< | todos > $@
 
-advscan.txt: advscan.1
-advdiff.txt: advdiff.1
-advzip.txt: advzip.1
-advpng.html: advpng.1
-advmng.html: advmng.1
+%.html : %.d
+	advd2 html < $(srcdir)/$< > $@
 
-advscan.html: advscan.1
-advdiff.html: advdiff.1
-advzip.html: advzip.1
-advpng.html: advpng.1
-advmng.html: advmng.1
+%.hh : %.d
+	advd2 frame < $(srcdir)/$< > $@
+
+# Archives
 
 advscan.rc: advscan.rc.dos
 	cp $(srcdir)/advscan.rc.dos advscan.rc
+
+README: doc/readme.txt
+	cat $< | fromdos > $@
+
+AUTHORS: doc/authors.txt
+	cat $< | fromdos > $@
+
+INSTALL: doc/install.txt
+	cat $< | fromdos > $@
+
+HISTORY: doc/history.txt
+	cat $< | fromdos > $@
+
+doc/copying.txt: COPYING
+	cat $< | todos > $@
 
 check-local: advzip check.lst
 	@./advzip -a -1 check.zip $(srcdir)/COPYING
@@ -236,8 +247,8 @@ check-local: advzip check.lst
 	@echo Success!
 
 DISTDOS = \
-	README AUTHORS HISTORY COPYING \
-	advscan.txt advdiff.txt advzip.txt advpng.txt advmng.txt \
+	doc/readme.txt doc/authors.txt doc/history.txt doc/copying.txt \
+	doc/advscan.txt doc/advdiff.txt doc/advzip.txt doc/advpng.txt doc/advmng.txt \
 	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
 	advscan.rc
 
@@ -251,8 +262,8 @@ distdos: $(DISTDOS)
 	zip $(PACKAGE)-$(VERSION)-dos-i586.zip $(DISTDOS)
 
 DISTWINDOWS = \
-	README AUTHORS HISTORY COPYING \
-	advscan.html advdiff.html advzip.html advpng.html advmng.html \
+	doc/readme.html doc/authors.html doc/history.html doc/copying.txt \
+	doc/advscan.html doc/advdiff.html doc/advzip.html doc/advpng.html doc/advmng.html \
 	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
 	advscan.rc
 
@@ -264,3 +275,8 @@ distwindows: $(DISTWINDOWS)
 	-upx -q -q advmng.exe
 	rm -f $(PACKAGE)-$(VERSION)-windows-i586.zip
 	zip $(PACKAGE)-$(VERSION)-windows-i586.zip $(DISTWINDOWS)
+
+DISTWEB = \
+	doc/advscan.hh doc/advdiff.hh doc/advzip.hh doc/advpng.hh doc/advmng.hh doc/history.hh
+
+web: $(DISTWEB)

@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>The AdvanceDIFF roms diff</title>
+</head>
+<body>
+<h1><center>The AdvanceDIFF roms diff</center></h1>
+<h1>1 
+Synopsis
+</h1>
+<font face="Courier">
+advdiff ORIG_INFO DEST_INFO<br>
+</font>
+<h1>2 
+Description
+</h1>
+This utility prints all the games contained in the
+DEST_INFO file and not contained in ORIG_INFO file.
+A game is considerated contained if all his roms are present
+in a game with the same name.
+<p>
+The DEST_INFO and ORIG_INFO files are the rom information
+files generated with the -listinfo or -gameinfo options of
+the emulators.
+<p>
+You can use this utility to create differential romset.
+For example you can use this command:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+advdiff mame.lst raine.lst &gt; raine_diff.lst<br>
+</font>
+</td></tr></table>
+<p>
+to create the list of roms needed by Raine, which are not
+already included in the standard MAME set.
+<p>
+You can also use this utility to create the list of roms,
+which need to be updated between two emulator releases.
+For example you can use this command:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+advdiff mame59.lst mame60.lst &gt; mame59-60.lst<br>
+</font>
+</td></tr></table>
+<p>
+to create the list of roms needed to upgrade the MAME rom
+set from the 0.59 version to the 0.60 version.
+<h1>3 
+Copyright
+</h1>
+This file is Copyright (C) 2002 Andrea Mazzoleni
+<h1>4 
+See Also
+</h1>
+advscan(1)
+</body>
+</html>

@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>AdvanceSCAN Installation</title>
+</head>
+<body>
+<h1><center>AdvanceSCAN Installation</center></h1>
+</td></tr>
+</table>
+<p>
+As root or user type:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+./configure<br>
+make<br>
+</font>
+</tr></td></table>
+<p>
+To check the generated executable type:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+make check<br>
+</font>
+</tr></td></table>
+<p>
+and as root to install the programs and the documentation
+type:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+make install-strip<br>
+</font>
+</tr></td></table>
+<p>
+then change the example configuration file advscan.rc for
+AdvanceSCAN to your requirements.
+<p>
+The documentation is in the man pages:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<font face="Courier">
+man advscan<br>
+man advdiff<br>
+man advzip<br>
+man advpng<br>
+man advmng<br>
+</font>
+</tr></td></table>
+<h1>1 
+Requirements
+</h1>
+To build AdvanceSCAN you need a C/C++ compiler.
+<p>
+Tested with the following compilers on a GNU/Linux
+environment :
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+GNU gcc 2.95.3
+GNU gcc 3.0.4
+GNU gcc 3.1
+</tr></td></table>
+<p>
+The build process on the DOS platform isn't tested. The DOS
+and Windows binaries are generated in Linux cross compiling.
+If you have the cross compiler installed, you can try the
+configure.msdos and configure.windows configuration scripts.
+</body>
+</html>
