@@ -1,7 +1,7 @@
 Name
         advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.8 2003/10
+AdvanceSCAN Version 1.8 2004/01
 	) The rom report now differentiates preliminary roms.
 	) Added a filter capability able to filter in/out preliminary roms.
 

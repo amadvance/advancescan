@@ -70,7 +70,7 @@ ziprom::iterator ziprom::find(const string& name) {
 void ziprom::load()
 {
 	if (!is_load()) {
-		cmessage << MESSAGE << "load " << file_get() << endl;
+		cerr << "log: " << "load " << file_get() << endl;
 		try {
 			zip::load();
 		} catch (error& e) {
@@ -98,14 +98,14 @@ void ziprom::save()
 {
 	if (is_load() && is_modify()) {
 		if (size_not_zero() > 0) {
-			cmessage << MESSAGE << "save " << file_get() << endl;
+			cerr << "log: " << "save " << file_get() << endl;
 			try {
 				zip::save();
 			} catch (error& e) {
 				throw e << " saving " << file_get();
 			}
 		} else {
-			cmessage << MESSAGE << "delete " << file_get() << endl;
+			cerr << "log: " << "delete " << file_get() << endl;
 			try {
 				zip::save();
 			} catch (error& e) {
@@ -121,7 +121,7 @@ void ziprom::remove(const string& zipintname)
 
 	ziprom::iterator i = find(zipintname);
 	if (i!=end()) {
-		cmessage << MESSAGE << "remove " << file_get() << "/" << zipintname << endl;
+		cerr << "log: " << "remove " << file_get() << "/" << zipintname << endl;
 
 		erase(i);
 	}
@@ -145,7 +145,7 @@ void ziprom::move(const string& zipintname_src, ziprom& reject, const string& zi
 
 	reject.remove(zipintname_dst);
 
-	cmessage << MESSAGE << "move " << file_get() << "/" << zipintname_src << " to " << reject.file_get() << "/" << zipintname_dst << endl;
+	cerr << "log: " << "move " << file_get() << "/" << zipintname_src << " to " << reject.file_get() << "/" << zipintname_dst << endl;
 
 	ziprom::iterator i = find(zipintname_src);
 	if (i==end())
@@ -164,7 +164,7 @@ void ziprom::add(const ziprom::const_iterator& entry_src, const string& zipintna
 
 	remove(zipintname_dst, reject);
 
-	cmessage << MESSAGE << "add " << entry_src->parentname_get() << "/" << entry_src->name_get() << " to " << file_get() << "/" << zipintname_dst << endl;
+	cerr << "log: " << "add " << entry_src->parentname_get() << "/" << entry_src->name_get() << " to " << file_get() << "/" << zipintname_dst << endl;
 
 	// insert
 	ziprom::iterator k = insert(*entry_src, zipintname_dst);
@@ -178,7 +178,7 @@ void ziprom::add(const ziprom::const_iterator& entry_src, const string& zipintna
 
 	remove(zipintname_dst);
 
-	cmessage << MESSAGE << "add " << entry_src->parentname_get() << "/" << entry_src->name_get() << " to " << file_get() << "/" << zipintname_dst << endl;
+	cerr << "log: " << "add " << entry_src->parentname_get() << "/" << entry_src->name_get() << " to " << file_get() << "/" << zipintname_dst << endl;
 
 	// insert
 	ziprom::iterator k = insert(*entry_src, zipintname_dst);
@@ -214,7 +214,7 @@ void ziprom::rename(const string& zipintname_src, const string& zipintname_dst, 
 
 	remove(zipintname_dst, reject);
 
-	cmessage << MESSAGE << "rename " << file_get() << "/" << zipintname_src << " to " << zipintname_dst << endl;
+	cerr << "log: " << "rename " << file_get() << "/" << zipintname_src << " to " << zipintname_dst << endl;
 
 	ziprom::iterator i = find(zipintname_src);
 	if (i==end())
@@ -231,12 +231,12 @@ void ziprom::swap(const string& zipintname, ziprom& reject, ziprom::iterator& re
 	ziprom::iterator i = find(zipintname);
 	if (i==end()) {
 		// not present in the zip, it isn't a swap
-		cmessage << MESSAGE << "move " << reject.file_get() << "/" << reject_entry->name_get() << " to " << file_get() << "/" << zipintname << endl;
+		cerr << "log: " << "move " << reject.file_get() << "/" << reject_entry->name_get() << " to " << file_get() << "/" << zipintname << endl;
 
 		insert(*reject_entry, reject_entry->name_get());
 		reject.erase(reject_entry);
 	} else {
-		cmessage << MESSAGE << "swap " << reject.file_get() << reject_entry->name_get() << " and " << file_get() << "/" << zipintname << endl;
+		cerr << "log: " << "swap " << reject.file_get() << reject_entry->name_get() << " and " << file_get() << "/" << zipintname << endl;
 
 		insert(*reject_entry, reject_entry->name_get());
 		reject.insert(*i, i->name_get());

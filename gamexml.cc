@@ -197,12 +197,12 @@ static void process_romsize(struct state_t* state, enum token_t t, const char* s
 			return;
 		}
 		const char* e;
-		state->r->size_set(strdec(v.c_str(), &e));
+		unsigned z = strdec(v.c_str(), &e);
 		if (*e != 0) {
 			process_error(state, 0, "invalid size value");
 			return;
 		}
-
+		state->r->size_set(z);
 	}
 }
 
@@ -215,11 +215,12 @@ static void process_romcrc(struct state_t* state, enum token_t t, const char* s,
 			return;
 		}
 		const char* e;
-		state->r->crc_set(strhex(v.c_str(), &e));
+		unsigned z = strhex(v.c_str(), &e);
 		if (*e != 0) {
 			process_error(state, 0, "invalid crc value");
 			return;
 		}
+		state->r->crc_set(z);
 	}
 }
 

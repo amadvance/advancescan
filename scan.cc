@@ -93,9 +93,9 @@ void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_er
 				j = zar.open_and_insert( ziprom(i->file_get(), type, true) );
 			} catch (error& e) {
 				if (ignore_error) {
-					cwarning << WARNING << "failed open on zip " << i->file_get() << endl;
-					cwarning << WARNING << e << endl;
-					cwarning << WARNING << "ignoring zip " << i->file_get() << " and resuming" << endl;
+					cerr << "warning: failed open on zip " << i->file_get() << endl;
+					cerr << "warning: " << e << endl;
+					cerr << "warning: ignoring zip " << i->file_get() << " and resuming" << endl;
 				} else {
 					throw e << " opening zip " << i->file_get();
 				}
@@ -1486,7 +1486,7 @@ void usage() {
 	cout << "  " SWITCH_GETOPT_LONG("-v, --verbose    ", "-v") "  Verbose output" << endl;
 }
 
-#ifdef HAVE_GETOPT_LONG
+#if HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"rom", 0, 0, 'r'},
 	{"rom-std", 0, 0, 'R'},
@@ -1550,7 +1550,7 @@ void run(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef HAVE_GETOPT_LONG
+#if HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
 #else
 		getopt(argc, argv, OPTIONS))

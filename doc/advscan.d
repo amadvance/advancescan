@@ -3,11 +3,11 @@ Name
 
 Synopsis
 	:advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
-	:[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
-	:[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
-	:[-n, --print-only] [-p, --report]
-	:[-f, --filter FILTER]
-	:[-v, --verbose] < info.lst/xml
+	:	[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
+	:	[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
+	:	[-n, --print-only] [-p, --report]
+	:	[-f, --filter FILTER]
+	:	[-v, --verbose] < info.lst/xml
 
 	:advscan [-R, --rom-std] [-S, --sample-std] < info.lst/xml
 

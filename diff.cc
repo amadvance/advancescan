@@ -42,7 +42,7 @@ void usage() {
 	std::cout << "Usage: advdiff INFO1.txt INFO2.txt" << std::endl;
 }
 
-#ifdef HAVE_GETOPT_LONG
+#if HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"help", 0, 0, 'h'},
 	{"version", 0, 0, 'V'},
@@ -78,7 +78,7 @@ void process(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef HAVE_GETOPT_LONG
+#if HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
 #else
 		getopt(argc, argv, OPTIONS))

@@ -80,15 +80,17 @@ bool gamearchive::load_info_internal() {
 						} else if (strcmp(info_text_get(),"size")==0) {
 							const char* e;
 							if (info_token_get() != info_symbol) return false;
-							r.size_set( strdec( info_text_get(), &e ) );
+							unsigned v = strdec(info_text_get(), &e);
 							if (*e != 0)
 								return false;
+							r.size_set( v );
 						} else if (strcmp(info_text_get(),"crc")==0) {
 							const char* e;
 							if (info_token_get() != info_symbol) return false;
-							r.crc_set( strhex( info_text_get(), &e ) );
+							unsigned v = strhex(info_text_get(), &e);
 							if (*e != 0)
 								return false;
+							r.crc_set( v );
 						} else if (strcmp(info_text_get(),"flags")==0) {
 							if (info_token_get() != info_symbol) return false;
 							if (strcmp(info_text_get(),"nodump")==0)

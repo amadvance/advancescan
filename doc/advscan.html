@@ -7,34 +7,34 @@
 <h2>1 
 Synopsis
 </h2>
-<font face="Courier">
-advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]<br>
-[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]<br>
-[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]<br>
-[-n, --print-only] [-p, --report]<br>
-[-f, --filter FILTER]<br>
-[-v, --verbose] &lt; info.lst/xml<br>
-</font>
+<pre>
+advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
+&nbsp;&nbsp;&nbsp;&nbsp;[-a, --add-zip] [-b, --add-bin] [-d, --del-zip]
+&nbsp;&nbsp;&nbsp;&nbsp;[-u, --del-unknown] [-g, --del-garbage] [-t,--del-text]
+&nbsp;&nbsp;&nbsp;&nbsp;[-n, --print-only] [-p, --report]
+&nbsp;&nbsp;&nbsp;&nbsp;[-f, --filter FILTER]
+&nbsp;&nbsp;&nbsp;&nbsp;[-v, --verbose] &lt; info.lst/xml
+</pre>
 <p>
-<font face="Courier">
-advscan [-R, --rom-std] [-S, --sample-std] &lt; info.lst/xml<br>
-</font>
+<pre>
+advscan [-R, --rom-std] [-S, --sample-std] &lt; info.lst/xml
+</pre>
 <p>
-<font face="Courier">
-advscan [-i, --ident] files... &lt; info.lst/xml<br>
-</font>
+<pre>
+advscan [-i, --ident] files... &lt; info.lst/xml
+</pre>
 <p>
-<font face="Courier">
-advscan [-l, --bbs] &lt; info.lst/xml<br>
-</font>
+<pre>
+advscan [-l, --bbs] &lt; info.lst/xml
+</pre>
 <p>
-<font face="Courier">
-advscan [-e, --equal] &lt; info.lst/xml<br>
-</font>
+<pre>
+advscan [-e, --equal] &lt; info.lst/xml
+</pre>
 <p>
-<font face="Courier">
-advscan [-h, --help] [-V, --version]<br>
-</font>
+<pre>
+advscan [-h, --help] [-V, --version]
+</pre>
 <h2>2 
 Description
 </h2>
@@ -331,26 +331,26 @@ information of all the roms used by the emulator. It can
 be made with the command:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advmame -listxml &gt; info.xml<br>
-</font>
+<pre>
+advmame -listxml &gt; info.xml
+</pre>
 </td></tr></table>
 <p>
 This file is expected as input of advscan. So, you can use
 this command:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advscan [options] &lt; info.xml<br>
-</font>
+<pre>
+advscan [options] &lt; info.xml
+</pre>
 </td></tr></table>
 <p>
 Or combine the two commands together:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advmame -listxml | advscan [options]<br>
-</font>
+<pre>
+advmame -listxml | advscan [options]
+</pre>
 </td></tr></table>
 <p>
 The configuration file is a text file that describes your
@@ -548,9 +548,9 @@ For the generic use you need to run advscan with the
 options:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advscan -R &lt; info.xml<br>
-</font>
+<pre>
+advscan -R &lt; info.xml
+</pre>
 </td></tr></table>
 <p>
 This command will fix your rom collection (without removing
@@ -560,9 +560,9 @@ To check in advance all the operations that will be done
 you can use the command:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advscan -R -n &lt; info.xml<br>
-</font>
+<pre>
+advscan -R -n &lt; info.xml
+</pre>
 </td></tr></table>
 <p>
 which only show the operations.
@@ -571,9 +571,9 @@ To only generate an extensive report of your rom set you
 can use the command:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
-<font face="Courier">
-advscan -r -p &lt; info.xml &gt; report.txt<br>
-</font>
+<pre>
+advscan -r -p &lt; info.xml &gt; report.txt
+</pre>
 </td></tr></table>
 <p>
 To increase the verbosity of the printed information you

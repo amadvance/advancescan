@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 class error {
 	std::string function;
@@ -84,7 +85,7 @@ public:
 	error& operator<<(const unsigned A)
 	{
 		std::ostringstream s;
-		s << A;
+		s << A << "(" << std::hex << A << "h)";
 		desc += s.str();
 		return *this;
 	}

@@ -29,8 +29,8 @@ extern "C" {
 #include <config.h>
 #endif
 
-/* ------------------------------------------------------------------------ */
-/* getopt */
+// ------------------------------------------------------------------------
+// Getopt
 
 #if HAVE_GETOPT_H
 #include <getopt.h>
@@ -52,8 +52,8 @@ extern int optind, opterr, optopt;
 #define SWITCH_GETOPT_LONG(a,b) b
 #endif
 
-/* ------------------------------------------------------------------------ */
-/* utime */
+// ------------------------------------------------------------------------
+// Utime
 
 #include <time.h>
 
@@ -65,8 +65,8 @@ extern int optind, opterr, optopt;
 #include <sys/utime.h>
 #endif
 
-/* ------------------------------------------------------------------------ */
-/* directory separator */
+// ------------------------------------------------------------------------
+// Separator
 
 #if defined(__MSDOS__) || defined(__WIN32__)
 #define DIR_SEP ';'
@@ -74,23 +74,28 @@ extern int optind, opterr, optopt;
 #define DIR_SEP ':'
 #endif
 
-/* ------------------------------------------------------------------------ */
-/* mkdir */
+// ------------------------------------------------------------------------
+// Mkdir
 
 #if defined(__WIN32__)
-#define HAVE_FUNC_MKDIR_ONEARG
+#define HAVE_FUNC_MKDIR_ONEARG 1
+#else
+#define HAVE_FUNC_MKDIR_ONEARG 0
 #endif
 
 // ------------------------------------------------------------------------
-// signal
+// Signal
 
-#if !defined(__WIN32__)
-#define HAVE_SIGHUP
-#define HAVE_SIGQUIT
+#if defined(__WIN32__)
+#define HAVE_SIGHUP 0
+#define HAVE_SIGQUIT 0
+#else
+#define HAVE_SIGHUP 1
+#define HAVE_SIGQUIT 1
 #endif
 
-/* ------------------------------------------------------------------------ */
-/* snprintf */
+// ------------------------------------------------------------------------
+// Snprintf
 
 #if !HAVE_SNPRINTF
 #include <sys/types.h>
