@@ -173,7 +173,7 @@ Identification
 
 	Garbage files are identified by their size and crc.
 
-	All the others files are identified with this algo:
+	All the others files are identified with this algorithm:
 
 	* If the name is like *.sam, *.wav it's considered an
 		unknown binary file.
