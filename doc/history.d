@@ -1,8 +1,9 @@
 Name
         advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.6 2003/03
+AdvanceSCAN Version 1.6 2003/04
 	) Updated with autoconf 2.57 and automake 1.7.2
+	) Fixed the support of some strange zips with zero crc on local header.
 
 AdvanceSCAN Version 1.5 2003/02
 	) Removed the recompression utilities. Now they are in the

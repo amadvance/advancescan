@@ -96,57 +96,57 @@ std::ostream& operator<<(std::ostream &os, const game& A) {
 	return os;
 }
 
-bool game_set_load::load(FILE* f, bool remove_merge) {
-	info_t token = info_token_get(f);
+bool game_set_load::load(bool remove_merge) {
+	info_t token = info_token_get();
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
 		if (strcmp(info_text_get(),"game")==0) {
-			if (info_token_get(f) != info_open) return false;
+			if (info_token_get() != info_open) return false;
 			game g;
-			token = info_token_get(f);
+			token = info_token_get();
 			while (token != info_close) {
 				if (token != info_symbol)
 					return false;
 				if (strcmp(info_text_get(),"name")==0) {
-					if (info_token_get(f) != info_symbol) return false;
+					if (info_token_get() != info_symbol) return false;
 					g.name_set( info_text_get() );
 				} else if (strcmp(info_text_get(),"rom")==0) {
-					if (info_token_get(f) != info_open) return false;
-					token = info_token_get(f);
+					if (info_token_get() != info_open) return false;
+					token = info_token_get();
 					rom r;
 					bool merge = false;
 					while (token != info_close) {
 						if (token != info_symbol) return false;
 						if (strcmp(info_text_get(),"size")==0) {
-							if (info_token_get(f) != info_symbol) return false;
+							if (info_token_get() != info_symbol) return false;
 							r.size_set(atoi( info_text_get() ));				
 						} else if (strcmp(info_text_get(),"crc")==0 || strcmp(info_text_get(),"crc32")==0) {
-							if (info_token_get(f) != info_symbol) return false;
+							if (info_token_get() != info_symbol) return false;
 							r.crc_set(strtoul(info_text_get(), 0, 16));
 						} else if (strcmp(info_text_get(),"name")==0) {
-							if (info_token_get(f) != info_symbol) return false;
+							if (info_token_get() != info_symbol) return false;
 							r.name_set(info_text_get());
 						} else if (strcmp(info_text_get(),"merge")==0) {
-							if (info_token_get(f) != info_symbol) return false;
+							if (info_token_get() != info_symbol) return false;
 							merge = true;
 						} else {
-							if (info_skip_value(f) == info_error) return false;
+							if (info_skip_value() == info_error) return false;
 						}
-						token = info_token_get(f);
+						token = info_token_get();
 					}
 					if (!(remove_merge && merge))
 						g.roms_get().insert(r);
 				} else {
-					if (info_skip_value(f) == info_error) return false;
+					if (info_skip_value() == info_error) return false;
 				}
-				token = info_token_get(f);
+				token = info_token_get();
 			}
 			insert( g );
 		} else {
-			if (info_skip_value(f) == info_error)
+			if (info_skip_value() == info_error)
 				return false;
 		}
-		token = info_token_get(f);
+		token = info_token_get();
 	}
 
 	return true;

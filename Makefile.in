@@ -145,6 +145,7 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 
 
 noinst_HEADERS = \
+	snprintf.c \
 	rom.h \
 	utility.h \
 	conf.h \

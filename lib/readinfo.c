@@ -22,7 +22,8 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 /* Start size of buffer */
@@ -38,59 +39,75 @@ static unsigned info_pos; /* Char */
 static unsigned info_row; /* Row */
 static unsigned info_col; /* Column */
 
+static int (*info_ptr_get)(void*);
+static void (*info_ptr_unget)(void*, char);
+void* info_ptr_arg;
+
 /* Initialize */
-void info_init(void) {
+void info_init(int (*get)(void*), void (*unget)(void*, char), void* arg)
+{
 	info_buf_max = 0;
 	info_buf_map = 0;
 	info_pos = 0;
 	info_row = 0;
 	info_col = 0;
+	info_ptr_get = get;
+	info_ptr_unget = unget;
+	info_ptr_arg = arg;
 }
 
 /* Deinitialize */
-void info_done(void) {
+void info_done(void)
+{
 	free(info_buf_map);
 }
 
 /* Get information of file position */
-unsigned info_row_get(void) {
+unsigned info_row_get(void)
+{
 	return info_row;
 }
 
-unsigned info_col_get(void) {
+unsigned info_col_get(void)
+{
 	return info_col;
 }
 
-unsigned info_pos_get(void) {
+unsigned info_pos_get(void)
+{
 	return info_pos;
 }
 
 /* Resize the buffer */
-static void info_buf_resize(unsigned size) {
+static void info_buf_resize(unsigned size)
+{
 	if (!info_buf_max)
 		info_buf_max = INFO_BUF_MIN;
 	else
 		info_buf_max *= 2;
 	if (size > info_buf_max)
 		info_buf_max = size;
-	info_buf_map = realloc(info_buf_map, info_buf_max );
+	info_buf_map = realloc(info_buf_map, info_buf_max);
 	assert( info_buf_map );
 }
 
 /* Add a char to the buffer end */
-static inline void info_buf_add(char c) {
+static inline void info_buf_add(char c)
+{
 	if (info_buf_mac >= info_buf_max)
 		info_buf_resize(info_buf_mac + 1);
 	info_buf_map[info_buf_mac++] = c;
 }
 
 /* Reset the buffer */
-static void info_buf_reset() {
+static void info_buf_reset()
+{
 	info_buf_mac = 0;
 }
 
 /* Return last token text */
-const char* info_text_get(void) {
+const char* info_text_get(void)
+{
 	/* ensure the buffer end with zero */
 	if (info_buf_mac==0 || info_buf_map[info_buf_mac-1]!=0)
 		info_buf_add(0);
@@ -98,8 +115,9 @@ const char* info_text_get(void) {
 }
 
 /* Read a char from file */
-static int info_getc(FILE* f) {
-	int c = fgetc(f);
+static int info_getc(void)
+{
+	int c = info_ptr_get(info_ptr_arg);
 	switch (c) {
 		case EOF:
 			break;
@@ -117,34 +135,38 @@ static int info_getc(FILE* f) {
 }
 
 /* Unget a char from file */
-static void info_ungetc(int c, FILE* f) {
+static void info_ungetc(int c)
+{
 	--info_pos;
 	--info_col;
-	ungetc(c,f);
+	info_ptr_unget(info_ptr_arg, c);
 }
 
-static enum info_t get_symbol(FILE* f,int c) {
+static enum info_t get_symbol(int c)
+{
 	while (c!=EOF && !isspace(c) && c!='(' && c!=')' && c!='\"') {
 		info_buf_add(c);
-		c = info_getc(f);
+		c = info_getc();
 	}
 	/* no reason to unget space or EOF */
 	if (c!=EOF && !isspace(c))
-		info_ungetc(c,f);
+		info_ungetc(c);
 	return info_symbol;
 }
 
-static unsigned hexdigit(char c) {
+static unsigned hexdigit(char c)
+{
 	if (isdigit(c))
 		return c - '0';
 	return toupper(c) - 'A' + 10;
 }
 
-static enum info_t get_string(FILE* f) {
-	int c = info_getc(f);
+static enum info_t get_string(void)
+{
+	int c = info_getc();
 	while (c!=EOF && c!='\"') {
 		if (c=='\\') {
-			c = info_getc(f);
+			c = info_getc();
 			switch (c) {
 				case 'a' : info_buf_add('\a'); break;
 				case 'b' : info_buf_add('\b'); break;
@@ -158,12 +180,12 @@ static enum info_t get_string(FILE* f) {
 				case '\'' : info_buf_add('\''); break;
 				case '\"' : info_buf_add('\"'); break;
 				case 'x' : {
-					int d0,d1;
+					int d0, d1;
 					unsigned char cc;
-					d0 = info_getc(f);
+					d0 = info_getc();
 					if (!isxdigit(d0))
 						return info_error;
-					d1 = info_getc(f);
+					d1 = info_getc();
 					if (!isxdigit(d1))
 						return info_error;
 					cc = hexdigit(d0) * 16 + hexdigit(d1);
@@ -176,7 +198,7 @@ static enum info_t get_string(FILE* f) {
 		} else {
 			info_buf_add(c);
 		}
-		c = info_getc(f);
+		c = info_getc();
 	}
 	if (c!='\"')
 		return info_error;
@@ -184,13 +206,14 @@ static enum info_t get_string(FILE* f) {
 }
 
 /* Extract a token */
-enum info_t info_token_get(FILE* f) {
-	int c = info_getc(f);
+enum info_t info_token_get(void)
+{
+	int c = info_getc();
 	/* reset the buffer */
 	info_buf_reset();
 	/* skip space */
 	while (c!=EOF && isspace(c)) {
-		c = info_getc(f);
+		c = info_getc();
 	}
 	/* get token */
 	switch (c) {
@@ -201,9 +224,9 @@ enum info_t info_token_get(FILE* f) {
 		case ')':
 			return info_close;
 		case '\"':
-			return get_string(f);
+			return get_string();
 		default:
-			return get_symbol(f,c);
+			return get_symbol(c);
 	}
 }
 
@@ -214,12 +237,13 @@ enum info_t info_token_get(FILE* f) {
  *   info_error error
  *   otherwise last token skipped
  */
-enum info_t info_skip_value(FILE* f) {
+enum info_t info_skip_value(void)
+{
 	/* read value token */
-	enum info_t t = info_token_get(f);
+	enum info_t t = info_token_get();
 	switch (t) {
 		case info_open:
-			t = info_token_get(f);
+			t = info_token_get();
 			if (t==info_error)
 				return info_error;
 			while (t!=info_close) {
@@ -227,12 +251,12 @@ enum info_t info_skip_value(FILE* f) {
 				if (t!=info_symbol)
 					return info_error;
 				/* second skip the value */
-				t = info_skip_value(f);
+				t = info_skip_value();
 				/* two value required */
 				if (t==info_error)
 					return info_error;
 				/* read next token, a type or a info_close */
-				t = info_token_get(f);
+				t = info_token_get();
 				if (t==info_error)
 					return info_error;
 			}

@@ -31,8 +31,9 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	configure.msdos configure.windows autogen.sh noautomake.sh
 
 noinst_HEADERS = \
+	snprintf.c \
 	rom.h \
-	utility.h \
+	utility33;1R.h \
 	conf.h \
 	ziprom.h \
 	game.h \

@@ -3,9 +3,11 @@
                             =======================
 
 
-1 ADVANCESCAN VERSION 1.6 2003/03
+1 ADVANCESCAN VERSION 1.6 2003/04
 =================================
 
+* Updated with autoconf 2.57 and automake 1.7.2
+* Fixed the support of some strange zips with zero crc on local header.
 
 
 2 ADVANCESCAN VERSION 1.5 2003/02

@@ -108,3 +108,8 @@ int getopt(int nargc, char *const nargv[], const char *ostr)
 }
 
 #endif
+
+#if defined(__MSDOS__)
+#include "lib/snprintf.c"
+#endif
+

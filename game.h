@@ -126,7 +126,7 @@ class gamearchive {
 	gamearchive(const gamearchive&);
 	gamearchive& operator=(const gamearchive&);
 
-	bool load_internal(FILE* f);
+	bool load_internal();
 
 public:
 	gamearchive();
@@ -142,7 +142,7 @@ public:
 
 	const_iterator find(const game& A) const;
 
-	bool load(FILE* f);
+	bool load(std::istream& f);
 };
 
 bool is_game_neogeo(const game& g, const gamearchive& gar);

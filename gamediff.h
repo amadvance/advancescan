@@ -81,7 +81,7 @@ public:
 	typedef game_set::const_iterator const_iterator;
 	typedef game_set::iterator iterator;
 
-	bool load(FILE* f, bool remove_merge);
+	bool load(bool remove_merge);
 };
 
 #endif

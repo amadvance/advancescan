@@ -26,6 +26,7 @@
 #include "lib/readinfo.h"
 
 #include <iostream>
+#include <fstream>
 
 #include <unistd.h>
 
@@ -51,10 +52,21 @@ struct option long_options[] = {
 
 #define OPTIONS "hV"
 
+extern "C" int info_ext_get(void* _arg)
+{
+	istream* arg = static_cast<istream*>(_arg);
+	return arg->get();
+}
+
+extern "C" void info_ext_unget(void* _arg, char c)
+{
+	istream* arg = static_cast<istream*>(_arg);
+	arg->putback(c);
+}
+
 void process(int argc, char* argv[]) {
 	game_set_load g0;
 	game_set_load g1;
-	FILE* f;
 
 	if (argc <= 1) {
 		usage();
@@ -96,19 +108,23 @@ void process(int argc, char* argv[]) {
 	string f0 = argv[optind+0];
 	string f1 = argv[optind+1];
 
-	f = fopen(f0.c_str(),"r");
-	if (!f)
+	ifstream ff0(f0.c_str(), ios::in | ios::binary);
+	if (!ff0)
 		throw error() << "Failed open of " << f0;
-	if (!g0.load(f,true))
+	info_init(info_ext_get, info_ext_unget, &ff0);
+	if (!g0.load(true))
 		throw error() << "Failed read of " << f0 << " at row " << info_row_get()+1 << " at column " << info_col_get()+1;
-	fclose(f);
+	info_done();
+	ff0.close();
 
-	f = fopen(f1.c_str(),"r");
-	if (!f)
+	ifstream ff1(f1.c_str(), ios::in | ios::binary);
+	if (!ff1)
 		throw error() << "Failed open of " << f1;
-	if (!g1.load(f,true))
+	info_init(info_ext_get, info_ext_unget, &ff1);
+	if (!g1.load(true))
 		throw error() << "Failed read of " << f1 << " at row " << info_row_get()+1 << " at column " << info_col_get()+1;
-	fclose(f);
+	info_done();
+	ff1.close();
 
 	game_set::const_iterator i;
 	for(i=g1.begin();i!=g1.end();++i) {
