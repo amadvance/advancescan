@@ -5,7 +5,8 @@ bin_PROGRAMS = advscan advdiff
 advdiff_SOURCES = \
 	diff.cc \
 	gamediff.cc \
-	portable.c \
+	getopt.c \
+	snprintf.c \
 	lib/readinfo.c
 
 advscan_SOURCES =  \
@@ -19,7 +20,8 @@ advscan_SOURCES =  \
 	output.cc \
 	analyze.cc \
 	siglock.cc \
-	portable.c \
+	getopt.c \
+	snprintf.c \
 	lib/readinfo.c
 
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
@@ -53,8 +55,9 @@ noinst_HEADERS = \
 man_MANS = doc/advscan.1 doc/advdiff.1
 
 clean-local:
-	rm -f *~
 	rm -f advscan.exe advscan.rc advdiff.exe
+
+maintainer-clean-local:
 	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
 	rm -f doc/*.hh
 

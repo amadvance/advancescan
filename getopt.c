@@ -18,9 +18,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "portable.h"
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#ifndef HAVE_GETOPT
+#if !HAVE_GETOPT
 
 /* This source is extracted from the DJGPP LIBC library */
 
@@ -107,9 +109,5 @@ int getopt(int nargc, char *const nargv[], const char *ostr)
   return optopt; /* dump back option letter */
 }
 
-#endif
-
-#if defined(__MSDOS__)
-#include "snprintf.c"
 #endif
 
