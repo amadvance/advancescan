@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "utility.h"
 
@@ -30,7 +28,6 @@
 #include <cstdio>
 #include <cerrno>
 
-#include <utime.h>
 #include <sys/stat.h>
 
 using namespace std;
@@ -436,8 +433,11 @@ void file_mktree(const std::string& path) throw (error) {
 		if (stat(dir.c_str(),&s) != 0) {
 			if (errno!=ENOENT)
 				throw error() << "Failed stat dir " << dir;
-
+#ifdef HAVE_FUNC_MKDIR_ONEARG
+			if (mkdir(dir.c_str()) != 0)
+#else
 			if (mkdir(dir.c_str(), S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0)
+#endif
 				throw error() << "Failed mkdir " << dir;
 		} else {
 			if (!S_ISDIR(s.st_mode))

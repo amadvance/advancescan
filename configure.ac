@@ -19,10 +19,15 @@ AC_CHECK_PROGS(COL, col)
 AC_CHECK_LIB([z], [adler32])
 
 # Checks for header files.
+AC_CHECK_HEADERS([getopt.h])
+AC_CHECK_HEADERS([utime.h])
+AC_CHECK_HEADERS([sys/utime.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
+AC_CHECK_FUNCS([getopt])
+AC_CHECK_FUNCS([getopt_long])
 
 AC_DEFINE(USE_7Z,1,[Use the 7z library])
 AC_DEFINE(USE_LZMA,1,[Use the lzma compression])

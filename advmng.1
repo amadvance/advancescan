@@ -1,7 +1,7 @@
 .\" Process this file with
 .\" groff -man -Tascii advmng.1
 .\"
-.TH AdvanceMNG 1 "01 Agosto 2002"
+.TH AdvanceMNG 1 "1 Agosto 2002"
 .SH NAME
 advmng \- mng compression utility
 .SH SYNOPSIS
@@ -10,7 +10,7 @@ advmng \- mng compression utility
 .B [-s, --scroll HxV] [-e, --expand] [-r, --reduce]
 .B [-c, --lc] [-C, --vlc] [-f, --force]
 .B [-q, --quiet] [-h, --help] [-V, --version]
-ARCHIVES... [FILES...]
+FILES...
 .SH DESCRIPTION
 The main purpose of this utility is to recompress MNG files
 to get the smallest possible size.
@@ -25,14 +25,14 @@ with only small changes between frames.
 The scroll optimization is used only on request (option "-s HxV") and it can
 compress better video clips with a scrolling background.
 .SH OPTIONS
-.B -l, --list ARCHIVES...
+.B -l, --list FILES...
 List the content of the specified files.
 .TP
-.B -z, --recompress ARCHIVES...
-Recompress the specified archives.
+.B -z, --recompress FILES...
+Recompress the specified files.
 If the -1, -2, -3 options are specified is used the smallest file choice from the
 previous compressed data and the new compression.
-If the -0 option is specified the archive is always rewritten without any compression.
+If the -0 option is specified the file is always rewritten without any compression.
 .TP
 .B -0, --shrink-0
 Set the compression level to "none". The file are only stored and not compressed.

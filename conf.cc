@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "conf.h"
 
@@ -61,13 +59,6 @@ static void expand_tree(const string& path, filepath_container& ds) throw (error
 
 // ------------------------------------------------------------------------
 // Config
-
-// Directory separator
-#ifdef __MSDOS__
-#define DIR_SEP ';'
-#else
-#define DIR_SEP ':'
-#endif
 
 config::config(const string& file, bool need_rom, bool need_sample, bool need_change) {
 	string cfg;

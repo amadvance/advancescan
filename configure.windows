@@ -3,5 +3,5 @@
 (
 	export CFLAGS="-O3 -march=i586" ;
 	export CXXFLAGS="-O3 -march=i586" ;
-	./configure --host=i586-pc-msdosdjgpp --build=`./config.guess` $@
+	./configure --host=i386-mingw32msvc --build=`./config.guess` $@
 )

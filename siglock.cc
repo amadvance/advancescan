@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "siglock.h"
 
@@ -42,17 +40,24 @@ void sig_ignore(int sig) {
 
 void sig_lock() {
 	sig_ignore_sig = 0;
-
+#ifdef HAVE_SIGHUP
 	sig_hup = signal(SIGHUP, sig_ignore);
-	sig_int = signal(SIGINT, sig_ignore);
+#endif
+#ifdef HAVE_SIGQUIT
 	sig_quit = signal(SIGQUIT, sig_ignore);
+#endif
+	sig_int = signal(SIGINT, sig_ignore);
 	sig_term = signal(SIGTERM, sig_ignore);
 }
 
 void sig_unlock() {
+#ifdef HAVE_SIGHUP
 	signal(SIGHUP, sig_hup);
-	signal(SIGINT, sig_int);
+#endif
+#ifdef HAVE_SIGQUIT
 	signal(SIGQUIT, sig_quit);
+#endif
+	signal(SIGINT, sig_int);
 	signal(SIGTERM, sig_term);
 
 	if (sig_ignore_sig)

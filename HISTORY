@@ -1,9 +1,8 @@
 AdvanceSCAN Version 1.2 2002/08
-	) Added the advpng to compress the PNG files.
-	) Added the advmng to compress the MNG files.
-	) Changed the output format of the advzip -l option.
-		Now it's more like unzip -l.
-	) Added the noautomake.sh and autogen.sh scripts.
+	) Added the advpng utility to compress the PNG files.
+	) Added the advmng utility to compress the MNG files.
+	) Added a Windows version.
+	) Other minor fixes.
 
 AdvanceSCAN Version 1.1 2002/06
 	) Fixed an infinite loop bug testing some small damaged zips.

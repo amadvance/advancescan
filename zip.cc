@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "zip.h"
 #include "zlib.h"
@@ -332,9 +330,9 @@ void zip_entry::time_set(time_t tod) {
 
 void zip_entry::set(method_t method, const string& Aname, const unsigned char* compdata, unsigned compsize, unsigned size, unsigned crc, unsigned date, unsigned time, bool is_text) {
 	info.version_needed_to_extract = 20; // Version 2.0
-	info.os_needed_to_extract = 0; // MSDOS
+	info.os_needed_to_extract = 0;
 	info.version_made_by = 20; // Version 2.0
-	info.host_os = 0; // MSDOS
+	info.host_os = 0;
 	info.general_purpose_bit_flag = 0; // default
 	info.last_mod_file_date = date;
 	info.last_mod_file_time = time;

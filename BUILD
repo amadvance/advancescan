@@ -9,7 +9,7 @@ BUILD
 		GNU gcc 3.1
 
 	The build process on the DOS platform isn't tested. The DOS
-	binary is generated on Linux cross compiling to DOS. If you
-	have the cross compiler installed, you can try the
-	configure.msdos configuration script.
+	and Windows binaries are generated in Linux cross compiling.
+	If you have the cross compiler installed, you can try the
+	configure.msdos and configure.windows configuration scripts.
 

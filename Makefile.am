@@ -5,7 +5,8 @@ bin_PROGRAMS = advscan advdiff advzip advpng advmng
 advdiff_SOURCES = \
 	diff.cc \
 	gamediff.cc \
-	readinfo.c
+	readinfo.c \
+	portable.c
 
 advzip_SOURCES = \
 	rezip.cc \
@@ -14,6 +15,7 @@ advzip_SOURCES = \
 	siglock.cc \
 	compress.cc \
 	zipsh.cc \
+	portable.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -45,7 +47,8 @@ advscan_SOURCES =  \
 	zip.cc \
 	output.cc \
 	analyze.cc \
-	siglock.cc
+	siglock.cc \
+	portable.c
 
 advpng_SOURCES = \
 	repng.cc \
@@ -55,6 +58,7 @@ advpng_SOURCES = \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
+	portable.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -84,6 +88,7 @@ advmng_SOURCES = \
 	utility.cc \
 	siglock.cc \
 	compress.cc \
+	portable.c \
 	7z/7zdeflate.cc \
 	7z/7zlzma.cc \
 	7z/AriBitCoder.cc \
@@ -104,11 +109,11 @@ advmng_SOURCES = \
 	7z/WindowIn.cc \
 	7z/WindowOut.cc
 
-
 EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	README AUTHORS HISTORY COPYING BUILD INSTALL \
 	advscan.1 advdiff.1 advzip.1 advpng.1 advmng.1 \
 	configure.msdos \
+	configure.windows \
 	7z/README \
 	check.lst
 
@@ -132,6 +137,7 @@ noinst_HEADERS = \
 	operatio.h \
 	analyze.h \
 	siglock.h \
+	portable.h \
 	7z/7z.h \
 	7z/AriBitCoder.h \
 	7z/AriConst.h \
@@ -187,10 +193,10 @@ clean-local:
 # DOS archive
 
 %.txt : %.1
-	$(GROFF) -man -Tascii $(srcdir)/$< | $(COL) -bx > $@
+	$(GROFF) -mandoc -Tascii $(srcdir)/$< | $(COL) -bx | todos > $@
 
 %.html : %.1
-	$(GROFF) -man -Thtml $(srcdir)/$< > $@
+	$(GROFF) -mandoc -Thtml -P-r -P-l $(srcdir)/$< > $@
 
 advscan.txt: advscan.1
 advdiff.txt: advdiff.1
@@ -230,7 +236,7 @@ check-local: advzip check.lst
 	@echo Success!
 
 DISTDOS = \
-	README AUTHORS HISTORY \
+	README AUTHORS HISTORY COPYING \
 	advscan.txt advdiff.txt advzip.txt advpng.txt advmng.txt \
 	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
 	advscan.rc
@@ -243,3 +249,18 @@ distdos: $(DISTDOS)
 	-upx -q -q advmng.exe
 	rm -f $(PACKAGE)-$(VERSION)-dos-i586.zip
 	zip $(PACKAGE)-$(VERSION)-dos-i586.zip $(DISTDOS)
+
+DISTWINDOWS = \
+	README AUTHORS HISTORY COPYING \
+	advscan.html advdiff.html advzip.html advpng.html advmng.html \
+	advscan.exe advdiff.exe advzip.exe advpng.exe advmng.exe \
+	advscan.rc
+
+distwindows: $(DISTWINDOWS)
+	-upx -q -q advscan.exe
+	-upx -q -q advdiff.exe
+	-upx -q -q advzip.exe
+	-upx -q -q advpng.exe
+	-upx -q -q advmng.exe
+	rm -f $(PACKAGE)-$(VERSION)-windows-i586.zip
+	zip $(PACKAGE)-$(VERSION)-windows-i586.zip $(DISTWINDOWS)

@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "pngex.h"
 #include "mng.h"
@@ -36,10 +34,6 @@
 #include <cstdio>
 
 #include <unistd.h>
-
-#ifndef __MSDOS__
-#include <getopt.h>
-#endif
 
 using namespace std;
 
@@ -1281,7 +1275,7 @@ void list_all(int argc, char* argv[]) {
 	}
 }
 
-#ifndef __MSDOS__
+#ifdef HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"recompress", 0, 0, 'z'},
 	{"list", 0, 0, 'l'},
@@ -1317,23 +1311,23 @@ void usage() {
 	cout << "Usage: advmng [options] [FILES...]" << endl;
 	cout << endl;
 	cout << "Modes:" << endl;
-	cout << "  -l, --list         List the content of the files" << endl;
-	cout << "  -z, --recompress   Recompress the specified files" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-l, --list       ", "-l    ") "  List the content of the files" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-z, --recompress ", "-z    ") "  Recompress the specified files" << endl;
 	cout << "Options:" << endl;
-	cout << "  -0, --shrink-0     Don't compress" << endl;
-	cout << "  -1, --shrink-1     Compress normal" << endl;
-	cout << "  -2, --shrink-2     Compress extra (slow)" << endl;
-	cout << "  -3, --shrink-3     Compress extreme (very slow)" << endl;
-	cout << "  -s, --scroll NxM   Enable the scroll optimization with a pattern" << endl;
-	cout << "                     search. from -Nx-M to NxM. Example: -s 4x6" << endl;
-	cout << "  -r, --reduce       Force the output at palettized 8 bit" << endl;
-	cout << "  -e, --expand       Force the output at 24 bit" << endl;
-	cout << "  -c, --lc           Force the use of the MNG LC (Low Complexity) format" << endl;
-	cout << "  -C, --vlc          Force the use of the MNG VLC (Very Low Complexity) format" << endl;
-	cout << "  -f, --force        Force the new file also if it's bigger" << endl;
-	cout << "  -q, --quiet        Don't print on the console" << endl;
-	cout << "  -h, --help         Help of the program" << endl;
-	cout << "  -V, --version      Version of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-0, --shrink-0   ", "-0    ") "  Don't compress" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-1, --shrink-1   ", "-1    ") "  Compress normal" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-2, --shrink-2   ", "-2    ") "  Compress extra (slow)" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-3, --shrink-3   ", "-3    ") "  Compress extreme (very slow)" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-s, --scroll NxM ", "-s NxM") "  Enable the scroll optimization with a pattern" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("                 ", "      ") "  search. from -Nx-M to NxM. Example: -s 4x6" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-r, --reduce     ", "-r    ") "  Convert the output at palettized 8 bit" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-e, --expand     ", "-e    ") "  Convert the output at 24 bit" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-c, --lc         ", "-c    ") "  Use of the MNG LC (Low Complexity) format" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-C, --vlc        ", "-C    ") "  Use of the MNG VLC (Very Low Complexity) format" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-f, --force      ", "-f    ") "  Force the new file also if it's bigger" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-q, --quiet      ", "-q    ") "  Don't print on the console" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h    ") "  Help of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-v, --version    ", "-v    ") "  Version of the program" << endl;
 }
 
 void process(int argc, char* argv[]) {
@@ -1362,10 +1356,10 @@ void process(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef __MSDOS__
-		getopt(argc, argv, OPTIONS))
-#else
+#ifdef HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
+#else
+		getopt(argc, argv, OPTIONS))
 #endif
 	!= EOF) {
 		switch (c) {

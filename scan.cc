@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "game.h"
 #include "ziprom.h"
@@ -34,15 +32,10 @@
 #include <iomanip>
 #include <sstream>
 
-#ifndef __MSDOS__
-#include <getopt.h>
-#endif
-
 #include <dirent.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <utime.h>
 
 using namespace std;
 
@@ -1474,31 +1467,31 @@ void usage() {
 	cout << "Usage: advscan [options] < info.txt" << endl;
 	cout << endl;
 	cout << "Modes:" << endl;
-	cout << "  -r, --rom          Operate on rom sets" << endl;
-	cout << "  -s, --sample       Operate on sample sets" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-r, --rom        ", "-r") "  Operate on rom sets" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-s, --sample     ", "-s") "  Operate on sample sets" << endl;
 	cout << "Operations:" << endl;
-	cout << "  -a, --add-zip      Add missing zips" << endl;
-	cout << "  -b, --add-bin      Add missing files in zips" << endl;
-	cout << "  -d, --del-zip      Delete unknown zips" << endl;
-	cout << "  -u, --del-unknown  Delete unknown files in zips" << endl;
-	cout << "  -t, --del-text     Delete unused text files" << endl;
-	cout << "  -g, --del-garbage  Delete garbage files" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-a, --add-zip    ", "-a") "  Add missing zips" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-b, --add-bin    ", "-b") "  Add missing files in zips" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-d, --del-zip    ", "-d") "  Delete unknown zips" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-u, --del-unknown", "-u") "  Delete unknown files in zips" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-g, --del-garbage", "-g") "  Delete garbage files" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-t, --del-text   ", "-t") "  Delete unused text files" << endl;
 	cout << "Shortcuts:" << endl;
-	cout << "  -R, --rom-std      Shortcut for -rabdug" << endl;
-	cout << "  -S, --sample-std   Shortcut for -sabdug" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-R, --rom-std    ", "-R") "  Shortcut for -rabdug" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-S, --sample-std ", "-S") "  Shortcut for -sabdug" << endl;
 	cout << "Commands:" << endl;
-	cout << "  -e, --equal        Print list of roms with equal crc+size" << endl;
-	cout << "  -i, --ident file   Identify roms by crc and size" << endl;
-	cout << "  -b, --bbs          Output a 'files.bbs' for roms .zip" << endl;
-	cout << "  -h, --help         Help of the program" << endl;
-	cout << "  -V, --version      Version of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-e, --equal      ", "-e") "  Print list of roms with equal crc+size" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-i, --ident file ", "-i") "  Identify roms by crc and size" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-b, --bbs        ", "-b") "  Output a 'files.bbs' for roms .zip" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h") "  Help of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-V, --version    ", "-V") "  Version of the program" << endl;
 	cout << "Options:" << endl;
-	cout << "  -p, --report       Write an extensive report" << endl;
-	cout << "  -n, --print-only   Only print operations, do nothing" << endl;
-	cout << "  -v, --verbose      Verbose output" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-p, --report     ", "-p") "  Write an extensive report" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-n, --print-only ", "-n") "  Only print operations, do nothing" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-v, --verbose    ", "-v") "  Verbose output" << endl;
 }
 
-#ifndef __MSDOS__
+#ifdef HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"rom", 0, 0, 'r'},
 	{"rom-std", 0, 0, 'R'},
@@ -1560,10 +1553,10 @@ void run(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef __MSDOS__
-		getopt(argc, argv, OPTIONS))
-#else
+#ifdef HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
+#else
+		getopt(argc, argv, OPTIONS))
 #endif
 	!= EOF) {
 		switch (c) {

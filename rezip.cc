@@ -18,12 +18,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
-#include <zip.h>
-#include <utility.h>
+#include "zip.h"
+#include "utility.h"
 
 #include <iostream>
 #include <iomanip>
@@ -33,10 +31,6 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/types.h>
-
-#ifndef __MSDOS__
-#include <getopt.h>
-#endif
 
 using namespace std;
 
@@ -413,7 +407,7 @@ void add_all(int argc, char* argv[], bool quiet, bool standard, shrink_t level) 
 	z.close();
 }
 
-#ifndef __MSDOS__
+#ifdef HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"add", 0, 0, 'a'},
 	{"extract", 0, 0, 'x'},
@@ -448,20 +442,20 @@ void usage() {
 	cout << "Usage: advzip [options] ARCHIVES... [FILES...]" << endl;
 	cout << endl;
 	cout << "Modes:" << endl;
-	cout << "  -a, --add          Create a new archive with the specified files" << endl;
-	cout << "  -x, --extract      Extrace the content of an archive" << endl;
-	cout << "  -l, --list         List the content of the archives" << endl;
-	cout << "  -t, --test         Test the specified archives" << endl;
-	cout << "  -z, --recompress   Recompress the specified archives" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-a, --add        ", "-a") "  Create a new archive with the specified files" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-x, --extract    ", "-x") "  Extrace the content of an archive" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-l, --list       ", "-l") "  List the content of the archives" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-t, --test       ", "-t") "  Test the specified archives" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-z, --recompress ", "-z") "  Recompress the specified archives" << endl;
 	cout << "Options:" << endl;
-	cout << "  -p, --pedantic     Be pedantic on the zip tests" << endl;
-	cout << "  -0, --shrink-0     Don't compress" << endl;
-	cout << "  -1, --shrink-1     Compress normal" << endl;
-	cout << "  -2, --shrink-2     Compress extra (slow)" << endl;
-	cout << "  -3, --shrink-3     Compress extreme (very slow)" << endl;
-	cout << "  -q, --quiet        Don't print on the console" << endl;
-	cout << "  -h, --help         Help of the program" << endl;
-	cout << "  -V, --version      Version of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-p, --pedantic   ", "-p") "  Be pedantic on the zip tests" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-0, --shrink-0   ", "-0") "  Don't compress" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-1, --shrink-1   ", "-1") "  Compress normal" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-2, --shrink-2   ", "-2") "  Compress extra (slow)" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-3, --shrink-3   ", "-3") "  Compress extreme (very slow)" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-q, --quiet      ", "-q") "  Don't print on the console" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h") "  Help of the program" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-V, --version    ", "-V") "  Version of the program" << endl;
 }
 
 void process(int argc, char* argv[]) {
@@ -483,10 +477,10 @@ void process(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef __MSDOS__
-		getopt(argc, argv, OPTIONS))
-#else
+#ifdef HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
+#else
+		getopt(argc, argv, OPTIONS))
 #endif
 	!= EOF) {
 		switch (c) {

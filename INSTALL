@@ -1,4 +1,4 @@
-QUICK INSTALL for Linux
+QUICK INSTALL
 
 	As root or user type:
 
@@ -12,24 +12,16 @@ QUICK INSTALL for Linux
 	and as root to install the programs and the documentation
 	type:
 
-		make install
+		make install-strip
 
-	then change the example configuration file advscan.rc to
-	your requirements.
+	then change the example configuration file advscan.rc for
+	AdvanceSCAN to your requirements.
 
-	The documentation is in the advscan, advzip and advdiff
-	manpages accessible with the commands:
+	The documentation is in the man pages:
 
 		man advscan
-		man advzip
 		man advdiff
-
-
-QUICK INSTALL for DOS
-
-	Download the binary version and copy the executables on
-	your path.
-
-	The documentation is in the advscan.txt, advzip.txt and
-	advdiff.txt files.
+		man advzip
+		man advpng
+		man advmng
 

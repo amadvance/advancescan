@@ -18,9 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "zip.h"
 #include "zlib.h"
@@ -237,6 +235,8 @@ bool zip_entry::shrink(bool standard, shrink_t level) {
 				bzip2_level = 9;
 				bzip2_workfactor = 120;
 				break;
+			case shrink_none:
+				assert(0);
 			}
 
 			// compress with bzip2

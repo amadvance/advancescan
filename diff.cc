@@ -18,21 +18,16 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "portable.h"
 
 #include "gamediff.h"
 #include "readinfo.h"
 #include "error.h"
+#include "portable.h"
 
 #include <iostream>
 
 #include <unistd.h>
-
-#ifndef __MSDOS__
-#include <getopt.h>
-#endif
 
 using namespace std;
 
@@ -46,7 +41,7 @@ void usage() {
 	std::cout << "Usage: advdiff INFO1.txt INFO2.txt" << std::endl;
 }
 
-#ifndef __MSDOS__
+#ifdef HAVE_GETOPT_LONG
 struct option long_options[] = {
 	{"help", 0, 0, 'h'},
 	{"version", 0, 0, 'V'},
@@ -71,10 +66,10 @@ void process(int argc, char* argv[]) {
 	opterr = 0; // don't print errors
 
 	while ((c =
-#ifdef __MSDOS__
-		getopt(argc, argv, OPTIONS))
-#else
+#ifdef HAVE_GETOPT_LONG
 		getopt_long(argc, argv, OPTIONS, long_options, 0))
+#else
+		getopt(argc, argv, OPTIONS))
 #endif
 	!= EOF) {
 		switch (c) {
