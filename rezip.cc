@@ -443,7 +443,7 @@ void usage() {
 	cout << endl;
 	cout << "Modes:" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-a, --add        ", "-a") "  Create a new archive with the specified files" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-x, --extract    ", "-x") "  Extrace the content of an archive" << endl;
+	cout << "  " SWITCH_GETOPT_LONG("-x, --extract    ", "-x") "  Extract the content of an archive" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-l, --list       ", "-l") "  List the content of the archives" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-t, --test       ", "-t") "  Test the specified archives" << endl;
 	cout << "  " SWITCH_GETOPT_LONG("-z, --recompress ", "-z") "  Recompress the specified archives" << endl;
