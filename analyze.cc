@@ -555,11 +555,11 @@ static bool heuristic_is_text(const string& name, unsigned size, unsigned crc) {
 			return true;
 	}
 
-	// check if is empty
+	// check if it's empty
 	if (size==0)
 		return false;
 
-	// check if size is a power of 2
+	// check if the size is a power of 2
 	unsigned one = 0;
 	while (size) {
 		if (size % 2)

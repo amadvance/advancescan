@@ -684,6 +684,7 @@ adv_error png_read_ihdr(
 		*pal_size = 0;
 	}
 
+	*rns_size = 0;
 	while (type != PNG_CN_IDAT) {
 		if (type == PNG_CN_tRNS) {
 			*rns_ptr = ptr;
@@ -874,7 +875,8 @@ adv_error png_read(
 
 	r = png_read_rns(pix_width, pix_height, pix_pixel, dat_ptr, dat_size, pix_ptr, pix_scanline, pal_ptr, pal_size, &rns_ptr, &rns_size, f);
 
-	free(rns_ptr);
+	if (r == 0)
+		free(rns_ptr);
 
 	return r;
 }

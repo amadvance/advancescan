@@ -7,7 +7,7 @@ AdvanceSCAN Version 1.3 2002/11
 		because it was trying to reread the just deleted file.
 	) Added the support for the transparency tRNS chunk at the
 		advpng utility.
-	) Improved the garbage detecter for zipped roms.
+	) Improved the garbage detector for zipped roms.
 	) Upgraded at the lastest Advance Library.
 	) Fixes at the docs. [by Filipe Estima]
 	) Minor changes at the autoconf/automake scripts.
