@@ -291,7 +291,7 @@ void rom_add(
 		out() << "\n";
 
 	// if zip created with almost one good rom
-	if (good.size()) {
+	if (!good.empty()) {
 
 		// update the zip
 		z.save();
@@ -305,7 +305,7 @@ void rom_add(
 				throw error() << "Failed stat file " << z.file_get();
 
 			// if no rom is missing
-			if (miss.size()==0) {
+			if (miss.empty()) {
 				// add zip to directory list of game as good
 				g.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly() ) );
 			} else {
@@ -551,8 +551,8 @@ void rom_scan(
 			throw error() << "Failed stat file " << z.file_get();
 
 		// if no rom is missing or wrong. Ignore nodump.
-		if (st.rom_miss.size()==0
-		    && st.rom_bad.size()==0
+		if (st.rom_miss.empty()
+		    && st.rom_bad.empty()
 		    ) {
 			// add zip to directory list of game as good
 			gam.rzs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
@@ -661,7 +661,7 @@ void sample_scan(
 			throw error() << "Failed stat file " << z.file_get();
 
 		// if no sample is missing
-		if (st.sample_miss.size()==0) {
+		if (st.sample_miss.empty()) {
 			gam.szs_add( zippath( z.file_get(), true, fst.st_size, z.is_readonly()) );
 		} else {
 			gam.szs_add( zippath( z.file_get(), false, fst.st_size, z.is_readonly()) );
@@ -796,7 +796,7 @@ void rom_report(
 	const analyze& ana)
 {
 	// if empty don't report
-	if (!z.size())
+	if (z.empty())
 		return;
 
 	// get rom status
@@ -804,8 +804,8 @@ void rom_report(
 	stat_rom_zip(z,gam,st,ana);
 
 	// print the report
-	if (st.rom_miss.size() || st.rom_bad.size()
-		|| (verbose && (st.nodump_miss.size() || st.nodump_bad.size() || st.nodump_equal.size() || st.unk_text.size() || st.unk_binary.size() || st.unk_garbage.size()))
+	if (!st.rom_miss.empty() || !st.rom_bad.empty()
+		|| (verbose && (!st.nodump_miss.empty() || !st.nodump_bad.empty() || !st.nodump_equal.empty() || !st.unk_text.empty() || !st.unk_binary.empty() || !st.unk_garbage.empty()))
 	) {
 		bool title = false;
 
@@ -859,7 +859,7 @@ void sample_report(
 	const analyze& ana)
 {
 	// if empty don't report
-	if (!z.size())
+	if (z.empty())
 		return;
 
 	// get rom status
@@ -867,8 +867,8 @@ void sample_report(
 	sample_stat(z,gam,st,ana);
 
 	// print the report
-	if (st.sample_miss.size()
-		|| (verbose && (st.unk_text.size() || st.unk_binary.size() || st.unk_garbage.size()))
+	if (!st.sample_miss.empty()
+		|| (verbose && (!st.unk_text.empty() || !st.unk_binary.empty() || !st.unk_garbage.empty()))
 	) {
 		bool title = false;
 
@@ -1221,7 +1221,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long miss_clone_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		// only if have almost on rom and not exist any zip
-		if (i->is_romset_required() && i->rzs_get().size()==0) {
+		if (i->is_romset_required() && i->rzs_get().empty()) {
 			if (i->cloneof_get().length()) {
 				++miss_clone;
 				miss_clone_size += i->size_get();
@@ -1250,7 +1250,7 @@ void report_rom_set_zip(const gamearchive& gar, output& out) {
 	bool has_missing = false;
 
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (i->is_romset_required() && i->rzs_get().size() > 0) {
+		if (i->is_romset_required() && !i->rzs_get().empty()) {
 			if (i->rzs_get().size() > 1) {
 				has_duplicate = true;
 				out() << "Rom '" << i->name_get() << "' has duplicate zips";
@@ -1268,7 +1268,7 @@ void report_rom_set_zip(const gamearchive& gar, output& out) {
 					out() << "Rom '" << i->name_get() << "' requires missing rom '" << romof << "'.\n\n";
 					romof = "";
 				} else {
-					if (j->rzs_get().size() == 0) {
+					if (j->rzs_get().empty()) {
 						has_missing = true;
 						out() << "Rom '" << i->name_get() << "' requires missing rom '" << romof << "'.\n\n";
 					}
@@ -1283,7 +1283,7 @@ void report_rom_set_zip(const gamearchive& gar, output& out) {
 
 					// search for a working clone
 					string_container clone = gar.find_working_clones(*i);
-					if (clone.size()) {
+					if (!clone.empty()) {
 						if (clone.size() == 1)
 							out() << " but has also a working clone";
 						else
@@ -1380,7 +1380,7 @@ void report_sample_set(const gamearchive& gar, output& out) {
 	unsigned miss = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		// only if have almost on sample and not exist any zip
-		if (i->ss_get().size()>0 && i->szs_get().size()==0) {
+		if (!i->ss_get().empty() && i->szs_get().empty()) {
 			// increase counter
 			++miss;
 			out.state_gamesample("game_sample_miss", *i);

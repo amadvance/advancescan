@@ -321,7 +321,7 @@ void ziparchive::update(const ziprom& A) {
 	}
 
 	// insert only if not empty
-	if (A.size()) {
+	if (!A.empty()) {
 		ziparchive::iterator i = data.insert(data.end(), A);
 
 		assert( i->is_open() );

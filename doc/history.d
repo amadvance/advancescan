@@ -1,6 +1,13 @@
 Name
         advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.9 2004/07
+	) Fixed a Mac OS X crash problem with XML files with
+		empty items.
+	) Only the XML driver.status entry is now used to recognize
+		the game emulation status. Game not marked as
+		"preliminary" are considered working games.
+
 AdvanceSCAN Version 1.8 2004/04
 	) Added a filter capability able to filter in/out preliminary, parent
 		and clone  roms. For example you can now keep separated

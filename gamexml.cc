@@ -1,7 +1,7 @@
 /*
  * This file is part of the Advance project.
  *
- * Copyright (C) 2003 Andrea Mazzoleni
+ * Copyright (C) 2003, 2004 Andrea Mazzoleni
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,8 +322,6 @@ static struct conversion_t CONV3[] = {
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "crc", 0 }, process_romcrc },
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "status", 0 }, process_romstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "driver", "status", 0 }, process_driverstatus },
-	{ 3, { match_mamemessraine, match_gamemachine, "driver", "color", 0 }, process_driverstatus },
-	{ 3, { match_mamemessraine, match_gamemachine, "driver", "sound", 0 }, process_driverstatus },
 	{ 3, { match_mamemessraine, match_gamemachine, "sample", "name", 0 }, process_samplename },
 	{ 0, { 0, 0, 0, 0, 0 }, 0 }
 };
@@ -378,7 +376,11 @@ static void end_handler(void* data, const XML_Char* name)
 	if (state->depth < DEPTH_MAX) {
 		if (state->error == 0) {
 			if (state->level[state->depth].process) {
-				state->level[state->depth].process(state, token_data, state->level[state->depth].data, state->level[state->depth].len, 0);
+				if (state->level[state->depth].data != 0) {
+					state->level[state->depth].process(state, token_data, state->level[state->depth].data, state->level[state->depth].len, 0);
+				} else {
+					state->level[state->depth].process(state, token_data, "", 0, 0);
+				}
 				state->level[state->depth].process(state, token_close, 0, 0, 0);
 			}
 		}
@@ -450,7 +452,7 @@ static void start_handler(void* data, const XML_Char* name, const XML_Char** att
 void gamearchive::load_xml(istream& is)
 {
 	struct state_t state;
-	char buf[4096];
+	char buf[16384];
 
 	state.parser = XML_ParserCreate(NULL);
 	if (!state.parser) {

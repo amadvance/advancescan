@@ -112,14 +112,6 @@ bool gamearchive::load_info_internal() {
 							if (info_token_get() != info_symbol) return false;
 							if (strcmp(info_text_get(), "preliminary") == 0)
 								g.working_set( false );
-						} else if (strcmp(info_text_get(), "color")==0) {
-							if (info_token_get() != info_symbol) return false;
-							if (strcmp(info_text_get(), "preliminary") == 0)
-								g.working_set( false );
-						} else if (strcmp(info_text_get(), "sound")==0) {
-							if (info_token_get() != info_symbol) return false;
-							if (strcmp(info_text_get(), "preliminary") == 0)
-								g.working_set( false );
 						} else {
 							if (info_skip_value() == info_error) return false;
 						}

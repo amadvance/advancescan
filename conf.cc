@@ -145,7 +145,7 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 	is.close();
 
 	if (need_rom) {
-		if (rompath.size()==0)
+		if (rompath.empty())
 			throw error() << "Missing option `rom' option in file " << cfg;
 		for(filepath_container::iterator i=rompath.begin();i!=rompath.end();++i) {
 			if (access(i->file_get().c_str(), F_OK) != 0)
@@ -171,7 +171,7 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_ch
 		}
 	}
 	if (need_sample) {
-		if (samplepath.size()==0)
+		if (samplepath.empty())
 			throw error() << "Missing `sample' option in file " << cfg;
 		for(filepath_container::iterator i=samplepath.begin();i!=samplepath.end();++i) {
 			if (access(i->file_get().c_str(), F_OK) != 0)
