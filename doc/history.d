@@ -1,7 +1,7 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.12 2004/10
+AdvanceSCAN Version 1.12 2004/11
 	) In -listinfo files are now allowed crc with the "0x"
 		prefix.
 
