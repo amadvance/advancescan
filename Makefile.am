@@ -33,7 +33,7 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 noinst_HEADERS = \
 	snprintf.c \
 	rom.h \
-	utility33;1R.h \
+	utility.h \
 	conf.h \
 	ziprom.h \
 	game.h \
