@@ -47,12 +47,13 @@ class game {
 	std::string description;
 	std::string year;
 	std::string manufacturer;
+	bool resource;
+
 	mutable bool working;
-	mutable bool working_tree;
+	mutable bool working_subset;
+	mutable bool working_parent_subset;
 
-	mutable string_container rom_son; // son
-	mutable std::string rom_parent; // parent
-
+	mutable string_container rom_son;
 public:
 	game();
 	game(const std::string& name);
@@ -66,10 +67,23 @@ public:
 	void description_set(const std::string& Ades);
 	void year_set(const std::string& Ayear);
 	void manufacturer_set(const std::string& Amanufacturer);
+	void resource_set(bool Aresource);
+
+	const std::string& name_get() const { return name; }
+	const std::string& cloneof_get() const { return cloneof; }
+	const std::string& romof_get() const { return romof; }
+	const std::string& sampleof_get() const { return sampleof; }
+	const std::string& description_get() const { return description; }
+	const std::string& year_get() const { return year; }
+	const std::string& manufacturer_get() const { return manufacturer; }
+	bool resource_get() const { return resource; }
+
 	void working_set(bool Aworking) const;
 	bool working_get() const { return working; }
-	void working_tree_set(bool Aworking) const;
-	bool working_tree_get() const { return working_tree; }
+	void working_subset_set(bool Aworking) const;
+	bool working_subset_get() const { return working_subset; }
+	void working_parent_subset_set(bool Aworking) const;
+	bool working_parent_subset_get() const { return working_parent_subset; }
 
 	const rom_by_name_set& rs_get() const { return rs; }
 	const sample_by_name_set& ss_get() const { return ss; }
@@ -81,23 +95,14 @@ public:
 
 	void rzs_add(const zippath& Azip) const;
 	void szs_add(const zippath& Azip) const;
-
-	const std::string& name_get() const { return name; }
-	const std::string& cloneof_get() const { return cloneof; }
-	const std::string& romof_get() const { return romof; }
-	const std::string& sampleof_get() const { return sampleof; }
-	const std::string& description_get() const { return description; }
-	const std::string& year_get() const { return year; }
-	const std::string& manufacturer_get() const { return manufacturer; }
 	const zippath_container& rzs_get() const { return rzs; }
 	const zippath_container& szs_get() const { return szs; }
 
 	string_container& rom_son_get() const { return rom_son; }
-	void rom_son_erase() const { rom_son.clear(); }
 
-	bool romset_required() const { return rs_get().begin() != rs_get().end(); }
-	bool sampleset_required() const { return ss_get().begin() != ss_get().end(); }
-	
+	bool is_romset_required() const { return rs_get().begin() != rs_get().end(); }
+	bool is_sampleset_required() const { return ss_get().begin() != ss_get().end(); }
+
 	bool good_romzip_has() const;
 	unsigned good_romzip_size() const;
 	std::string good_romzip_get() const;
@@ -148,6 +153,10 @@ class gamearchive {
 	void load_info(std::istream& f);
 	void load_xml(std::istream& f);
 
+	bool is_game_parent(const game& g);
+	bool game_working_subset_compute(const game& g);
+	bool game_working_parent_subset_compute(const game& g);
+
 public:
 	gamearchive();
 	~gamearchive();
@@ -165,8 +174,6 @@ public:
 	void load(std::istream& f);
 	void filter(filter_proc* p);
 };
-
-bool is_game_working_tree(const game& g, const gamearchive& gar);
 
 #endif
 

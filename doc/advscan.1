@@ -178,6 +178,11 @@ content of any zip archive with missing files is
 printed. You must also specify the \(hyr or/and \(hys
 options.
 .TP
+.B \(hyP, \(hy\(hyreport\(hyzip
+Write a small text report with information on the
+present roms, listing incomplete, duplicate or
+missing required zips.
+.TP
 .B \(hyf, \(hy\(hyfilter FILTER
 Apply a specific filter at the rom list. Check the
 FILTERS chapter for a detailed list of filters available.
@@ -328,20 +333,35 @@ The filters available are:
 .RS 4
 .PD 0
 .HP 4
-.I preliminary
-Use only preliminary roms. A preliminary rom
-is a rom marked with driver or sound or color preliminary,
-and which doesn\(cqt have any working clone.
-.HP 4
 .I working
-Use only NOT preliminary roms. This should be
-the preferred filter which only store playable games.
+Use only working roms. A working rom is a rom
+reported working or a rom needed by another working
+rom. A rom is reported working if it isn\(cqt marked
+with the \(a"preliminary\(a" flag in the driver, video or
+sound. This should be the preferred filter which only
+store playable games.
+.HP 4
+.I preliminary
+Use only roms which are not in the \(a"working\(a"
+subset.
+.HP 4
+.I working_parent
+Use only working parent roms from the
+\(a"working\(a" subset excluding clones. If a parent rom
+is not working but it has a working clone, both
+the parent and the clone are used.
+This is the preferred filter if you want only one
+working game for any parent/clones group.
+.HP 4
+.I working_clone
+Use only roms which  are in the \(a"working\(a"
+subset but not in the \(a"working_parent\(a" subset.
 .PD
 .RE
 .PP
-If you want to keep preliminary and working roms in different
-directories, you can setup two different advscan.rc files with
-different directories but sharing the \(oqrom_unknown\(cq dir to allow
+For example, if you want to keep preliminary and working roms in
+different directories, you can setup two different advscan.rc files
+with different directories but sharing the \(oqrom_unknown\(cq dir to allow
 automatic rom moving between the two sets.
 If this is your configuration, to update your romset, you need to
 run advscan three times:

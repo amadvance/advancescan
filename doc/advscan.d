@@ -136,6 +136,11 @@ Options
 		printed. You must also specify the -r or/and -s
 		options.
 
+	-P, --report-zip
+		Write a small text report with information on the
+		present roms, listing incomplete, duplicate or
+		missing required zips.
+
 	-f, --filter FILTER
 		Apply a specific filter at the rom list. Check the
 		FILTERS chapter for a detailed list of filters available.
@@ -267,15 +272,26 @@ Filters
 	of the roms defined with the --filter option.
 
 	The filters available are:
-		preliminary - Use only preliminary roms. A preliminary rom
-			is a rom marked with driver or sound or color preliminary,
-			and which doesn't have any working clone.
-		working - Use only NOT preliminary roms. This should be
-			the preferred filter which only store playable games.
+		working - Use only working roms. A working rom is a rom
+			reported working or a rom needed by another working
+			rom. A rom is reported working if it isn't marked
+			with the "preliminary" flag in the driver, video or
+			sound. This should be the preferred filter which only
+			store playable games.
+		preliminary - Use only roms which are not in the "working"
+			subset.
+		working_parent - Use only working parent roms from the
+			"working" subset excluding clones. If a parent rom
+			is not working but it has a working clone, both
+			the parent and the clone are used.
+			This is the preferred filter if you want only one
+			working game for any parent/clones group.
+		working_clone - Use only roms which  are in the "working"
+			subset but not in the "working_parent" subset.
 
-	If you want to keep preliminary and working roms in different
-	directories, you can setup two different advscan.rc files with
-	different directories but sharing the `rom_unknown' dir to allow
+	For example, if you want to keep preliminary and working roms in
+	different directories, you can setup two different advscan.rc files
+	with different directories but sharing the `rom_unknown' dir to allow
 	automatic rom moving between the two sets.
 	If this is your configuration, to update your romset, you need to
 	run advscan three times:

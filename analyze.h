@@ -21,10 +21,10 @@
 #ifndef __ANALYZE_H
 #define __ANALYZE_H
 
+#include "game.h"
+
 #include <set>
 #include <string>
-
-#include "game.h"
 
 struct analyze_entry_static {
 	const char* name;

@@ -176,11 +176,11 @@ void process(int argc, char* argv[]) {
 			if (opt_info)
 				output_info(std::cout, *i) << "\n";
 			else
-				output_xml(std::cout, *i) << "\n";
+				output_xml(std::cout, *i);
 		}
 	}
 	if (!opt_info)
-		std::cout << "/<mame>\n";
+		std::cout << "</mame>\n";
 }
 
 int main(int argc, char* argv[]) {

@@ -70,12 +70,11 @@ noinst_HEADERS = \
 	expat/README \
 	expat/ascii.h \
 	expat/asciitab.h \
-	expat/expat-1.95.6.diff \
+	expat/expat-1.95.7.diff \
 	expat/expat.h \
 	expat/iasciitab.h \
-	expat/intconfig.h \
+	expat/expatcfg.h \
 	expat/internal.h \
-	expat/intexpat.h \
 	expat/latin1tab.h \
 	expat/nametab.h \
 	expat/utf8tab.h \

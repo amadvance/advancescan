@@ -26,7 +26,6 @@
 #include "operatio.h"
 #include "output.h"
 #include "analyze.h"
-
 #include "lib/readinfo.h"
 
 #include <fstream>
@@ -88,9 +87,9 @@ void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_er
 				j = zar.open_and_insert( ziprom(i->file_get(), type, true) );
 			} catch (error& e) {
 				if (ignore_error) {
-					cerr << "warning: failed open on zip " << i->file_get() << endl;
-					cerr << "warning: " << e << endl;
-					cerr << "warning: ignoring zip " << i->file_get() << " and resuming" << endl;
+					cerr << "warning: failed open on zip " << i->file_get() << "\n";
+					cerr << "warning: " << e << "\n";
+					cerr << "warning: ignoring zip " << i->file_get() << " and resuming\n";
 				} else {
 					throw e << " opening zip " << i->file_get();
 				}
@@ -276,7 +275,7 @@ void rom_add(
 				} 
 				if (oper.output_add()) {
 					out.title("rom_zip",title,z.file_get());
-					out.cmd_rom("rom_good","add", *i) << " " << k->parentname_get() << "/" << k->name_get() << endl;
+					out.cmd_rom("rom_good","add", *i) << " " << k->parentname_get() << "/" << k->name_get() << "\n";
 				}
 				found = true;
 			}
@@ -289,7 +288,7 @@ void rom_add(
 	miss = tmp_miss;
 
 	if (title)
-		out() << endl;
+		out() << "\n";
 
 	// if zip created with almost one good rom
 	if (good.size()) {
@@ -351,7 +350,7 @@ bool rom_scan_add(
 				}
 				if (oper.output_fix()) {
 					out.title("rom_zip",title,z.file_get());
-					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << j->name_get() << endl;
+					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << j->name_get() << "\n";
 				}
 				found = true;
 
@@ -380,7 +379,7 @@ bool rom_scan_add(
 				}
 				if (oper.output_fix()) {
 					out.title("rom_zip",title,z.file_get());
-					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << name << endl;
+					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << name << "\n";
 				}
 				found = true;
 
@@ -413,7 +412,7 @@ bool rom_scan_add(
 				}
 				if (oper.output_fix()) {
 					out.title("rom_zip",title,z.file_get());
-					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << reject.file_get() << "/" << name << endl;
+					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << reject.file_get() << "/" << name << "\n";
 				}
 				found = true;
 
@@ -434,7 +433,7 @@ bool rom_scan_add(
 			}
 			if (oper.output_fix()) {
 				out.title("rom_zip",title,z.file_get());
-				out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << k->parentname_get() << "/" << k->name_get() << endl;
+				out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << k->parentname_get() << "/" << k->name_get() << "\n";
 			}
 			found = true;
 		}
@@ -513,7 +512,7 @@ void rom_scan(
 		}
 		if (oper.output_remove_binary()) {
 			out.title("rom_zip",title,z.file_get());
-			out.cmd_rom("binary","remove", *i) << endl;
+			out.cmd_rom("binary","remove", *i) << "\n";
 		}
 	}
 
@@ -523,7 +522,7 @@ void rom_scan(
 		}
 		if (oper.output_remove_text()) {
 			out.title("rom_zip",title,z.file_get());
-			out.cmd_rom("text","remove", *i) << endl;
+			out.cmd_rom("text","remove", *i) << "\n";
 		}
 	}
 
@@ -533,12 +532,12 @@ void rom_scan(
 		}
 		if (oper.output_remove_garbage()) {
 			out.title("rom_zip",title,z.file_get());
-			out.cmd_rom("garbage","remove", *i) << endl;
+			out.cmd_rom("garbage","remove", *i) << "\n";
 		}
 	}
 
 	if (title)
-		out() << endl;
+		out() << "\n";
 
 	// update the zip
 	z.save();
@@ -603,7 +602,7 @@ void sample_scan(
 					} 
 					if (oper.output_fix()) {
 						out.title("sample_zip",title,z.file_get());
-						out.cmd_sample("sound","add", *i) << " " << j->name_get() << endl;
+						out.cmd_sample("sound","add", *i) << " " << j->name_get() << "\n";
 					}
 					found = true;
 					break;
@@ -623,7 +622,7 @@ void sample_scan(
 		}
 		if (oper.output_remove_binary()) {
 			out.title("sample_zip",title,z.file_get());
-			out.cmd_sample("binary","remove", *i) << endl;
+			out.cmd_sample("binary","remove", *i) << "\n";
 		}
 	}
 
@@ -633,7 +632,7 @@ void sample_scan(
 		}
 		if (oper.output_remove_text()) {
 			out.title("sample_zip",title,z.file_get());
-			out.cmd_sample("text","remove", *i) << endl;
+			out.cmd_sample("text","remove", *i) << "\n";
 		}
 	}
 
@@ -643,12 +642,12 @@ void sample_scan(
 		}
 		if (oper.output_remove_garbage()) {
 			out.title("sample_zip",title,z.file_get());
-			out.cmd_sample("garbage","remove", *i) << endl;
+			out.cmd_sample("garbage","remove", *i) << "\n";
 		}
 	} 
 
 	if (title)
-		out() << endl;
+		out() << "\n";
 
 	// update the zip
 	z.save();
@@ -727,12 +726,12 @@ void rom_move(
 		}
 		if (oper.output_move()) {
 			out.title("rom_zip",title,z.file_get());
-			out.cmd_rom("binary","remove", *i) << endl;
+			out.cmd_rom("binary","remove", *i) << "\n";
 		}
 	}
 
 	if (title)
-		out() << endl;
+		out() << "\n";
 
 	// save the reject zip. First save and only after delete the data.
 	reject.save();
@@ -766,12 +765,12 @@ void sample_move(
 		}
 		if (oper.output_move()) {
 			out.title("sample_zip",title,z.file_get());
-			out.cmd_rom("binary","remove", *i) << endl;
+			out.cmd_rom("binary","remove", *i) << "\n";
 		}
 	}
 
 	if (title)
-		out() << endl;
+		out() << "\n";
 
 	// save the reject zip. First save and only after delete the data.
 	reject.save();
@@ -813,42 +812,42 @@ void rom_report(
 		out.title("rom_zip",title,z.file_get());
 
 		for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
-			out.state_rom("rom_miss", *i) << endl;
+			out.state_rom("rom_miss", *i) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.nodump_miss.begin();i!=st.nodump_miss.end();++i) {
-			out.state_rom("nodump_miss", *i) << endl;
+			out.state_rom("nodump_miss", *i) << "\n";
 		}
 
 		for(rom_bad_container::iterator i=st.rom_bad.begin();i!=st.rom_bad.end();++i) {
-			out.state_rom_real("rom_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << endl;
+			out.state_rom_real("rom_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << "\n";
 		}
 
 		for(rom_bad_container::iterator i=st.nodump_bad.begin();i!=st.nodump_bad.end();++i) {
-			out.state_rom_real("nodump_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << endl;
+			out.state_rom_real("nodump_bad", i->r, i->bad_size_get(), i->bad_crc_get()) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
-			out.state_rom("text", *i) << endl;
+			out.state_rom("text", *i) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
-			out.state_rom("binary", *i) << endl;
+			out.state_rom("binary", *i) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
-			out.state_rom("garbage", *i) << endl;
+			out.state_rom("garbage", *i) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.nodump_equal.begin();i!=st.nodump_equal.end();++i) {
-			out.state_rom("nodump_good", i->name_get(), i->size_get(), i->crc_get()) << endl;
+			out.state_rom("nodump_good", i->name_get(), i->size_get(), i->crc_get()) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.rom_equal.begin();i!=st.rom_equal.end();++i) {
-			out.state_rom("rom_good", *i) << endl;
+			out.state_rom("rom_good", *i) << "\n";
 		}
 
-		out() << endl;
+		out() << "\n";
 	}
 }
 
@@ -876,18 +875,18 @@ void sample_report(
 		out.title("sample_zip",title,z.file_get());
 
 		for(sample_by_name_set::iterator i=st.sample_miss.begin();i!=st.sample_miss.end();++i) {
-			out.state_sample("sound_miss", *i) << endl;
+			out.state_sample("sound_miss", *i) << "\n";
 		}
 
 		for(sample_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
-			out.state_sample("text", *i) << endl;
+			out.state_sample("text", *i) << "\n";
 		}
 		
 		for(sample_by_name_set::iterator i=st.sample_equal.begin();i!=st.sample_equal.end();++i) {
-			out.state_sample("sound_good", *i) << endl;
+			out.state_sample("sound_good", *i) << "\n";
 		}
 
-		out() << endl;
+		out() << "\n";
 	}
 }
 
@@ -938,7 +937,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 
-			if (g == gar.end() || !g->romset_required()) {
+			if (g == gar.end() || !g->is_romset_required()) {
 				// insert in the unknown set, processed later
 				unknown.insert( unknown.end(), filepath( i->file_get()) );
 			} else {
@@ -958,7 +957,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 	// add zips
 	if (oper.active_add() || oper.output_add()) {
 		for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-			if (i->romset_required() && !i->usable_romzip_has()) {
+			if (i->is_romset_required() && !i->usable_romzip_has()) {
 				string path = cfg.romnewpath_get().file_get() + "/" + i->name_get() + ".zip";
 
 				ziparchive::iterator j;
@@ -1008,7 +1007,7 @@ void set_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 
-			if (g == gar.end() || !g->romset_required()) {
+			if (g == gar.end() || !g->is_romset_required()) {
 				// ignored
 			} else {
 				ziprom reject( cfg.romunknownpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknown, false );
@@ -1031,7 +1030,7 @@ void all_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 	// scan zips
 	for(filepath_container::iterator i=zar.begin();i!=zar.end();++i) {
 		gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
-		if (g == gar.end() || !g->sampleset_required()) {
+		if (g == gar.end() || !g->is_sampleset_required()) {
 			unknown.insert( unknown.end(), filepath( i->file_get() ) );
 		} else {
 			ziprom z(i->file_get(), zip_own, false);
@@ -1071,7 +1070,7 @@ void set_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 	// scan zips
 	for(filepath_container::iterator i=zar.begin();i!=zar.end();++i) {
 		gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
-		if (g == gar.end() || !g->sampleset_required()) {
+		if (g == gar.end() || !g->is_sampleset_required()) {
 			// ignore
 		} else {
 			ziprom z(i->file_get(), zip_own, false);
@@ -1113,7 +1112,7 @@ void report_rom_zip(const ziparchive& zar, gamearchive& gar, output& out, bool v
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 
-			if (g == gar.end() || !g->romset_required()) {
+			if (g == gar.end() || !g->is_romset_required()) {
 				// ignore
 			} else {
 				rom_report(*i,*g,out,verbose,ana);
@@ -1126,7 +1125,7 @@ void report_sample_zip(const filepath_container& zar, gamearchive& gar, output& 
 	for(filepath_container::const_iterator i=zar.begin();i!=zar.end();++i) {
 		gamearchive::iterator g = gar.find( game( file_basename( i->file_get() ) ) );
 
-		if (g == gar.end() || !g->sampleset_required()) {
+		if (g == gar.end() || !g->is_sampleset_required()) {
 			// ignore
 		} else {
 			ziprom z(i->file_get(), zip_own, true);
@@ -1155,12 +1154,12 @@ void report_rom_set(const gamearchive& gar, output& out) {
 				else
 					out.ziptag("zip_rom_dup", j->file_get(), "bad");
 			}
-			out() << endl;
+			out() << "\n";
 		}
 	}
 
 	out.c("total_game_rom_dup",duplicate);
-	out() << endl;
+	out() << "\n";
 
 	unsigned ok_parent = 0;
 	unsigned long long ok_parent_size = 0;
@@ -1169,16 +1168,16 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long ok_clone_size = 0;
 	unsigned long long ok_clone_size_zip = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (!i->romset_required() || i->good_romzip_has()) {
+		if (!i->is_romset_required() || i->good_romzip_has()) {
 			if (i->cloneof_get().length()) {
 				++ok_clone;
-				if (i->romset_required()) {
+				if (i->is_romset_required()) {
 					ok_clone_size += i->size_get();
 					ok_clone_size_zip += i->good_romzip_size();
 				}
 			} else {
 				++ok_parent;
-				if (i->romset_required()) {
+				if (i->is_romset_required()) {
 					ok_parent_size += i->size_get();
 					ok_parent_size_zip += i->good_romzip_size();
 				}
@@ -1186,19 +1185,19 @@ void report_rom_set(const gamearchive& gar, output& out) {
 			out.state_gamerom("game_rom_good", *i, gar, false);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.csz("total_game_rom_good_parent", ok_parent, ok_parent_size, ok_parent_size_zip);
 	out.csz("total_game_rom_good_clone", ok_clone, ok_clone_size, ok_clone_size_zip);
 	out.csz("total_game_rom_good", ok_parent+ok_clone, ok_clone_size+ok_parent_size, ok_clone_size_zip+ok_parent_size_zip);
-	out() << endl;
+	out() << "\n";
 
 	unsigned wrong_clone = 0;
 	unsigned long long wrong_clone_size = 0;
 	unsigned wrong_parent = 0;
 	unsigned long long wrong_parent_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-		if (i->romset_required() && !i->good_romzip_has() && i->bad_romzip_has()) {
+		if (i->is_romset_required() && !i->good_romzip_has() && i->bad_romzip_has()) {
 			if (i->cloneof_get().length()) {
 				++wrong_clone;
 				wrong_clone_size += i->size_get();
@@ -1209,12 +1208,12 @@ void report_rom_set(const gamearchive& gar, output& out) {
 			out.state_gamerom("game_rom_bad", *i, gar, false);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.cs("total_game_rom_bad_parent", wrong_parent, wrong_parent_size);
 	out.cs("total_game_rom_bad_clone", wrong_clone, wrong_clone_size);
 	out.cs("total_game_rom_bad", wrong_parent+wrong_clone, wrong_clone_size+wrong_parent_size);
-	out() << endl;
+	out() << "\n";
 
 	unsigned miss_parent = 0;
 	unsigned long long miss_parent_size = 0;
@@ -1222,7 +1221,7 @@ void report_rom_set(const gamearchive& gar, output& out) {
 	unsigned long long miss_clone_size = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		// only if have almost on rom and not exist any zip
-		if (i->romset_required() && i->rzs_get().size()==0) {
+		if (i->is_romset_required() && i->rzs_get().size()==0) {
 			if (i->cloneof_get().length()) {
 				++miss_clone;
 				miss_clone_size += i->size_get();
@@ -1233,14 +1232,58 @@ void report_rom_set(const gamearchive& gar, output& out) {
 			out.state_gamerom("game_rom_miss", *i, gar, true);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.cs("total_game_rom_miss_parent", miss_parent, miss_parent_size);
 	out.cs("total_game_rom_miss_clone", miss_clone, miss_clone_size);
 	out.cs("total_game_rom_miss", miss_parent+miss_clone, miss_clone_size+miss_parent_size);
-	out() << endl;
+	out() << "\n";
 
 	out.cp("total_percentage", (double)(ok_clone_size+ok_parent_size) / (miss_clone_size+miss_parent_size+wrong_clone_size+wrong_parent_size+ok_clone_size+ok_parent_size));
+	out() << "\n";
+}
+
+void report_rom_set_zip(const gamearchive& gar, output& out) {
+	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
+		if (i->is_romset_required() && i->rzs_get().size() > 0) {
+			if (i->rzs_get().size() > 1) {
+				out() << i->name_get() << " with duplicate zip";
+				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
+					out() << " " << j->file_get();
+				}
+				out() << "\n";
+			}
+
+			string romof = i->romof_get();
+			while (romof.length()) {
+				gamearchive::const_iterator j = gar.find(romof);
+				if (j == gar.end()) {
+					out() << i->name_get() << " requires missing rom " << romof << "\n";
+					romof = "";
+				} else {
+					if (j->rzs_get().size() == 0) {
+						out() << i->name_get() << " requires missing rom " << romof << "\n";
+					}
+					romof = j->romof_get();
+				}
+			}
+
+			/* WARNING note that if a filter is applied the working_subset relation may be wrong, */
+			/* because it refers to the whole set and not to a partial set */
+			if (!i->working_subset_get()) {
+				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
+					out() << i->name_get() << " preliminary zip " << j->file_get() << "\n";
+				}
+			} else {
+				for(zippath_container::const_iterator j=i->rzs_get().begin();j!=i->rzs_get().end();++j) {
+					if (!j->good_get()) {
+						out() << i->name_get() << " with wrong zip " <<j->file_get() << "\n";
+					}
+				}
+			}
+		}
+	}
+	out() << "\n";
 }
 
 void report_sample_set(const gamearchive& gar, output& out) {
@@ -1255,12 +1298,12 @@ void report_sample_set(const gamearchive& gar, output& out) {
 				else
 					out.ziptag("zip_sample_dup", j->file_get(), "bad");
 			}
-			out() << endl;
+			out() << "\n";
 		}
 	}
 	
 	out.c("total_game_sample_dup", duplicate);
-	out() << endl;
+	out() << "\n";
 
 	unsigned ok = 0;
 	unsigned long long ok_size_zip = 0;
@@ -1271,10 +1314,10 @@ void report_sample_set(const gamearchive& gar, output& out) {
 			out.state_gamesample("game_sample_good", *i);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.cz("total_game_sample_good", ok, ok_size_zip);
-	out() << endl;
+	out() << "\n";
 
 	unsigned wrong = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
@@ -1283,10 +1326,10 @@ void report_sample_set(const gamearchive& gar, output& out) {
 			out.state_gamesample("game_sample_bad", *i);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.c("total_game_sample_bad", wrong);
-	out() << endl;
+	out() << "\n";
 
 	unsigned miss = 0;
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
@@ -1297,22 +1340,29 @@ void report_sample_set(const gamearchive& gar, output& out) {
 			out.state_gamesample("game_sample_miss", *i);
 		}
 	}
-	out() << endl;
+	out() << "\n";
 
 	out.c("total_game_sample_miss", miss);
-
-	out() << endl;
+	out() << "\n";
 }
 
 // ----------------------------------------------------------------------------
 // filter
 
 bool filter_preliminary(const game& g) {
-	return !g.working_tree_get();
+	return !g.working_subset_get();
 }
 
-bool filter_not_preliminary(const game& g) {
-	return g.working_tree_get();
+bool filter_working(const game& g) {
+	return g.working_subset_get();
+}
+
+bool filter_working_parent(const game& g) {
+	return g.working_subset_get() && g.working_parent_subset_get();
+}
+
+bool filter_working_clone(const game& g) {
+	return g.working_subset_get() && !g.working_parent_subset_get();
 }
 
 void filt(gamearchive& gar, const string& filter) {
@@ -1320,7 +1370,11 @@ void filt(gamearchive& gar, const string& filter) {
 	if (filter == "preliminary")
 		p = filter_preliminary;
 	else if (filter == "working")
-		p = filter_not_preliminary;
+		p = filter_working;
+	else if (filter == "working_parent")
+		p = filter_working_parent;
+	else if (filter == "working_clone")
+		p = filter_working_clone;
 	else if (filter == "")
 		return;
 	else {
@@ -1350,47 +1404,47 @@ void equal(const gamearchive& gar, ostream& out) {
 		unsigned count = 1;
 		gamerom_by_crc_multiset::const_iterator end = start;
 		++end;
-		while (end!=rcb.end() && (*start).crc_get()==(*end).crc_get() && (*start).size_get()==(*end).size_get()) {
+		while (end!=rcb.end() && start->crc_get()==end->crc_get() && start->size_get()==end->size_get()) {
 			++end;
 			++count;
 		}
 
 		if (count>1) {
 			++equal; 
-			out << "group " << dec << (*start).size_get();
-			out << " " << hex << setw(8) << setfill('0') << (*start).crc_get();
-			out << endl;
+			out << "group " << dec << start->size_get();
+			out << " " << hex << setw(8) << setfill('0') << start->crc_get();
+			out << "\n";
 			while (start != end) {
-				out << "rom " << (*start).game_get().c_str() << "/" << (*start).name_get();
-				gamearchive::const_iterator g = gar.find( (*start).game_get() );
+				out << "rom " << start->game_get().c_str() << "/" << start->name_get();
+				gamearchive::const_iterator g = gar.find( start->game_get() );
 				// print parent game also if not really exists
-				if (g!=gar.end() && (*g).cloneof_get().length()) {
-					out << " cloneof " << (*g).cloneof_get();
+				if (g!=gar.end() && g->cloneof_get().length()) {
+					out << " cloneof " << g->cloneof_get();
 				}
-				out << endl;
+				out << "\n";
 				++start;
 			}
-			out << endl;
+			out << "\n";
 		}
 		start = end;
 	}
 
 	out.setf(ios::right, ios::adjustfield);
 
-	out << "total_group " << setw(8) << setfill(' ') << dec << equal << endl;
+	out << "total_group " << setw(8) << setfill(' ') << dec << equal << "\n";
 
 	out.setf(ios::left, ios::adjustfield);
 
-	out << endl;
+	out << "\n";
 }
 
 void ident_data(const string& file, crc_t crc, unsigned size, const gamearchive& gar, ostream& out) {
-	out << file << endl;
+	out << file << "\n";
 
 	for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
 		for(rom_by_name_set::const_iterator j=i->rs_get().begin();j!=i->rs_get().end();++j) {
 			if (j->crc_get()==crc && j->size_get()==size) {
-				out << "\t" << setw(8) << i->name_get().c_str() << " " << setw(12) << j->name_get().c_str() << " " << i->description_get() << endl;
+				out << "\t" << setw(8) << i->name_get().c_str() << " " << setw(12) << j->name_get().c_str() << " " << i->description_get() << "\n";
 			}
 		}
 	}
@@ -1437,48 +1491,48 @@ void bbs(const gamearchive& gar, ostream& out) {
 		out << i->name_get() << ".zip";
 		out << " " << i->size_get();
 		out << " " << i->description_get();
-		gamearchive::const_iterator parent = gar.find( game( i->cloneof_get() ) );
-		if (parent != gar.end()) {
+		if (i->cloneof_get().length()) {
 			out << " [clone]";
 		}
-		out << ", " << i->manufacturer_get() << ", " << i->year_get() << endl;
+		out << ", " << i->manufacturer_get() << ", " << i->year_get() << "\n";
 	}
 }
 
 void version() {
-	cout << PACKAGE " v" VERSION " by Andrea Mazzoleni" << endl;
+	cout << PACKAGE " v" VERSION " by Andrea Mazzoleni\n";
 }
 
 void usage() {
 	version();
 
-	cout << "Usage: advscan [options] < info.txt" << endl;
-	cout << endl;
-	cout << "Modes:" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-r, --rom        ", "-r") "  Operate on rom sets" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-s, --sample     ", "-s") "  Operate on sample sets" << endl;
-	cout << "Operations:" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-a, --add-zip    ", "-a") "  Add missing zips" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-b, --add-bin    ", "-b") "  Add missing files in zips" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-d, --del-zip    ", "-d") "  Delete unknown zips" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-u, --del-unknown", "-u") "  Delete unknown files in zips" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-g, --del-garbage", "-g") "  Delete garbage files" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-t, --del-text   ", "-t") "  Delete unused text files" << endl;
-	cout << "Shortcuts:" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-R, --rom-std    ", "-R") "  Shortcut for -rabdug" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-S, --sample-std ", "-S") "  Shortcut for -sabdug" << endl;
-	cout << "Commands:" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-e, --equal      ", "-e") "  Print list of roms with equal crc+size" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-i, --ident file ", "-i") "  Identify roms by crc and size" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-b, --bbs        ", "-b") "  Output a 'files.bbs' for roms .zip" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h") "  Help of the program" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-V, --version    ", "-V") "  Version of the program" << endl;
-	cout << "Options:" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-c, --cfg FILE   ", "-c") "  Select a configuration file" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-f, --filter FILT", "-f") "  Filter the game list" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-p, --report     ", "-p") "  Write an extensive report" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-n, --print-only ", "-n") "  Only print operations, do nothing" << endl;
-	cout << "  " SWITCH_GETOPT_LONG("-v, --verbose    ", "-v") "  Verbose output" << endl;
+	cout << "Usage: advscan [options] < info.txt\n";
+	cout << "\n";
+	cout << "Modes:\n";
+	cout << "  " SWITCH_GETOPT_LONG("-r, --rom        ", "-r") "  Operate on rom sets\n";
+	cout << "  " SWITCH_GETOPT_LONG("-s, --sample     ", "-s") "  Operate on sample sets\n";
+	cout << "Operations:\n";
+	cout << "  " SWITCH_GETOPT_LONG("-a, --add-zip    ", "-a") "  Add missing zips\n";
+	cout << "  " SWITCH_GETOPT_LONG("-b, --add-bin    ", "-b") "  Add missing files in zips\n";
+	cout << "  " SWITCH_GETOPT_LONG("-d, --del-zip    ", "-d") "  Delete unknown zips\n";
+	cout << "  " SWITCH_GETOPT_LONG("-u, --del-unknown", "-u") "  Delete unknown files in zips\n";
+	cout << "  " SWITCH_GETOPT_LONG("-g, --del-garbage", "-g") "  Delete garbage files\n";
+	cout << "  " SWITCH_GETOPT_LONG("-t, --del-text   ", "-t") "  Delete unused text files\n";
+	cout << "Shortcuts:\n";
+	cout << "  " SWITCH_GETOPT_LONG("-R, --rom-std    ", "-R") "  Shortcut for -rabdug\n";
+	cout << "  " SWITCH_GETOPT_LONG("-S, --sample-std ", "-S") "  Shortcut for -sabdug\n";
+	cout << "Commands:\n";
+	cout << "  " SWITCH_GETOPT_LONG("-e, --equal      ", "-e") "  Print list of roms with equal crc+size\n";
+	cout << "  " SWITCH_GETOPT_LONG("-i, --ident file ", "-i") "  Identify roms by crc and size\n";
+	cout << "  " SWITCH_GETOPT_LONG("-b, --bbs        ", "-b") "  Output a 'files.bbs' for roms .zip\n";
+	cout << "  " SWITCH_GETOPT_LONG("-h, --help       ", "-h") "  Help of the program\n";
+	cout << "  " SWITCH_GETOPT_LONG("-V, --version    ", "-V") "  Version of the program\n";
+	cout << "Options:\n";
+	cout << "  " SWITCH_GETOPT_LONG("-c, --cfg FILE   ", "-c") "  Select a configuration file\n";
+	cout << "  " SWITCH_GETOPT_LONG("-f, --filter FILT", "-f") "  Filter the game list\n";
+	cout << "  " SWITCH_GETOPT_LONG("-p, --report     ", "-p") "  Write a rom based report\n";
+	cout << "  " SWITCH_GETOPT_LONG("-P, --report-zip ", "-P") "  Write a zip based report\n";
+	cout << "  " SWITCH_GETOPT_LONG("-n, --print-only ", "-n") "  Only print operations, do nothing\n";
+	cout << "  " SWITCH_GETOPT_LONG("-v, --verbose    ", "-v") "  Verbose output\n";
 }
 
 #if HAVE_GETOPT_LONG
@@ -1503,6 +1557,7 @@ struct option long_options[] = {
 	{"ident", 0, 0, 'i'},
 
 	{"report", 0, 0, 'p'},
+	{"report-p", 0, 0, 'P'},
 
 	{"print-only", 0, 0, 'n'},
 
@@ -1513,7 +1568,7 @@ struct option long_options[] = {
 };
 #endif
 
-#define OPTIONS "rRsSabdutgf:c:leipnvhV"
+#define OPTIONS "rRsSabdutgf:c:leipPnvhV"
 
 void run(int argc, char* argv[]) {
 	if (argc<=1) {
@@ -1527,6 +1582,7 @@ void run(int argc, char* argv[]) {
 	bool flag_equal = false;
 	bool flag_bbs = false;
 	bool flag_report = false;
+	bool flag_report_zip = false;
 	bool flag_print_only = false;
 	bool flag_verbose = false;
 	bool flag_move = false;
@@ -1610,6 +1666,9 @@ void run(int argc, char* argv[]) {
 			case 'p' :
 				flag_report = true;
 				break;
+			case 'P' :
+				flag_report_zip = true;
+				break;
 			case 'n' :
 				flag_print_only = true;
 				break;
@@ -1641,12 +1700,12 @@ void run(int argc, char* argv[]) {
 	// some real operation is requested, i.e. not a simulated operation
 	bool flag_change = !flag_print_only && flag_operation;
 
-	if ((flag_rom || flag_sample) && !(flag_operation || flag_report)) {
+	if ((flag_rom || flag_sample) && !(flag_operation || flag_report || flag_report_zip)) {
 		usage();
 		exit(EXIT_FAILURE);
 	}
 
-	if (!(flag_rom || flag_sample) && (flag_operation || flag_report)) {
+	if (!(flag_rom || flag_sample) && (flag_operation || flag_report || flag_report_zip)) {
 		usage();
 		exit(EXIT_FAILURE);
 	}
@@ -1694,6 +1753,10 @@ void run(int argc, char* argv[]) {
 				report_rom_set(gar,out);
 			}
 
+			if (flag_report_zip) {
+				report_rom_set_zip(gar,out);
+			}
+
 			if (flag_change)
 				all_unknown_scan(zar,cfg,out);
 		}
@@ -1721,13 +1784,13 @@ int main(int argc, char* argv[]) {
 	try {
 		run(argc,argv);
 	} catch (error& e) {
-		cerr << e << endl;
+		cerr << e << "\n";
 		exit(EXIT_FAILURE);
 	} catch (std::bad_alloc) {
-		cerr << "Low memory" << endl;
+		cerr << "Low memory\n";
 		exit(EXIT_FAILURE);
 	} catch (...) {
-		cerr << "Unknown error" << endl;
+		cerr << "Unknown error\n";
 		exit(EXIT_FAILURE);
 	}
 

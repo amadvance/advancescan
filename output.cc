@@ -192,7 +192,7 @@ ostream& output::state_gamesample(const string& tag, const game& g) {
 
 	os << g.description_get();
 
-	os << endl;
+	os << "\n";
 
 	return os;
 }
@@ -211,38 +211,46 @@ ostream& output::state_gamerom(const string& tag, const game& g, const gamearchi
 
 	os << " " << g.description_get();
 
-	gamearchive::const_iterator parent = gar.find( game( g.cloneof_get() ));
-	if (parent != gar.end()) {
+	if (g.cloneof_get().length()) {
 		os << " [cloneof ";
-		os << (*parent).name_get();
-		os << " " << dec << (*parent).size_get()/1024;
+		os << g.cloneof_get();
+		gamearchive::const_iterator parent = gar.find(g.cloneof_get());
+		if (parent != gar.end()) {
+			os << " " << dec << (*parent).size_get()/1024;
+		}
 		os << "]";
 	}
 
-	if (!g.working_tree_get()) {
+	if (!g.working_subset_get()) {
 		os << " [preliminary]";
+	}
+
+	if (g.resource_get()) {
+		os << " [resource]";
 	}
 
 	if (onecrc) {
 		unsigned crc = 0;
 		unsigned size = 0;
 
-		os << " [onecrc ";
-
 		for(rom_by_name_set::const_iterator i=g.rs_get().begin();i!=g.rs_get().end();++i) {
-			if (i->size_get() >= size) {
+			if (i->crc_get() != 0 && i->size_get() >= size) {
 				crc = i->crc_get();
 				size = i->size_get();
 			}
 		}
 
-		os << setw(CRC_WIDTH) << hex << setfill('0') << crc;
+		if (crc) {
+			os << " [onecrc ";
 
-		os << "]";
+			os << setw(CRC_WIDTH) << hex << setfill('0') << crc;
+
+			os << "]";
+		}
 	}
 
 
-	os << endl;
+	os << "\n";
 
 	return os;
 }

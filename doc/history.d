@@ -1,12 +1,12 @@
 Name
         advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.8 2004/03
-	) The report now differentiates preliminary and working roms
-		with the `[preliminary]' tag.
-	) Added a filter capability able to filter in/out preliminary roms.
-		You can now keep separated preliminary and working roms.
+AdvanceSCAN Version 1.8 2004/04
+	) Added a filter capability able to filter in/out preliminary, parent
+		and clone  roms. For example you can now keep separated
+		preliminary and working roms.
 	) Added support for xml format at advdiff.
+	) Updated the expat library at version 1.95.7.
 
 AdvanceSCAN Version 1.7 2003/08
 	) Added support for reading XML info file.

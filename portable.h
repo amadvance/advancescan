@@ -25,8 +25,8 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
+#if HAVE_CONFIG_H
+#include "config.h" /* Use " to include first in the same directory of this file */
 #endif
 
 /* Include some standard headers */

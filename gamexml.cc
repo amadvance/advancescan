@@ -18,8 +18,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "portable.h"
+
 #include "game.h"
-#include "expat/intexpat.h"
+#include "expat/expat.h"
 
 #include <string>
 #include <iostream>
@@ -93,6 +95,18 @@ static void process_game(struct state_t* state, enum token_t t, const char* s, u
 		state->a->insert( *state->g );
 		delete state->g;
 		state->g = 0;
+	}
+}
+
+static void process_runnable(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
+{
+	if (t == token_data) {
+		string v = string(s, len);
+		if (!state->g) {
+			process_error(state, 0, "invalid state");
+			return;
+		}
+		state->g->resource_set(v == "no");
 	}
 }
 
@@ -278,12 +292,19 @@ static char* match_gamemachine = "game|machine";
  * Conversion table.
  * Any element/attribute not in this table is ignored.
  */
-static struct conversion_t {
+struct conversion_t {
 	unsigned depth;
 	const char* name[DEPTH_MAX];
 	process_t* process;
-} CONV[] = {
+};
+
+static struct conversion_t CONV1[] = {
 	{ 1, { match_mamemessraine, match_gamemachine, 0, 0, 0 }, process_game },
+	{ 0, { 0, 0, 0, 0, 0 }, 0 }
+};
+
+static struct conversion_t CONV2[] = {
+	{ 2, { match_mamemessraine, match_gamemachine, "runnable", 0, 0 }, process_runnable },
 	{ 2, { match_mamemessraine, match_gamemachine, "name", 0, 0 }, process_name },
 	{ 2, { match_mamemessraine, match_gamemachine, "description", 0, 0 }, process_description },
 	{ 2, { match_mamemessraine, match_gamemachine, "manufacturer", 0, 0 }, process_manufacturer },
@@ -292,6 +313,10 @@ static struct conversion_t {
 	{ 2, { match_mamemessraine, match_gamemachine, "romof", 0, 0 }, process_romof },
 	{ 2, { match_mamemessraine, match_gamemachine, "sampleof", 0, 0 }, process_sampleof },
 	{ 2, { match_mamemessraine, match_gamemachine, "rom", 0, 0 }, process_rom },
+	{ 0, { 0, 0, 0, 0, 0 }, 0 }
+};
+
+static struct conversion_t CONV3[] = {
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "name", 0 }, process_romname },
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "size", 0 }, process_romsize },
 	{ 3, { match_mamemessraine, match_gamemachine, "rom", "crc", 0 }, process_romcrc },
@@ -308,29 +333,36 @@ static struct conversion_t {
  */
 static struct conversion_t* identify(unsigned depth, const struct level_t* level)
 {
-	unsigned i, j;
+	struct conversion_t* conv;
 
-	if (depth < DEPTH_MAX) {
-		for(i=0;CONV[i].name[0];++i) {
-			if (CONV[i].depth != depth)
-				continue;
-			for(j=0;j<=depth;++j) {
-				if (CONV[i].name[j] == match_mamemessraine) {
-					if (strcmp(level[j].tag, "mame") != 0 && strcmp(level[j].tag, "mess") != 0 && strcmp(level[j].tag, "raine") != 0)
-						break;
-				} else if (CONV[i].name[j] == match_gamemachine) {
-					if (strcmp(level[j].tag, "game") != 0 && strcmp(level[j].tag, "machine") != 0)
-						break;
-				} else {
-					if (strcmp(level[j].tag, CONV[i].name[j]) != 0)
-						break;
-				}
+	switch (depth) {
+	case 1 : conv = CONV1; break;
+	case 2 : conv = CONV2; break;
+	case 3 : conv = CONV3; break;
+	default:
+		return 0;
+	}
+
+	for(unsigned i=0;conv[i].name[0];++i) {
+		bool equal = true;
+
+		// check all the item, backward
+		for(int j=depth;equal && j>=0;--j) {
+			if (conv[i].name[j] == match_mamemessraine) {
+				if (strcmp(level[j].tag, "mame") != 0 && strcmp(level[j].tag, "mess") != 0 && strcmp(level[j].tag, "raine") != 0)
+					equal = false;
+			} else if (conv[i].name[j] == match_gamemachine) {
+				if (strcmp(level[j].tag, "game") != 0 && strcmp(level[j].tag, "machine") != 0)
+					equal = false;
+			} else {
+				if (strcmp(level[j].tag, conv[i].name[j]) != 0)
+					equal = false;
 			}
-			if (j > depth)
-				break;
 		}
-		if (CONV[i].name[0])
-			return &CONV[i];
+
+		// if match return
+		if (equal)
+			return &conv[i];
 	}
 
 	return 0;

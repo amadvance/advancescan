@@ -21,7 +21,6 @@
 #include "portable.h"
 
 #include "gamediff.h"
-
 #include "lib/readinfo.h"
 
 #include <iomanip>

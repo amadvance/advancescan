@@ -21,11 +21,11 @@
 #include "portable.h"
 
 #include "zip.h"
-#include "zlib.h"
 #include "siglock.h"
 #include "utility.h"
-
 #include "lib/endianrw.h"
+
+#include <zlib.h>
 
 #include <iostream>
 #include <iomanip>

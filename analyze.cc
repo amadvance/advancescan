@@ -21,7 +21,6 @@
 #include "portable.h"
 
 #include "analyze.h"
-
 #include "utility.h"
 
 using namespace std;

@@ -6,10 +6,6 @@ Name
 		:./configure
 		:make
 
-	To check the generated executable type:
-
-		:make check
-
 	and as root to install the programs and the documentation
 	type:
 

@@ -18,8 +18,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "game.h"
+#include "portable.h"
 
+#include "game.h"
 #include "lib/readinfo.h"
 
 using namespace std;
@@ -41,8 +42,9 @@ bool gamearchive::load_info_internal() {
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
 		if (strcmp(info_text_get(),"game")==0 || strcmp(info_text_get(),"resource")==0 || strcmp(info_text_get(),"machine")==0) {
-			if (info_token_get() != info_open) return false;
 			game g;
+			g.resource_set(strcmp(info_text_get(),"resource")==0);
+			if (info_token_get() != info_open) return false;
 			token = info_token_get();
 			while (token != info_close) {
 				if (token != info_symbol)

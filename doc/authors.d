@@ -10,5 +10,5 @@ Acknowledgments
 Libraries
 	zlib - Copyright Jean-loup Gailly and Mark Adler
 	getopt - Copyright DJ Delorie
-
+	expat - Copyright Expat maintainers
 

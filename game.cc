@@ -28,14 +28,18 @@ using namespace std;
 // Game
 
 game::game() {
+	resource = false;
 	working = true;
-	working_tree = true;
+	working_subset = false;
+	working_parent_subset = false;
 }
 
 game::game(const string& Aname) :
 	name(Aname) {
+	resource = false;
 	working = true;
-	working_tree = true;
+	working_subset = false;
+	working_parent_subset = false;
 }
 
 game::game(const game& A) : 
@@ -50,8 +54,10 @@ game::game(const game& A) :
 	description(A.description), 
 	year(A.year), 
 	manufacturer(A.manufacturer),
+	resource(A.resource),
 	working(A.working),
-	working_tree(A.working_tree),
+	working_subset(A.working_subset),
+	working_parent_subset(A.working_parent_subset),
 	rom_son(A.rom_son) {
 }
 
@@ -131,8 +137,12 @@ void game::working_set(bool Aworking) const {
 	working = Aworking;
 }
 
-void game::working_tree_set(bool Aworking) const {
-	working_tree = Aworking;
+void game::working_subset_set(bool Aworking) const {
+	working_subset = Aworking;
+}
+
+void game::working_parent_subset_set(bool Aworking) const {
+	working_parent_subset = Aworking;
 }
 
 void game::name_set(const string& Aname) {
@@ -161,6 +171,10 @@ void game::year_set(const string& Ayear) {
 
 void game::manufacturer_set(const string& Amanufacturer) {
 	manufacturer = Amanufacturer;
+}
+
+void game::resource_set(bool Aresource) {
+	resource = Aresource;
 }
 
 // Remove roms by name
@@ -211,17 +225,59 @@ unsigned game::size_get() const {
 // ------------------------------------------------------------------------
 // Game archive
 
-bool is_game_working_tree(const game& g, const gamearchive& gar) {
+bool gamearchive::is_game_parent(const game& g) {
+	const_iterator j = find( g.romof_get() );
+	return j == end() || j->resource_get();
+}
+
+// Compute for the subtree the "working" relationship.
+// Assume to have all the "working" flags set to false and
+// to be called only for parents and not for resources or sons.
+bool gamearchive::game_working_subset_compute(const game& g) {
+	bool result = false;
+
 	if (g.working_get())
-		return true;
+		result = true;
+
 	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-		gamearchive::iterator j = gar.find( *i );
-		if (j!=gar.end()) {
-			if (is_game_working_tree(*j, gar))
-				return true;
+		gamearchive::iterator j = find( *i );
+		if (j!=end()) {
+			if (game_working_subset_compute(*j))
+				result = true;
 		}
 	}
-	return false;
+
+	if (result)
+		g.working_subset_set(true);
+
+	return result;
+}
+
+// Compute for the subtree the "working_parent" relationship.
+// Assume to have all the "working_parent" flags set to false and
+// to be called only for parents and not for resources or sons.
+bool gamearchive::game_working_parent_subset_compute(const game& g) {
+	bool result = false;
+
+	if (g.working_get()) {
+		result = true;
+	}
+
+	if (!result) {
+		for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
+			gamearchive::iterator j = find( *i );
+			if (j!=end()) {
+				result = game_working_parent_subset_compute(*j);
+				if (result)
+					break;
+			}
+		}
+	}
+
+	if (result)
+		g.working_parent_subset_set(true);
+
+	return result;
 }
 
 gamearchive::gamearchive() {
@@ -278,10 +334,8 @@ void gamearchive::load(istream& f) {
 		}
 	}
 
-	// test romof relationship and compute the parent
+	// test romof relationship and adjust it
 	for(iterator i=begin();i!=end();++i) {
-		i->rom_son_erase();
-
 		if (i->romof_get().length() != 0) {
 			const_iterator j = find( i->romof_get() );
 			if (j == end()) {
@@ -300,7 +354,7 @@ void gamearchive::load(istream& f) {
 		}
 	}
 
-	// compute the romof list
+	// compute the rom_son container
 	for(iterator i=begin();i!=end();++i) {
 		iterator j = find( game( i->romof_get() ) );
 		if (j!=end()) {
@@ -308,9 +362,22 @@ void gamearchive::load(istream& f) {
 		}
 	}
 
-	// compute the working tree info
+	// compute the working subset info
 	for(iterator i=begin();i!=end();++i) {
-		i->working_tree_set( is_game_working_tree(*i, *this));
+		if (i->resource_get()) {
+			i->working_subset_set(true);
+		} else if (is_game_parent(*i)) {
+			game_working_subset_compute(*i);
+		}
+	}
+
+	// compute the working parent subset info
+	for(iterator i=begin();i!=end();++i) {
+		if (i->resource_get()) {
+			i->working_parent_subset_set(true);
+		} else if (is_game_parent(*i)) {
+			game_working_parent_subset_compute(*i);
+		}
 	}
 }
 
