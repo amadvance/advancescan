@@ -1,5 +1,5 @@
-Name
-	advdiff - The AdvanceDIFF roms diff
+Name{number}
+	advdiff - AdvanceSCAN Diff Utility
 
 Synopsis
 	:advdiff [-i, --info] ORIG_INFO DEST_INFO

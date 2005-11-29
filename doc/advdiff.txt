@@ -1,6 +1,6 @@
-                           =========================
-                           The AdvanceDIFF roms diff
-                           =========================
+                            ========================
+                            AdvanceSCAN Diff Utility
+                            ========================
 
 
 1 SYNOPSIS

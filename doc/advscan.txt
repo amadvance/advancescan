@@ -1,6 +1,6 @@
-                          ============================
-                          The AdvanceSCAN roms manager
-                          ============================
+                            ========================
+                            AdvanceSCAN Roms Manager
+                            ========================
 
 
 1 SYNOPSIS

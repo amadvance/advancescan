@@ -1,5 +1,5 @@
-Name
-	advscan - The AdvanceSCAN roms manager
+Name{number}
+	advscan - AdvanceSCAN Roms Manager
 
 Synopsis
 	:advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]

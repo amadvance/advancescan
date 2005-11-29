@@ -1,10 +1,10 @@
 <html>
 <head>
-<title>The AdvanceSCAN roms manager</title>
+<title>AdvanceSCAN Roms Manager</title>
 </head>
 <body>
-<h2><center>The AdvanceSCAN roms manager</center></h2>
-<h2>1 
+<center><h2>AdvanceSCAN Roms Manager</h2></center>
+<h2><a name="1">1</a> 
 Synopsis
 </h2>
 <pre>
@@ -37,7 +37,7 @@ advscan [-e, --equal] &lt; info.lst/xml
 <pre>
 advscan [-h, --help] [-V, --version]
 </pre>
-<h2>2 
+<h2><a name="2">2</a> 
 Description
 </h2>
 advscan is a command line utility for maintaining a zipped
@@ -90,7 +90,7 @@ Supports only rom organized with differential merging.
 Doesn't support .chd files in subdirectories.
 </li>
 </ul>
-<h2>3 
+<h2><a name="3">3</a> 
 Options
 </h2>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -274,7 +274,7 @@ archive is printed also if it contains at least one
 not rom file.
 </td></tr>
 </table>
-<h2>4 
+<h2><a name="4">4</a> 
 Information Options
 </h2>
 The following options are used only to print information.
@@ -318,7 +318,7 @@ Print a short help screen.
 Print the program version.
 </td></tr>
 </table>
-<h2>5 
+<h2><a name="5">5</a> 
 Identification
 </h2>
 Rom files are identified by their crc and size. The roms
@@ -351,7 +351,7 @@ unknown binary file.
 It's considered a text file.
 </li>
 </ul>
-<h2>6 
+<h2><a name="6">6</a> 
 Configuration
 </h2>
 To run advscan you need two files. The rom information
@@ -474,7 +474,7 @@ is read from ./advscan.rc.
 <p>
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
-<h2>7 
+<h2><a name="7">7</a> 
 Damaged Files
 </h2>
 If a damaged .zip or .chd file is detected, it's renamed
@@ -486,7 +486,7 @@ If the rename operation isn't possible the program aborts.
 <p>
 Please note that the program doesn't execute an
 extensive test to detect damaged files.
-<h2>8 
+<h2><a name="8">8</a> 
 Filters
 </h2>
 As default advscan uses all the rom definitions, including also
@@ -562,7 +562,7 @@ advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 advscan -R -c advscan-pre.rc -f preliminary &lt; advmame.xml &gt; rom_pre.log
 advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 </td></tr></table>
-<h2>9 
+<h2><a name="9">9</a> 
 Report Format
 </h2>
 The report generated with the -p option contains some text
@@ -661,7 +661,7 @@ site. The file is recognized by its name, size and
 crc.
 </td></tr>
 </table>
-<h2>10 
+<h2><a name="10">10</a> 
 Examples
 </h2>
 For the generic use you need to run advscan with the
@@ -698,11 +698,11 @@ advscan -r -p &lt; info.xml &gt; report.txt
 <p>
 To increase the verbosity of the printed information you
 can add the -v switch.
-<h2>11 
+<h2><a name="11">11</a> 
 Copyright
 </h2>
 This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
-<h2>12 
+<h2><a name="12">12</a> 
 See Also
 </h2>
 advdiff(1)

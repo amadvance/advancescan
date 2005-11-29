@@ -1,13 +1,13 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([AdvanceSCAN],[1.13])
+AC_INIT([AdvanceSCAN],[1.14])
 AC_CONFIG_SRCDIR([scan.cc])
 AM_INIT_AUTOMAKE([foreign no-dependencies])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 
 # Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_AWK
 AC_CHECK_PROGS(TAR, tar)
@@ -29,7 +29,7 @@ else
 fi
 
 # Checks for libraries.
-AC_CHECK_LIB([z], [adler32])
+AC_CHECK_LIB([z], [adler32], [], [AC_MSG_ERROR([the libz library is missing])])
 
 # Checks for header files.
 AC_HEADER_STDC

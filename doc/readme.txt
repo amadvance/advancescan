@@ -1,6 +1,6 @@
-                          ============================
-                          The AdvanceSCAN roms manager
-                          ============================
+                            ========================
+                            AdvanceSCAN Roms Manager
+                            ========================
 
 AdvanceSCAN is a command line rom manager for MAME, MESS,
 xmame, AdvanceMAME, AdvanceMESS and Raine.
