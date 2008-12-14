@@ -94,6 +94,7 @@ static void process_game(struct state_t* state, enum token_t t, const char* s, u
 	}
 }
 
+/* Legacy */
 static void process_runnable(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
 {
 	if (t == token_data) {
@@ -103,6 +104,18 @@ static void process_runnable(struct state_t* state, enum token_t t, const char* 
 			return;
 		}
 		state->g->resource_set(v == "no");
+	}
+}
+
+static void process_isbios(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
+{
+	if (t == token_data) {
+		string v = string(s, len);
+		if (!state->g) {
+			process_error(state, 0, "invalid state");
+			return;
+		}
+		state->g->resource_set(v == "yes");
 	}
 }
 
@@ -338,6 +351,7 @@ static struct conversion_t CONV1[] = {
 
 static struct conversion_t CONV2[] = {
 	{ 2, { match_mamemessraine, match_gamemachine, "runnable", 0, 0 }, process_runnable },
+	{ 2, { match_mamemessraine, match_gamemachine, "isbios", 0, 0 }, process_isbios },
 	{ 2, { match_mamemessraine, match_gamemachine, "name", 0, 0 }, process_name },
 	{ 2, { match_mamemessraine, match_gamemachine, "description", 0, 0 }, process_description },
 	{ 2, { match_mamemessraine, match_gamemachine, "manufacturer", 0, 0 }, process_manufacturer },

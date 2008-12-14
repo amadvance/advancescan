@@ -1,7 +1,8 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.14 2005/01
+AdvanceSCAN Version 1.14 2008/12
+	) Fixed the recognition of the XML 'inbios' atttribute.
 
 AdvanceSCAN Version 1.13 2004/12
 	) New rom zips are now created only if at least one unique
