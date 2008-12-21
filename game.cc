@@ -334,7 +334,11 @@ gamearchive::const_iterator gamearchive::find(const game& A) const
 bool gamearchive::is_game_parent(const game& g)
 {
 	const_iterator j = find(g.romof_get());
-	return j == end() || j->resource_get();
+	if (j == end())
+		return true;
+	if (j->resource_get())
+		return true;
+	return false;
 }
 
 /**

@@ -3,9 +3,10 @@
                             =======================
 
 
-ADVANCESCAN VERSION 1.14 2005/01
+ADVANCESCAN VERSION 1.14 2008/12
 ================================
 
+* Fixed the recognition of the XML 'inbios' atttribute.
 
 
 ADVANCESCAN VERSION 1.13 2004/12

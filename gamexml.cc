@@ -94,7 +94,7 @@ static void process_game(struct state_t* state, enum token_t t, const char* s, u
 	}
 }
 
-/* Legacy */
+// Legacy support
 static void process_runnable(struct state_t* state, enum token_t t, const char* s, unsigned len, const char** attributes)
 {
 	if (t == token_data) {
@@ -103,7 +103,9 @@ static void process_runnable(struct state_t* state, enum token_t t, const char* 
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		state->g->resource_set(v == "no");
+		// Don't clear it if already set as resource
+		if (!state->g->resource_get())
+			state->g->resource_set(v == "no");
 	}
 }
 
