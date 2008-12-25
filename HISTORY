@@ -8,6 +8,7 @@ ADVANCESCAN VERSION 1.14 2008/12
 
 * Fixed the recognition of the XML 'inbios' atttribute. It's an
   important fix if you use the 'filter' feature.
+* Fixed support for 64 bits architectures.
 
 
 ADVANCESCAN VERSION 1.13 2004/12

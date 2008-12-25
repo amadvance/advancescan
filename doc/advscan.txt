@@ -488,7 +488,7 @@ can add the -v switch.
 12 COPYRIGHT
 ============
 
-This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
+This file is Copyright (C) 2003, 2004, 2008 Andrea Mazzoleni, Filipe Estima
 
 
 13 SEE ALSO
