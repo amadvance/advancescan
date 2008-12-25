@@ -14,24 +14,24 @@ advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
 &nbsp;&nbsp;&nbsp;&nbsp;[-g, --del-garbage] [-t,--del-text]
 &nbsp;&nbsp;&nbsp;&nbsp;[-n, --print-only] [-p, --report]
 &nbsp;&nbsp;&nbsp;&nbsp;[-f, --filter FILTER]
-&nbsp;&nbsp;&nbsp;&nbsp;[-v, --verbose] &lt; info.lst/xml
+&nbsp;&nbsp;&nbsp;&nbsp;[-v, --verbose] &lt; info.xml
 </pre>
 <p>
 <pre>
 advscan [-R, --rom-std] [-S, --sample-std]
-&nbsp;&nbsp;&nbsp;&nbsp;[-K, --disk-std]&lt; info.lst/xml
+&nbsp;&nbsp;&nbsp;&nbsp;[-K, --disk-std]&lt; info.xml
 </pre>
 <p>
 <pre>
-advscan [-i, --ident] files... &lt; info.lst/xml
+advscan [-i, --ident] files... &lt; info.xml
 </pre>
 <p>
 <pre>
-advscan [-l, --bbs] &lt; info.lst/xml
+advscan [-l, --bbs] &lt; info.xml
 </pre>
 <p>
 <pre>
-advscan [-e, --equal] &lt; info.lst/xml
+advscan [-e, --equal] &lt; info.xml
 </pre>
 <p>
 <pre>
@@ -41,10 +41,10 @@ advscan [-h, --help] [-V, --version]
 Description
 </h2>
 advscan is a command line utility for maintaining a zipped
-archive of roms and sample zip archive for the MAME, MESS,
-xmame, AdvanceMAME, AdvanceMESS and Raine emulators.
-The goal of advscan is to obtain a complete and perfect rom
-and sample zip archive with differential merging.
+archive of roms and samples for the MAME, MESS, AdvanceMAME,
+AdvanceMESS and derivatives emulators.
+The goal of advscan is to obtain a complete and perfect roms
+and samples archive with differential merging.
 <p>
 Differential merging means that any game has its zip archive,
 which contains all the rom files, which are not already in
@@ -63,16 +63,16 @@ automatically in the correct zip.
 </li>
 <li>
 Recognizes the text files added by rom sites and
-delete them.
+deletes them.
 </li>
 <li>
 Recognizes the text files added by the rom dumpers
-and keep or delete them as your choice.
+and keeps or deletes them as your choice.
 </li>
 <li>
-It's safe. On all the zip operations any file
+It's safe. In all the zip operations any file
 removed or overwritten is saved in the
-`rom_unknown' `sample_unknown' directories and keep
+`rom_unknown' and `sample_unknown' directories and keep
 for future uses. This will prevent any unwanted
 remove operation.
 </li>
@@ -81,16 +81,73 @@ remove operation.
 but also has these misfeatures:
 <ul>
 <li>
-Supports only rom and sample archives zipped.
+Supports only roms and samples zipped.
 </li>
 <li>
-Supports only rom organized with differential merging.
+Supports only roms organized with differential merging.
 </li>
 <li>
 Doesn't support .chd files in subdirectories.
 </li>
 </ul>
 <h2><a name="3">3</a> 
+Getting Started
+</h2>
+To use AdvanceSCAN you need first to create and edit its textual
+configuration file named 'advscan.rc'. An example advscan.rc file
+is provided in the distribution archive, but you can also write
+it from scratch.
+<p>
+Let's start your preferred text editor and create the configuration
+file advscan.rc with these options:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<pre>
+rom DIR_OF_YOUR_ROMS
+rom_new DIR_OF_YOUR_ROMS
+rom_unknown DIR_OF_REJECTED_ROMS
+rom_import DIR_OF_ROMS_TO_IMPORT
+</pre>
+</td></tr></table>
+<p>
+The most important configuration option is the directory where
+your roms are stored. This directory must be specified in the
+'rom' and 'rom_new' options.
+The 'rom_unknown' option is used to select the directory where
+store the unused roms. AdvanceSCAN never deletes roms for safety,
+so you need to specify this 'basket' directory.
+With the 'rom_import' option you can specify the directory where
+the roms to import resides. For example the update packs you want
+to integrate in your roms. If you don't have any, omit this option.
+<p>
+To analyze the roms, AdvanceSCAN needs also the roms
+information file from the emulator. This file can be created
+with the command:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<pre>
+mame -listxml &gt; info.xml
+</pre>
+</td></tr></table>
+<p>
+Finally, you can now run AdvanceSCAN to fix your roms with
+the command:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<pre>
+advscan -R &lt; info.xml
+</pre>
+</td></tr></table>
+<p>
+You can also generate a report of the state of your roms
+running the command:
+<p>
+<table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
+<pre>
+advscan -r -p &lt; info.xml &gt; report.txt
+</pre>
+</td></tr></table>
+<h2><a name="4">4</a> 
 Options
 </h2>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -104,14 +161,11 @@ directory.
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
-&lt; info.lst/xml
+&lt; info.xml
 </strong></td></tr><tr><td>
 To operate advscan needs always as input a rom
 information file. It can be generally created with
-the -listinfo/-listxml (MAME) or -gameinfo (Raine)
-options of the emulator. If the first not space
-char of the file is a `&lt;', the file is assumed to be
-xml, otherwise it's assumed to be the old listing format.
+the -listxml options of the emulator.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -119,7 +173,7 @@ xml, otherwise it's assumed to be the old listing format.
 -r, --rom
 </strong></td></tr><tr><td>
 Operates on roms (.zip files). All the next commands
-will operate on your romset.
+will operate on your roms.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -127,7 +181,7 @@ will operate on your romset.
 -s, --sample
 </strong></td></tr><tr><td>
 Operates on samples. All the next commands will
-operate on your sampleset.
+operate on your samples.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -135,7 +189,7 @@ operate on your sampleset.
 -k, --disk
 </strong></td></tr><tr><td>
 Operates on disks (.chd files). All the next commands
-will operate on your diskset.
+will operate on your disks.
 </td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
@@ -270,15 +324,16 @@ FILTERS chapter for a detailed list of filters available.
 -v, --verbose
 </strong></td></tr><tr><td>
 Print a more verbose report. The content of any zip
-archive is printed also if it contains at least one
-not rom file.
+archive is printed if it contains at least one
+unknow or bad rom file.
 </td></tr>
 </table>
-<h2><a name="4">4</a> 
+<h2><a name="5">5</a> 
 Information Options
 </h2>
 The following options are used only to print information.
-These options don't need or read the configuration file.
+These options don't need the configuration file and don't
+access you roms.
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
 <tr valign="top" align="left"><td><strong>
 -i, --ident files...
@@ -318,12 +373,12 @@ Print a short help screen.
 Print the program version.
 </td></tr>
 </table>
-<h2><a name="5">5</a> 
+<h2><a name="6">6</a> 
 Identification
 </h2>
 Rom files are identified by their crc and size. The roms
-are not really decompressed, but the crc value stored on
-the zip archives is used. If a rom has an incorrect crc or
+are not really decompressed, but the crc values stored in
+the zip archives are used. If a rom has an incorrect crc or
 size, but it has a correct name, it's maintained if
 doesn't exist a valid alternative.
 <p>
@@ -340,7 +395,7 @@ If the name is like *.sam, *.wav it's considered an
 unknown binary file.
 </li>
 <li>
-If the name is something like *.doc, *.txt, *.nfo,
+If the name is like *.doc, *.txt, *.nfo,
 *.diz, readme.* it's considered a text file.
 </li>
 <li>
@@ -348,10 +403,10 @@ If the size is a power of 2 it's considered an
 unknown binary file.
 </li>
 <li>
-It's considered a text file.
+Otherwise it's considered a text file.
 </li>
 </ul>
-<h2><a name="6">6</a> 
+<h2><a name="7">7</a> 
 Configuration
 </h2>
 To run advscan you need two files. The rom information
@@ -363,7 +418,7 @@ be made with the command:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
 <pre>
-advmame -listxml &gt; info.xml
+mame -listxml &gt; info.xml
 </pre>
 </td></tr></table>
 <p>
@@ -380,7 +435,7 @@ Or combine the two commands together:
 <p>
 <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td width="5%"></td><td width="95%">
 <pre>
-advmame -listxml | advscan [options]
+mame -listxml | advscan [options]
 </pre>
 </td></tr></table>
 <p>
@@ -404,7 +459,7 @@ the zip archives, which are modified and fixed.
 <tr valign="top" align="left"><td><strong>
 rom_new PATH
 </strong></td></tr><tr><td>
-Single path where the new created zip archives are
+Single directory where the new created zip archives are
 placed. It's STRONGLY suggested to put this path
 ALSO in the `rom' specification. Otherwise at the
 next run the zip archives are recreated.
@@ -427,7 +482,7 @@ archive will be made automatically.
 <tr valign="top" align="left"><td><strong>
 rom_unknown PATH
 </strong></td></tr><tr><td>
-Single path where unknown rom zip archives will be
+Single directory where unknown rom zip archives will be
 moved. In this directory is inserted any rom file
 removed from the rom zip archives. However, any rom
 file is automatically deleted by advscan if it's
@@ -474,7 +529,7 @@ is read from ./advscan.rc.
 <p>
 The files advscan.rc.linux and advscan.rc.dos are two
 examples of configuration files.
-<h2><a name="7">7</a> 
+<h2><a name="8">8</a> 
 Damaged Files
 </h2>
 If a damaged .zip or .chd file is detected, it's renamed
@@ -486,7 +541,7 @@ If the rename operation isn't possible the program aborts.
 <p>
 Please note that the program doesn't execute an
 extensive test to detect damaged files.
-<h2><a name="8">8</a> 
+<h2><a name="9">9</a> 
 Filters
 </h2>
 As default advscan uses all the rom definitions, including also
@@ -562,7 +617,7 @@ advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 advscan -R -c advscan-pre.rc -f preliminary &lt; advmame.xml &gt; rom_pre.log
 advscan -R -c advscan-wrk.rc -f working &lt; advmame.xml &gt; rom_wrk.log
 </td></tr></table>
-<h2><a name="9">9</a> 
+<h2><a name="10">10</a> 
 Report Format
 </h2>
 The report generated with the -p option contains some text
@@ -661,7 +716,7 @@ site. The file is recognized by its name, size and
 crc.
 </td></tr>
 </table>
-<h2><a name="10">10</a> 
+<h2><a name="11">11</a> 
 Examples
 </h2>
 For the generic use you need to run advscan with the
@@ -698,11 +753,11 @@ advscan -r -p &lt; info.xml &gt; report.txt
 <p>
 To increase the verbosity of the printed information you
 can add the -v switch.
-<h2><a name="11">11</a> 
+<h2><a name="12">12</a> 
 Copyright
 </h2>
 This file is Copyright (C) 2003, 2004 Andrea Mazzoleni, Filipe Estima
-<h2><a name="12">12</a> 
+<h2><a name="13">13</a> 
 See Also
 </h2>
 advdiff(1)
