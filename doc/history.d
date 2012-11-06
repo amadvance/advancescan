@@ -1,6 +1,9 @@
 Name
 	advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.15 2012/11
+	) Fixed sampleof recognition. Now it works with recent MAME versions.
+
 AdvanceSCAN Version 1.14 2008/12
 	) Fixed the recognition of the XML 'inbios' atttribute. It's an
 		important fix if you use the 'filter' feature.

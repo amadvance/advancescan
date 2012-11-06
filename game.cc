@@ -469,6 +469,9 @@ void gamearchive::load(istream& f)
 				i->ds_remove_name(B);
 
 				romof = j->romof_get();
+
+				if (romof == j->name_get())
+					break;
 			} else
 				break;
 		}
@@ -479,6 +482,9 @@ void gamearchive::load(istream& f)
 			if (j!=end()) {
 				i->ss_remove_name(j->ss_get());
 				sampleof = j->sampleof_get();
+
+				if (sampleof == j->name_get())
+					break;
 			} else
 				break;
 		}
@@ -491,15 +497,25 @@ void gamearchive::load(istream& f)
 			if (j == end()) {
 				cerr << "Missing definition of romof '" << i->romof_get() << "' for game '" << i->name_get() << "'." << endl;
 				(const_cast<game*>((&*i)))->romof_set(string());
-			} else {
-				while (j != end()) {
-					if (&*j == &*i) {
-						cerr << "Circular romof reference for game '" << i->name_get() << "'." << endl;
-						(const_cast<game*>((&*i)))->romof_set(string());
-						break;
-					}
-					j = find(j->romof_get());
-				}
+			} else if (j->name_get() == i->name_get()) {
+				cerr << "Self definition of romof '" << i->romof_get() << "' for game '" << i->name_get() << "'." << endl;
+				(const_cast<game*>((&*i)))->romof_set(string());
+			}
+		}
+	}
+
+	// test sampleof relationship and adjust it
+	for(iterator i=begin();i!=end();++i) {
+		if (i->sampleof_get().length() != 0) {
+			const_iterator j = find(i->sampleof_get());
+			if (j == end()) {
+				cerr << "Missing definition of sampleof '" << i->sampleof_get() << "' for game '" << i->name_get() << "'." << endl;
+				(const_cast<game*>((&*i)))->sampleof_set(string());
+			} else if (j->name_get() == i->name_get()) {
+#if 0 // they are normal
+				cerr << "Self definition of romof '" << i->sampleof_get() << "' for game '" << i->name_get() << "'." << endl;
+#endif
+				(const_cast<game*>((&*i)))->sampleof_set(string());
 			}
 		}
 	}

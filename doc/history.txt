@@ -3,6 +3,12 @@
                             =======================
 
 
+ADVANCESCAN VERSION 1.15 2012/11
+================================
+
+* Fixed sampleof recognition. Now it works with recent MAME versions.
+
+
 ADVANCESCAN VERSION 1.14 2008/12
 ================================
 
