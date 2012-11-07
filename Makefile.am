@@ -182,7 +182,6 @@ distwindows: $(DISTDOS_ROOT) $(DISTDOS_DOC)
 	mkdir tmp
 	cp $(DISTDOS_ROOT) tmp
 	mkdir tmp/doc
-	cp support/zlib.dll tmp
 	cp $(DISTDOS_DOC) tmp/doc
 	cd tmp && zip -r ../$(PACKAGE)-$(VERSION)-windows-x86.zip *
 	rm -r tmp
