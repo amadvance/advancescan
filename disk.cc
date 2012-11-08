@@ -114,7 +114,8 @@ void disk::sha1_set(sha1 A)
 sha1 disk_sha1(const string& file)
 {
 	unsigned char header[120];
-	unsigned size;
+	unsigned version;
+	unsigned offset;
 
 	FILE* f = fopen(file.c_str(), "rb");
 	if (!f)
@@ -131,12 +132,15 @@ sha1 disk_sha1(const string& file)
 		throw error_invalid() << "Invalid CHD file, missing head tag MComprHD";
 	}
 
-	size = header[11] + (header[10] << 8) + (header[9] << 16) + (header[8] << 24);
+	version = header[15] + (header[14] << 8) + (header[13] << 16) + (header[12] << 24);
 
-	if (size < 120) {
-		throw error_invalid() << "Invalid CHD header size";
+	switch (version) {
+	case 3 : offset = 80; break;
+	case 4 : offset = 48; break;
+	case 5 : offset = 84; break;
+	default : throw error_invalid() << "Unsupported CHD version " << version;
 	}
 
-	return sha1(header + 80);
+	return sha1(header + offset);
 }
 

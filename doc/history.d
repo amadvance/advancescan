@@ -2,10 +2,11 @@ Name
 	advscan - History For AdvanceSCAN
 
 AdvanceSCAN Version 1.16 2012/11
+	) Added support for CHD file version 4 and 5.
 	) Removed zlib.dll. It's no more required.
 
 AdvanceSCAN Version 1.15 2012/11
-	) Fixed sampleof recognition. Now it works with recent MAME versions.
+	) Fixed sampleof recognition.
 
 AdvanceSCAN Version 1.14 2008/12
 	) Fixed the recognition of the XML 'inbios' atttribute. It's an

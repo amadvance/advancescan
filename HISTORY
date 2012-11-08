@@ -6,13 +6,14 @@
 ADVANCESCAN VERSION 1.16 2012/11
 ================================
 
+* Added support for CHD file version 4 and 5.
 * Removed zlib.dll. It's no more required.
 
 
 ADVANCESCAN VERSION 1.15 2012/11
 ================================
 
-* Fixed sampleof recognition. Now it works with recent MAME versions.
+* Fixed sampleof recognition.
 
 
 ADVANCESCAN VERSION 1.14 2008/12
