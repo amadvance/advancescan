@@ -27,6 +27,7 @@ using namespace std;
 
 sha1::sha1()
 {
+	memset(hash, 0, 20);
 }
 
 sha1::sha1(const sha1& A)

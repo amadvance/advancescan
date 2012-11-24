@@ -3,7 +3,7 @@
                             ========================
 
 AdvanceSCAN is a command line rom manager for MAME, MESS,
-xmame, AdvanceMAME, AdvanceMESS and Raine.
+AdvanceMAME, AdvanceMESS and Raine.
 
 It runs in Linux, Mac OS X, DOS, Windows and in all the other
 Unix like platforms.

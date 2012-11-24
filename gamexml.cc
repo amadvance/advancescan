@@ -291,7 +291,10 @@ static void process_samplename(struct state_t* state, enum token_t t, const char
 			process_error(state, 0, "invalid state");
 			return;
 		}
-		sample sm(string(s, len));
+		string name = string(s, len);
+		if (name.find('.') == string::npos)
+			name += ".wav";
+		sample sm(name);
 		state->g->ss_get().insert(sm);
 	}
 }
@@ -333,8 +336,8 @@ static void process_disksha1(struct state_t* state, enum token_t t, const char* 
 	}
 }
 
-static char* match_mamemessraine = "mame|mess|raine";
-static char* match_gamemachine = "game|machine";
+static const char* match_mamemessraine = "mame|mess|raine";
+static const char* match_gamemachine = "game|machine";
 
 /**
  * Conversion table.

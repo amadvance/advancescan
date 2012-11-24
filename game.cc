@@ -456,6 +456,11 @@ void gamearchive::load(istream& f)
 		while (romof.length()) {
 			iterator j = find(game(romof));
 			if (j!=end()) {
+				// if itself, breaks now
+				if (romof == i->name_get())
+					break;
+
+				// remove merged stuff
 				rom_by_crc_set A;
 				for(rom_by_name_set::const_iterator k=j->rs_get().begin();k!=j->rs_get().end();++k) {
 					A.insert(*k);
@@ -469,20 +474,25 @@ void gamearchive::load(istream& f)
 				i->ds_remove_name(B);
 
 				romof = j->romof_get();
-
 				if (romof == j->name_get())
 					break;
 			} else
 				break;
 		}
+
 		// sample
 		string sampleof = i->sampleof_get();
 		while (sampleof.length()) {
 			iterator j = find(game(sampleof));
 			if (j!=end()) {
-				i->ss_remove_name(j->ss_get());
-				sampleof = j->sampleof_get();
+				// if itself, breaks now
+				if (sampleof == i->name_get())
+					break;
 
+				// remove merged stuff
+				i->ss_remove_name(j->ss_get());
+
+				sampleof = j->sampleof_get();
 				if (sampleof == j->name_get())
 					break;
 			} else

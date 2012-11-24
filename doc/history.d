@@ -2,8 +2,10 @@ Name
 	advscan - History For AdvanceSCAN
 
 AdvanceSCAN Version 1.16 2012/11
-	) Added support for CHD file version 4 and 5.
-	) Removed zlib.dll. It's no more required.
+	) Added support for CHD versions 4 and 5.
+	) Fixed the printout of the CHD hash.
+	) Fixed samples extension handling.
+	) Removed zlib.dll from the Windows distribution. It's no more required.
 
 AdvanceSCAN Version 1.15 2012/11
 	) Fixed sampleof recognition.

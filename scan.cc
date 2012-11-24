@@ -258,9 +258,9 @@ void disk_stat(
 		result.unk_binary.insert(disk(name));
 	} else {
 		if (!(result.hash == i->sha1_get())) {
-			result.disk_bad.insert(disk(name));
+			result.disk_bad.insert(*i);
 		} else {
-			result.disk_equal.insert(disk(name));
+			result.disk_equal.insert(*i);
 		}
 	}
 }
