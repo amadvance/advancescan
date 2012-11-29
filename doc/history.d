@@ -1,6 +1,9 @@
 Name
 	advscan - History For AdvanceSCAN
 
+AdvanceSCAN Version 1.17 2012/11
+	) In the report output (--report) don't complain about preliminary BIOS.
+
 AdvanceSCAN Version 1.16 2012/11
 	) Added support for CHD versions 4 and 5.
 	) Fixed the printout of the CHD hash.

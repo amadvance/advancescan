@@ -3,6 +3,12 @@
                             =======================
 
 
+ADVANCESCAN VERSION 1.17 2012/11
+================================
+
+* In the report output (--report) don't complain about preliminary BIOS.
+
+
 ADVANCESCAN VERSION 1.16 2012/11
 ================================
 

@@ -1580,7 +1580,7 @@ void report_rom_set_zip(const gamearchive& gar, output& out)
 				}
 			}
 
-			if (!i->working_get()) {
+			if (!i->working_get() && !i->resource_get()) {
 				if (!gar.has_working_clone_with_rom(*i)) {
 					has_preliminary = true;
 					out() << "Rom '" << i->name_get() << "' has a preliminary driver";
