@@ -1,8 +1,9 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.17 2012/11
+AdvanceSCAN Version 1.17 2012/12
 	) In the report output (--report) don't complain about preliminary BIOS.
+	) Now in git repository.
 
 AdvanceSCAN Version 1.16 2012/11
 	) Added support for CHD versions 4 and 5.

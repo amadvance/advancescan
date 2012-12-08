@@ -3,10 +3,11 @@
                             =======================
 
 
-ADVANCESCAN VERSION 1.17 2012/11
+ADVANCESCAN VERSION 1.17 2012/12
 ================================
 
 * In the report output (--report) don't complain about preliminary BIOS.
+* Now in git repository.
 
 
 ADVANCESCAN VERSION 1.16 2012/11
