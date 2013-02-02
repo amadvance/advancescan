@@ -106,7 +106,7 @@ public:
 
 	string_container& rom_son_get() const { return rom_son; }
 
-	bool is_romset_required() const { return rs_get().begin() != rs_get().end(); }
+	bool is_romset_required() const;
 	bool is_sampleset_required() const { return ss_get().begin() != ss_get().end(); }
 	bool is_diskset_required() const { return ds_get().begin() != ds_get().end(); }
 

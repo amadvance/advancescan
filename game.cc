@@ -67,6 +67,14 @@ game::~game()
 {
 }
 
+bool game::is_romset_required() const
+{
+	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i)
+		if (i->size_get() != 0 && !i->nodump_get())
+			return true;
+	return false;
+}
+
 unsigned game::good_rom_size() const
 {
 	unsigned size = 0;
