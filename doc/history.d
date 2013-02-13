@@ -1,7 +1,7 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.17 2013/01
+AdvanceSCAN Version 1.17 2013/02
 	) In the report output (--report) don't complain about preliminary BIOS.
 	) If a rom contains only not dumped files, don't report it missing if
 		no zip is present.
