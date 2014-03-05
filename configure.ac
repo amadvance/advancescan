@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 AC_INIT([AdvanceSCAN],[1.17])
 AC_CONFIG_SRCDIR([scan.cc])
-AM_INIT_AUTOMAKE([foreign no-dependencies])
+AM_INIT_AUTOMAKE([foreign no-dependencies -Wall subdir-objects])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 
