@@ -1,5 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
 bin_PROGRAMS = advscan advdiff
 
 advdiff_SOURCES = \
@@ -54,7 +52,7 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
 	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
 	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
-	autogen.sh noautomake.sh \
+	autogen.sh \
 	test/test.xml \
 	test/test.lst \
 	test/testd.xml \

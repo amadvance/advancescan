@@ -3,7 +3,7 @@
 
 make distclean
 
-if ! ./configure.windows; then
+if ! ./configure.windows-x86; then
 	exit 1
 fi
 

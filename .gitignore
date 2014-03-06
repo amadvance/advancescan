@@ -14,10 +14,6 @@ doc/*.1
 doc/*.html
 doc/*.txt
 
-# others
-resource/
-support/
-
 # autotools
 Makefile
 Makefile.in
@@ -41,3 +37,7 @@ stamp-h1
 *.dst
 *.epr
 
+# others
+resource/
+support/
+archive/
