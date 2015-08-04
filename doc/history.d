@@ -1,7 +1,8 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.18 2014/03
+AdvanceSCAN Version 1.18 2015/08
+	) New web address.
 	) Updated to new autoconf/git format.
 
 AdvanceSCAN Version 1.17 2013/02
