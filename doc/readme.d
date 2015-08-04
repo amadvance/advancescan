@@ -9,7 +9,7 @@ Name
 
 	The official site of AdvanceSCAN is:
 
-		http://advancemame.sourceforge.net
+		http://www.advancemame.it
 
 	This package contains:
 		advscan - Rom manager
