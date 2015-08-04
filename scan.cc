@@ -1918,7 +1918,7 @@ void bbs(const gamearchive& gar, ostream& out)
 
 void version()
 {
-	cout << PACKAGE " v" VERSION " by Andrea Mazzoleni\n";
+	cout << PACKAGE " v" VERSION " by Andrea Mazzoleni, " PACKAGE_URL "\n";
 }
 
 void usage()
