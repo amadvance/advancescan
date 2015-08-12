@@ -23,8 +23,9 @@ Synopsis
 
 Description
 	advscan is a command line utility for maintaining a zipped
-	archive of roms and samples for the MAME, MESS, AdvanceMAME,
-	AdvanceMESS and derivatives emulators.
+	archive of roms and samples for AdvanceMAME, AdvanceMESS
+	and any other MAME derivative emulator.
+
 	The goal of advscan is to obtain a complete and perfect roms
 	and samples archive with differential merging.
 

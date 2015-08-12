@@ -2,8 +2,8 @@ Name
 	advscan - History For AdvanceSCAN
 
 AdvanceSCAN Version 1.18 2015/08
-	) New web address.
 	) Updated to new autoconf/git format.
+	) Other minor changes.
 
 AdvanceSCAN Version 1.17 2013/02
 	) In the report output (--report) don't complain about preliminary BIOS.
