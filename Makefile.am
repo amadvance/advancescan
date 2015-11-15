@@ -51,7 +51,6 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	doc/advscan.d doc/advdiff.d doc/history.d doc/readme.d doc/authors.d doc/install.d \
 	doc/advscan.1 doc/advdiff.1 doc/history.1 doc/readme.1 doc/authors.1 doc/install.1 \
 	doc/advscan.txt doc/advdiff.txt doc/history.txt doc/readme.txt doc/authors.txt doc/install.txt \
-	doc/advscan.html doc/advdiff.html doc/history.html doc/readme.html doc/authors.html doc/install.html \
 	autogen.sh \
 	test/test.xml \
 	test/test.lst \
@@ -121,8 +120,9 @@ check-local:
 	cmp checkd.lst $(srcdir)/test/testd.lst
 	echo Success!
 
-# Docs
+# Rules for documentation
 
+if HAVE_ADVD2
 %.1 : %.d
 	advd2 man < $(srcdir)/$< > $@
 
@@ -134,23 +134,26 @@ check-local:
 
 %.hh : %.d
 	advd2 frame < $(srcdir)/$< > $@
+endif
 
 # Archives
+
+DTOU = tr -d '\015'
 
 advscan.rc: advscan.rc.dos
 	cp $(srcdir)/advscan.rc.dos advscan.rc
 
 README: doc/readme.txt
-	cat $< | fromdos > $@
+	cat $< | $(DTOU) > $@
 
 AUTHORS: doc/authors.txt
-	cat $< | fromdos > $@
+	cat $< | $(DTOU) > $@
 
 INSTALL: doc/install.txt
-	cat $< | fromdos > $@
+	cat $< | $(DTOU) > $@
 
 HISTORY: doc/history.txt
-	cat $< | fromdos > $@
+	cat $< | $(DTOU) > $@
 
 doc/copying.txt: COPYING
 	cat $< | todos > $@
@@ -162,9 +165,7 @@ DISTDOS_ROOT = \
 
 DISTDOS_DOC = \
 	doc/advscan.txt doc/advdiff.txt \
-	doc/readme.txt doc/authors.txt doc/history.txt \
-	doc/advscan.html doc/advdiff.html \
-	doc/readme.html doc/authors.html doc/history.html 
+	doc/readme.txt doc/authors.txt doc/history.txt
 
 distdos: $(DISTDOS_ROOT) $(DISTDOS_DOC)
 	rm -f $(PACKAGE)-$(VERSION)-dos-x86.zip

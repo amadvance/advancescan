@@ -15,6 +15,8 @@ AC_CHECK_PROGS(TAR, tar)
 AC_CHECK_PROGS(GZIP, gzip)
 AC_CHECK_PROGS(GROFF, groff)
 AC_CHECK_PROGS(COL, col)
+AC_CHECK_PROG([ADVD2],[advd2],[advd2],[])
+AM_CONDITIONAL(HAVE_ADVD2, [test x"$ADVD2" != x])
 
 dnl Checks for architecture
 AC_C_BIGENDIAN(
