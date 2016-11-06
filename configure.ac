@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.65])
-AC_INIT([AdvanceSCAN], [1.18], [], [], [http://www.advancemame.it])
+AC_INIT([AdvanceSCAN], [1.19], [], [], [http://www.advancemame.it])
 AM_INIT_AUTOMAKE([foreign no-dependencies subdir-objects])
 AC_CONFIG_SRCDIR([scan.cc])
 AC_CONFIG_HEADERS([config.h])
