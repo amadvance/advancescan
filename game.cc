@@ -527,7 +527,9 @@ void gamearchive::load(istream& f)
 		if (i->sampleof_get().length() != 0) {
 			const_iterator j = find(i->sampleof_get());
 			if (j == end()) {
+#if 0 // recent MAME have many pf them, like "genpin", but also others
 				cerr << "Missing definition of sampleof '" << i->sampleof_get() << "' for game '" << i->name_get() << "'." << endl;
+#endif
 				(const_cast<game*>((&*i)))->sampleof_set(string());
 			} else if (j->name_get() == i->name_get()) {
 #if 0 // they are normal
