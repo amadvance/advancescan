@@ -1,7 +1,7 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 1.19 2016/11
+AdvanceSCAN Version 2.0 2018/01
 	) Ignore missing definitions of sampleof. Recent MAMEs have a lot of them.
 	) Windows binaries built with MingW 4.9.3 using the MXE cross compiler at
 		commit 62bcdbee56e87c81f1faa105b8777a5879d4e2e with targets
