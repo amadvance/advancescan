@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details. 
+ * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
@@ -33,7 +33,7 @@ public:
 	filepath(const filepath& A);
 	filepath(const std::string& Afile);
 	~filepath();
-	
+
 	const std::string& file_get() const { return file; }
 	void file_set(const std::string& Afile);
 };
@@ -55,7 +55,7 @@ public:
 
 	unsigned size_get() const { return size; }
 	void size_set(unsigned Asize);
-	
+
 	bool readonly_get() const { return readonly; }
 	void readonly_set(bool Areadonly);
 };
@@ -67,28 +67,28 @@ typedef unsigned crc_t;
 crc_t crc_compute(const char* data, unsigned len);
 crc_t crc_compute(crc_t pred, const char* data, unsigned len);
 
-bool file_exists(const std::string& file) throw (error);
-void file_write(const std::string& path, const char* data, unsigned size) throw (error);
-void file_read(const std::string& path, char* data, unsigned size) throw (error);
-void file_read(const std::string& path, char* data, unsigned offset, unsigned size) throw (error);
-time_t file_time(const std::string& path) throw (error);
-void file_utime(const std::string& path, time_t tod) throw (error);
-unsigned file_size(const std::string& path) throw (error);
-crc_t file_crc(const std::string& path) throw (error);
-void file_copy(const std::string& path1, const std::string& path2) throw (error);
-void file_move(const std::string& path1, const std::string& path2) throw (error);
-void file_remove(const std::string& path1) throw (error);
-void file_mktree(const std::string& path1) throw (error);
+bool file_exists(const std::string& file);
+void file_write(const std::string& path, const char* data, unsigned size);
+void file_read(const std::string& path, char* data, unsigned size);
+void file_read(const std::string& path, char* data, unsigned offset, unsigned size);
+time_t file_time(const std::string& path);
+void file_utime(const std::string& path, time_t tod);
+unsigned file_size(const std::string& path);
+crc_t file_crc(const std::string& path);
+void file_copy(const std::string& path1, const std::string& path2);
+void file_move(const std::string& path1, const std::string& path2);
+void file_remove(const std::string& path1);
+void file_mktree(const std::string& path1);
 
-std::string file_temp(const std::string& path) throw ();
-std::string file_randomize(const std::string& path, int n) throw ();
-std::string file_name(const std::string& file) throw ();
-std::string file_dir(const std::string& file) throw ();
-std::string file_basename(const std::string& file) throw ();
-std::string file_basepath(const std::string& file) throw ();
-std::string file_ext(const std::string& file) throw ();
-int file_compare(const std::string& path1, const std::string& path2) throw ();
-std::string file_adjust(const std::string& path) throw ();
+std::string file_temp(const std::string& path);
+std::string file_randomize(const std::string& path, int n);
+std::string file_name(const std::string& file);
+std::string file_dir(const std::string& file);
+std::string file_basename(const std::string& file);
+std::string file_basepath(const std::string& file);
+std::string file_ext(const std::string& file);
+int file_compare(const std::string& path1, const std::string& path2);
+std::string file_adjust(const std::string& path);
 
 #endif
 

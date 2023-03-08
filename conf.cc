@@ -11,7 +11,7 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details. 
+ * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
@@ -28,7 +28,7 @@
 
 using namespace std;
 
-static void expand_tree(const string& path, filepath_container& ds) throw (error)
+static void expand_tree(const string& path, filepath_container& ds)
 {
 	DIR* dir = opendir(path.c_str());
 	if (!dir)
@@ -232,7 +232,7 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_di
 	for(filepath_container::iterator i=base_romreadonlytree.begin();i!=base_romreadonlytree.end();++i) {
 		expand_tree(i->file_get(), expand_romreadonlytree);
 	}
-	
+
 	// remove paths already in rompath
 	for(filepath_container::iterator i=expand_romreadonlytree.begin();i!=expand_romreadonlytree.end();++i) {
 		filepath_container::iterator j;
