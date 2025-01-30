@@ -64,7 +64,7 @@ public:
 	void swap(const std::string& zipintname, ziprom& reject, ziprom::iterator& reject_entry);
 };
 
-struct ziprom_by_file_less : std::binary_function<ziprom, ziprom, bool> {
+struct ziprom_by_file_less {
 	bool operator()(const ziprom& A, const ziprom& B) const {
 		// don't use file_compare, do exact compare
 		return A.file_get() < B.file_get();

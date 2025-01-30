@@ -54,7 +54,7 @@ public:
 	bool operator==(const rom& A) const;
 };
 
-struct rom_by_crc_less : std::binary_function<rom, rom, bool> {
+struct rom_by_crc_less {
 	bool operator()(const rom& A, const rom& B) const {
 		if (A.crc_get() < B.crc_get()) return true;
 		if (A.crc_get() > B.crc_get()) return false;
@@ -63,7 +63,7 @@ struct rom_by_crc_less : std::binary_function<rom, rom, bool> {
 	}
 };
 
-struct rom_by_name_less : std::binary_function<rom, rom, bool> {
+struct rom_by_name_less {
 	bool operator()(const rom& A, const rom& B) const {
 		return file_compare(A.name_get(), B.name_get()) < 0;
 	}
@@ -92,7 +92,7 @@ public:
 	const std::string& game_get() const { return game; }
 };
 
-struct gamerom_by_crc_less : std::binary_function<gamerom, gamerom, bool> {
+struct gamerom_by_crc_less {
 	bool operator()(const gamerom& A, const gamerom& B) const {
 		if (A.crc_get() < B.crc_get()) return true;
 		if (A.crc_get() > B.crc_get()) return false;

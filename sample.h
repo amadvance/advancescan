@@ -35,7 +35,7 @@ public:
 	const std::string& name_get() const { return name; }
 };
 
-struct sample_by_name_less : std::binary_function<sample, sample, bool> {
+struct sample_by_name_less {
 	bool operator()(const sample& A, const sample& B) const {
 		return file_compare(A.name_get(), B.name_get()) < 0;
 	}

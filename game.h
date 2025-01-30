@@ -127,13 +127,13 @@ public:
 	unsigned size_get() const;
 };
 
-struct game_by_name_less : std::binary_function<game, game, bool> {
+struct game_by_name_less {
 	bool operator()(const game& A, const game& B) const {
 		return A.name_get() < B.name_get();
 	}
 };
 
-struct game_by_output_less : std::binary_function<game, game, bool> {
+struct game_by_output_less {
 	bool operator()(const game& A, const game& B) const {
 		int r = A.cloneof_get().compare(B.cloneof_get());
 		if (r<0) return true;

@@ -57,7 +57,7 @@ public:
 	void name_set(const std::string& Aname);
 };
 
-struct disk_by_name_less : std::binary_function<disk, disk, bool> {
+struct disk_by_name_less {
 	bool operator()(const disk& A, const disk& B) const {
 		return file_compare(A.name_get(), B.name_get()) < 0;
 	}
