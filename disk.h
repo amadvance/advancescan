@@ -65,6 +65,7 @@ struct disk_by_name_less {
 
 typedef std::set<disk, disk_by_name_less> disk_by_name_set;
 
+sha1 disk_sha1(const std::string& file, sha1& alt_sha1);
 sha1 disk_sha1(const std::string& file);
 
 #endif

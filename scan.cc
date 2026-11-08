@@ -250,17 +250,21 @@ void disk_stat(
 	const analyze& ana)
 {
 	string name = file_basename(z);
+	sha1 alt_hash;
 
-	result.hash = disk_sha1(z);
+	result.hash = disk_sha1(z, alt_hash);
 
 	disk_by_name_set::iterator i=gam.ds_get().find(disk(name));
 	if (i == gam.ds_get().end()) {
 		result.unk_binary.insert(disk(name));
 	} else {
-		if (!(result.hash == i->sha1_get())) {
-			result.disk_bad.insert(*i);
-		} else {
+		if (result.hash == i->sha1_get()) {
 			result.disk_equal.insert(*i);
+		} else if (alt_hash == i->sha1_get()) {
+			result.hash = alt_hash;
+			result.disk_equal.insert(*i);
+		} else {
+			result.disk_bad.insert(*i);
 		}
 	}
 }
@@ -1107,7 +1111,22 @@ void set_disk_load(filepath_container& zar, const config& cfg)
 	filepath_container ds;
 
 	for(filepath_container::const_iterator i=cfg.diskpath_get().begin();i!=cfg.diskpath_get().end();++i) {
-		read_dir(i->file_get(), ds, false, ".chd");
+		DIR* dir = opendir(i->file_get().c_str());
+		if (!dir)
+			continue;
+
+		struct dirent* ent = readdir(dir);
+		while (ent) {
+			if (strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+				string subpath = i->file_get() + "/" + ent->d_name;
+				struct stat st;
+				if (stat(subpath.c_str(), &st) == 0 && S_ISDIR(st.st_mode)) {
+					read_dir(subpath, ds, false, ".chd");
+				}
+			}
+			ent = readdir(dir);
+		}
+		closedir(dir);
 	}
 
 	for(filepath_container::const_iterator i=ds.begin();i!=ds.end();++i) {
@@ -1301,30 +1320,39 @@ void set_sample_scan(const operation& oper, filepath_container& zar, gamearchive
 	}
 }
 
+static string file_dirname(const string& path)
+{
+	size_t last_slash = path.rfind('/');
+	if (last_slash == string::npos)
+		return "";
+	size_t prev_slash = path.rfind('/', last_slash - 1);
+	if (prev_slash == string::npos)
+		return string(path, 0, last_slash);
+	else
+		return string(path, prev_slash + 1, last_slash - prev_slash - 1);
+}
+
 void all_disk_scan(const operation& oper, filepath_container& zar, gamearchive& gar, config& cfg, output& out, const analyze& ana)
 {
 	filepath_container unknown;
 
-	// scan zips
+	// scan disks
 	for(filepath_container::iterator i=zar.begin();i!=zar.end();++i) {
+		string game_name = file_dirname(i->file_get());
 		string name = file_basename(i->file_get());
-		gamearchive::iterator g;
-		for(g=gar.begin();g!=gar.end();++g) {
-			if (g->is_diskset_required()) {
-				disk_by_name_set::iterator i = g->ds_get().find(disk(name));
-				if (i != g->ds_get().end())
-					break;
+		gamearchive::iterator g = gar.find(game(game_name));
+		if (g != gar.end() && g->is_diskset_required()) {
+			disk_by_name_set::iterator d = g->ds_get().find(disk(name));
+			if (d != g->ds_get().end()) {
+				try {
+					disk_scan(oper, i->file_get(), *g, out, ana);
+				} catch (error& e) {
+					throw e << " scanning disk " << i->file_get();
+				}
+				continue;
 			}
 		}
-		if (g == gar.end()) {
-			unknown.insert(unknown.end(), filepath(i->file_get()));
-		} else {
-			try {
-				disk_scan(oper, i->file_get(), *g, out, ana);
-			} catch (error& e) {
-				throw e << " scanning disk " << i->file_get();
-			}
-		}
+		unknown.insert(unknown.end(), filepath(i->file_get()));
 	}
 
 	// move chd
@@ -1344,26 +1372,23 @@ void set_disk_scan(const operation& oper, filepath_container& zar, gamearchive& 
 {
 	filepath_container unknown;
 
-	// scan zips
+	// scan disks
 	for(filepath_container::iterator i=zar.begin();i!=zar.end();++i) {
+		string game_name = file_dirname(i->file_get());
 		string name = file_basename(i->file_get());
-		gamearchive::iterator g;
-		for(g=gar.begin();g!=gar.end();++g) {
-			if (g->is_diskset_required()) {
-				disk_by_name_set::iterator i = g->ds_get().find(disk(name));
-				if (i != g->ds_get().end())
-					break;
+		gamearchive::iterator g = gar.find(game(game_name));
+		if (g != gar.end() && g->is_diskset_required()) {
+			disk_by_name_set::iterator d = g->ds_get().find(disk(name));
+			if (d != g->ds_get().end()) {
+				try {
+					disk_scan(oper, i->file_get(), *g, out, ana);
+				} catch (error& e) {
+					throw e << " scanning disk " << i->file_get();
+				}
+				continue;
 			}
 		}
-		if (g == gar.end()) {
-			unknown.insert(unknown.end(), filepath(i->file_get()));
-		} else {
-			try {
-				disk_scan(oper, i->file_get(), *g, out, ana);
-			} catch (error& e) {
-				throw e << " scanning disk " << i->file_get();
-			}
-		}
+		unknown.insert(unknown.end(), filepath(i->file_get()));
 	}
 }
 
@@ -1424,19 +1449,14 @@ void report_sample_zip(const filepath_container& zar, gamearchive& gar, output& 
 void report_disk_zip(const filepath_container& zar, gamearchive& gar, output& out, bool verbose, const analyze& ana)
 {
 	for(filepath_container::const_iterator i=zar.begin();i!=zar.end();++i) {
+		string game_name = file_dirname(i->file_get());
 		string name = file_basename(i->file_get());
-		gamearchive::iterator g;
-		for(g=gar.begin();g!=gar.end();++g) {
-			if (g->is_diskset_required()) {
-				disk_by_name_set::iterator i = g->ds_get().find(disk(name));
-				if (i != g->ds_get().end())
-					break;
+		gamearchive::iterator g = gar.find(game(game_name));
+		if (g != gar.end() && g->is_diskset_required()) {
+			disk_by_name_set::iterator d = g->ds_get().find(disk(name));
+			if (d != g->ds_get().end()) {
+				disk_report(i->file_get(), *g, out, verbose, ana);
 			}
-		}
-		if (g == gar.end()) {
-			// ignore
-		} else {
-			disk_report(i->file_get(), *g, out, verbose, ana);
 		}
 	}
 }

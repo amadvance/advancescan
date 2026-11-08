@@ -112,22 +112,23 @@ void disk::sha1_set(sha1 A)
 	hash = A;
 }
 
-sha1 disk_sha1(const string& file)
+sha1 disk_sha1(const string& file, sha1& alt_sha1)
 {
-	unsigned char header[120];
+	unsigned char header[124];
 	unsigned version;
 	unsigned offset;
+	unsigned alt_offset;
 
 	FILE* f = fopen(file.c_str(), "rb");
 	if (!f)
 		throw error() << "Failed open for read file " << file;
 
-	if (fread(header, 120, 1, f)!=1) {
-		fclose(f);
-		throw error() << "Failed read file " << file;
-	}
-
+	size_t n = fread(header, 1, 124, f);
 	fclose(f);
+
+	if (n < 108) {
+		throw error_invalid() << "Invalid CHD file size";
+	}
 
 	if (memcmp(header + 0, "MComprHD", 8) != 0) {
 		throw error_invalid() << "Invalid CHD file, missing head tag MComprHD";
@@ -136,12 +137,31 @@ sha1 disk_sha1(const string& file)
 	version = header[15] + (header[14] << 8) + (header[13] << 16) + (header[12] << 24);
 
 	switch (version) {
-	case 3 : offset = 80; break;
-	case 4 : offset = 48; break;
-	case 5 : offset = 84; break;
+	case 3 :
+		if (n < 120) throw error_invalid() << "Invalid CHD v3 header size";
+		offset = 80;
+		alt_offset = 80;
+		break;
+	case 4 :
+		if (n < 108) throw error_invalid() << "Invalid CHD v4 header size";
+		offset = 88;
+		alt_offset = 48;
+		break;
+	case 5 :
+		if (n < 124) throw error_invalid() << "Invalid CHD v5 header size";
+		offset = 64;
+		alt_offset = 84;
+		break;
 	default : throw error_invalid() << "Unsupported CHD version " << version;
 	}
 
+	alt_sha1 = sha1(header + alt_offset);
 	return sha1(header + offset);
+}
+
+sha1 disk_sha1(const string& file)
+{
+	sha1 alt;
+	return disk_sha1(file, alt);
 }
 
