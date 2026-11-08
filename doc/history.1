@@ -4,6 +4,10 @@ advscan \- History For AdvanceSCAN
 .SH ADVANCESCAN VERSION 2.0 2025/01 
 .PD 0
 .IP \(bu
+Added support for disk CHDs in game subdirectories.
+.IP \(bu
+Fixed SHA\-1 hash for CHD version 5 and support both raw and overall hash.
+.IP \(bu
 Ignore missing definitions of sampleof. Recent MAMEs have a lot of them.
 .IP \(bu
 Windows binaries built with MingW 4.9.3 using the MXE cross compiler at
@@ -49,7 +53,7 @@ Fixed sampleof recognition.
 .SH ADVANCESCAN VERSION 1.14 2008/12 
 .PD 0
 .IP \(bu
-Fixed the recognition of the XML \'inbios\' atttribute. It\'s an
+Fixed the recognition of the XML \'inbios\' attribute. It\'s an
 important fix if you use the \'filter\' feature.
 .IP \(bu
 Fixed support for 64 bits architectures.
@@ -99,14 +103,14 @@ Fixed a Mac OS X crash problem with XML files with
 empty items.
 .IP \(bu
 Only the XML driver.status entry is now used to recognize
-the game emulation status. Game not marked as
+the game emulation status. Games not marked as
 \[dq]preliminary\[dq] are considered working games.
 .PD
 .SH ADVANCESCAN VERSION 1.8 2004/04 
 .PD 0
 .IP \(bu
 Added a filter capability able to filter in/out preliminary, parent
-and clone  roms. For example you can now keep separated
+and clone roms. For example you can now keep separated
 preliminary and working roms.
 .IP \(bu
 Added support for xml format at advdiff.
@@ -151,7 +155,7 @@ was incorrectly adding a PLTE chunk at rgb images.
 .SH ADVANCESCAN VERSION 1.3 2002/11 
 .PD 0
 .IP \(bu
-Fixed a bug in the advscan utility. When a .zip file was completly
+Fixed a bug in the advscan utility. When a .zip file was completely
 removed the program was aborting with a \[dq]Failed stat\[dq] message
 because it was trying to reread the just deleted file.
 .IP \(bu
@@ -160,7 +164,7 @@ advpng utility.
 .IP \(bu
 Improved the garbage detector for zipped roms.
 .IP \(bu
-Upgraded at the lastest Advance Library.
+Upgraded at the latest Advance Library.
 .IP \(bu
 Fixes at the docs. [by Filipe Estima]
 .IP \(bu
@@ -191,7 +195,7 @@ First public release.
 .IP \(bu
 Fixed the compression percentage computation on big files.
 .IP \(bu
-The unknow .zip files are now deleted if they contains only
+The unknown .zip files are now deleted if they contain only
 empty directories.
 .IP \(bu
 Added the \-\-pedantic option at the advzip utility. These
@@ -231,12 +235,12 @@ Added configure for msdos.
 .SH MAMESCAN VERSION 0.3 
 .PD 0
 .IP \(bu
-Minor revison.
+Minor revision.
 .PD
 .SH MAMESCAN VERSION 0.2 
 .PD 0
 .IP \(bu
-Minor revison.
+Minor revision.
 .PD
 .SH MAMESCAN VERSION 0.1 1999/07 
 .PD 0

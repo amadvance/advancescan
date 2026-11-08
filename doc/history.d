@@ -31,7 +31,7 @@ AdvanceSCAN Version 1.15 2012/11
 	) Fixed sampleof recognition.
 
 AdvanceSCAN Version 1.14 2008/12
-	) Fixed the recognition of the XML 'inbios' atttribute. It's an
+	) Fixed the recognition of the XML 'inbios' attribute. It's an
 		important fix if you use the 'filter' feature.
 	) Fixed support for 64 bits architectures.
 
@@ -65,12 +65,12 @@ AdvanceSCAN Version 1.9 2004/07
 	) Fixed a Mac OS X crash problem with XML files with
 		empty items.
 	) Only the XML driver.status entry is now used to recognize
-		the game emulation status. Game not marked as
+		the game emulation status. Games not marked as
 		"preliminary" are considered working games.
 
 AdvanceSCAN Version 1.8 2004/04
 	) Added a filter capability able to filter in/out preliminary, parent
-		and clone  roms. For example you can now keep separated
+		and clone roms. For example you can now keep separated
 		preliminary and working roms.
 	) Added support for xml format at advdiff.
 	) Updated the expat library at version 1.95.7.
@@ -98,13 +98,13 @@ AdvanceSCAN Version 1.4 2002/12
 		was incorrectly adding a PLTE chunk at rgb images.
 
 AdvanceSCAN Version 1.3 2002/11
-	) Fixed a bug in the advscan utility. When a .zip file was completly
+	) Fixed a bug in the advscan utility. When a .zip file was completely
 		removed the program was aborting with a "Failed stat" message
 		because it was trying to reread the just deleted file.
 	) Added the support for the transparency tRNS chunk at the
 		advpng utility.
 	) Improved the garbage detector for zipped roms.
-	) Upgraded at the lastest Advance Library.
+	) Upgraded at the latest Advance Library.
 	) Fixes at the docs. [by Filipe Estima]
 	) Minor changes at the autoconf/automake scripts.
 
@@ -121,7 +121,7 @@ AdvanceSCAN Version 1.1 2002/06
 AdvanceSCAN Version 1.0 2002/05
 	) First public release.
 	) Fixed the compression percentage computation on big files.
-	) The unknow .zip files are now deleted if they contains only
+	) The unknown .zip files are now deleted if they contain only
 		empty directories.
 	) Added the --pedantic option at the advzip utility. These
 		tests are only done if requested.
@@ -144,10 +144,10 @@ MAMESCAN Version 0.4 2000/02
 	) Added configure for msdos.
 
 MAMESCAN Version 0.3
-	) Minor revison.
+	) Minor revision.
 
 MAMESCAN Version 0.2
-	) Minor revison.
+	) Minor revision.
 
 MAMESCAN Version 0.1 1999/07
 	) First version.

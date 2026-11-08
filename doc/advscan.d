@@ -5,13 +5,13 @@ Synopsis
 	:advscan [-c, --cfg CONFIG] [-r, --rom] [-s, --sample]
 	:	[-k, --disk] [-a, --add-zip] [-b, --add-bin]
 	:	[-d, --del-zip] [-u, --del-unknown]
-	:	[-g, --del-garbage] [-t,--del-text]
+	:	[-g, --del-garbage] [-t, --del-text]
 	:	[-n, --print-only] [-p, --report]
 	:	[-f, --filter FILTER]
 	:	[-v, --verbose] < info.xml
 
 	:advscan [-R, --rom-std] [-S, --sample-std]
-	:	[-K, --disk-std]< info.xml
+	:	[-K, --disk-std] < info.xml
 
 	:advscan [-i, --ident] files... < info.xml
 
@@ -26,43 +26,43 @@ Description
 	archive of roms and samples for AdvanceMAME, AdvanceMESS
 	and any other MAME derivative emulator.
 
-	The goal of advscan is to obtain a complete and perfect roms
-	and samples archive with differential merging.
+	The goal of advscan is to maintain a complete and accurate
+	rom and sample collection using the split format.
 
-	Differential merging means that any game has its zip archive,
-	which contains all the rom files, which are not already in
-	the parent zip archive (if exists).
+	Split format means that each game has its own zip archive,
+	containing only the rom files that are not already present in
+	the parent zip archive (if one exists).
 
 	advscan has these features:
 
-	* Directly read, writes zip archives without decompressing
+	* Directly reads and writes zip archives without decompressing
 		and recompressing them for best performance.
-	* Add, copy, move and rename files in the zip
-		archives. Any rom that you have is placed
-		automatically in the correct zip.
-	* Recognizes the text files added by rom sites and
+	* Adds, copies, moves, and renames files in zip
+		archives. Any rom you have is placed
+		automatically into the correct zip archive.
+	* Recognizes advertising text files added by rom sites and
 		deletes them.
-	* Recognizes the text files added by the rom dumpers
-		and keeps or deletes them as your choice.
-	* It's safe. In all the zip operations any file
+	* Recognizes text files added by rom dumpers
+		and lets you choose whether to keep or delete them.
+	* It's safe. During all zip operations, any file
 		removed or overwritten is saved in the
-		`rom_unknown' and `sample_unknown' directories and keep
-		for future uses. This will prevent any unwanted
-		remove operation.
+		`rom_unknown' and `sample_unknown' directories and kept
+		for future use. This prevents any accidental
+		data loss.
 
-	but also has these misfeatures:
+	but also has these limitations:
 
-	* Supports only roms and samples zipped.
-	* Supports only roms organized with differential merging.
-	* Doesn't support .chd files in subdirectories.
+	* Supports only zipped roms and samples.
+	* Supports only roms organized in the split format.
+	* Supports only .chd files in game subdirectories.
 
 Getting Started
-	To use AdvanceSCAN you need first to create and edit its textual
+	To use AdvanceSCAN, you must first create and edit its text
 	configuration file named 'advscan.rc'. An example advscan.rc file
 	is provided in the distribution archive, but you can also write
-	it from scratch.
+	one from scratch.
 
-	Let's start your preferred text editor and create the configuration
+	Open your preferred text editor and create the configuration
 	file advscan.rc with these options:
 
 		:rom DIR_OF_YOUR_ROMS
@@ -71,150 +71,142 @@ Getting Started
 		:rom_import DIR_OF_ROMS_TO_IMPORT
 
 	The most important configuration option is the directory where
-	your roms are stored. This directory must be specified in the
+	your roms are stored. This directory must be specified in both the
 	'rom' and 'rom_new' options.
-	The 'rom_unknown' option is used to select the directory where
-	store the unused roms. AdvanceSCAN never deletes roms for safety,
-	so you need to specify this 'basket' directory.
-	With the 'rom_import' option you can specify the directory where
-	the roms to import resides. For example the update packs you want
-	to integrate in your roms. If you don't have any, omit this option.
+	The 'rom_unknown' option specifies the directory where unused
+	roms are stored. AdvanceSCAN never deletes roms for safety,
+	so you need to specify this holding directory.
+	With the 'rom_import' option you can specify directories containing
+	roms to import (for example, update packs you want to integrate
+	into your rom set). If you don't have any, omit this option.
 
-	To analyze the roms, AdvanceSCAN needs also the roms
+	To analyze the roms, AdvanceSCAN also requires the rom
 	information file from the emulator. This file can be created
 	with the command:
 
 		:mame -listxml > info.xml
 
-	Finally, you can now run AdvanceSCAN to fix your roms with
+	Finally, you can run AdvanceSCAN to fix your roms with
 	the command:
 
 		:advscan -R < info.xml
 
-	You can also generate a report of the state of your roms
-	running the command:
+	You can also generate a report on the state of your roms
+	by running:
 
 		:advscan -r -p < info.xml > report.txt
 
 Options
 	-c, --cfg CONFIG
-		Select the configuration file. If not specified is
-		assumed the file `advscan.rc' in the current
-		directory.
+		Select the configuration file. If not specified, the
+		file `advscan.rc' in the current directory is used.
 
 	=< info.xml
-		To operate advscan needs always as input a rom
-		information file. It can be generally created with
-		the -listxml options of the emulator.
+		advscan always requires a rom information file as
+		input. It can generally be created with the -listxml
+		option of the emulator.
 
 	-r, --rom
-		Operates on roms (.zip files). All the next commands
-		will operate on your roms.
+		Operate on roms (.zip files). Subsequent action
+		options will apply to roms.
 
 	-s, --sample
-		Operates on samples. All the next commands will
-		operate on your samples.
+		Operate on samples. Subsequent action options
+		will apply to samples.
 
 	-k, --disk
-		Operates on disks (.chd files). All the next commands
-		will operate on your disks.
+		Operate on disks (.chd files). Subsequent action
+		options will apply to disks.
 
 	-a, --add-zip
-		Add the missing rom zips. Any missing zip archive
+		Add missing rom zip archives. Any missing zip archive
 		for which at least one rom is available will be created.
 
 	-b, --add-bin
-		Add, rename and substitute all the necessary files
-		in the existing zip archives. No new zip archives
-		are created, only the already present zip files are
-		modified. No file is deleted. Anyway, some files may
-		be overwritten. Any file overwritten is saved in
-		the `rom_unknown' or `sample_unknown' directory in
-		a zip archive with the same name of the original
-		one.
+		Add, rename and replace necessary files in existing
+		zip archives. No new zip archives are created; only
+		already present zip files are modified. No files are
+		deleted. However, files may be overwritten. Any
+		overwritten file is saved to the `rom_unknown' or
+		`sample_unknown' directory in a zip archive with the
+		same name as the original.
 
 	-d, --del-zip
-		Remove any unknown zip or chd archive. Any archive
-		removed is saved in the `rom_unknown',
+		Remove any unknown zip or chd archive. Any removed
+		archive is saved to the `rom_unknown',
 		`sample_unknown' or `disk_unknown' directory.
 
 	-u, --del-unknown
-		Remove any unknown file from the existing zip
-		archives. Any file removed is saved in the
-		`rom_unknown' or `sample_unknown' directory in a
-		zip archive with the same name of the original one.
-		Only binary files are removed, all the text files
-		are keep.
+		Remove any unknown file from existing zip archives.
+		Any removed file is saved to the `rom_unknown' or
+		`sample_unknown' directory in a zip archive with the
+		same name as the original. Only binary files are
+		removed; all text files are kept.
 
 	-g, --del-garbage
-		Remove any garbage file from the zip archives. A
-		garbage file is an advertising text file added
-		generally by a rom site. The files removed are not
-		saved.
+		Remove any garbage files from zip archives. A garbage
+		file is an advertising text file commonly added by rom
+		download sites. Removed files are permanently deleted
+		and not saved.
 
 	-t, --del-text
-		Remove any text file from the zip archives. Any
-		file removed is saved in the `rom_unknown' or
-		`sample_unknown' directory in a zip archive with the
-		same name of the original one.
+		Remove any text file from zip archives. Any removed
+		file is saved to the `rom_unknown' or `sample_unknown'
+		directory in a zip archive with the same name as the
+		original.
 
 	-R, --rom-std
-		Shortcut for the options -rabdug. It does all the
-		previous operations on roms except removing text
-		files.
+		Shortcut for options -rabdug. Performs all standard
+		operations on roms except removing text files.
 
 	-S, --sample-std
-		Shortcut for the options -sabdug. It does all the
-		previous operations on samples except removing text
-		files.
+		Shortcut for options -sabdug. Performs all standard
+		operations on samples except removing text files.
 
 	-K, --disk-std
-		Shortcut for the options -kd. It moves any unknown
-		disk file in the disk_unknown directory.
+		Shortcut for options -kd. Moves any unknown disk file
+		to the disk_unknown directory.
 
 	-n, --print-only
-		Don't modify anything, it only shows operations.
-		This option prevents any changes made by the
-		previous commands. The operations are only printed and
-		NOT executed.
+		Dry-run mode: do not modify anything. Operations are
+		only printed and NOT executed.
 
 	-p, --report
-		Write an extensive text report with the list of
-		good, bad and missing roms or/and samples. The
-		content of any zip archive with missing files is
-		printed. You must also specify the -r or/and -s
-		options.
+		Write an extensive text report listing good, bad and
+		missing roms and/or samples. The contents of any zip
+		archive with missing files are printed. You must also
+		specify the -r and/or -s options.
 
 	-P, --report-file
-		Write a small text report with information on the
+		Write a concise text report with information about
 		present files, listing incomplete, duplicate or
 		missing required zips.
 
 	-f, --filter FILTER
-		Apply a specific filter at the rom list. Check the
-		FILTERS chapter for a detailed list of filters available.
+		Apply a specific filter to the rom list. See the
+		FILTERS section for a detailed list of available filters.
 
 	-v, --verbose
-		Print a more verbose report. The content of any zip
-		archive is printed if it contains at least one
-		unknow or bad rom file.
+		Print a more verbose report. The contents of any zip
+		archive are printed if it contains at least one
+		unknown or bad rom file.
 
 Information Options
 	The following options are used only to print information.
-	These options don't need the configuration file and don't
-	access you roms.
+	These options do not require a configuration file and do not
+	access your roms.
 
 	-i, --ident files...
-		Identify the files specified. Only the information
-		present in the info file is used.
+		Identify the specified files using only the
+		information present in the info file.
 
 	-l, --bbs
-		Print a standard `.bbs' files with the description
-		of all the roms in the info file.
+		Print a standard `.bbs' file with descriptions
+		of all roms in the info file.
 
 	-e, --equal
-		Print a list of all the duplicate roms present in
-		the info file. Only the information present in the
+		Print a list of all duplicate roms present in
+		the info file. Only information present in the
 		info file is used.
 
 	-h, --help
@@ -224,152 +216,150 @@ Information Options
 		Print the program version.
 
 Identification
-	Rom files are identified by their crc and size. The roms
-	are not really decompressed, but the crc values stored in
-	the zip archives are used. If a rom has an incorrect crc or
-	size, but it has a correct name, it's maintained if
-	doesn't exist a valid alternative.
+	Rom files are identified by their CRC and size. Roms are
+	not actually decompressed; instead, the CRC values stored
+	directly in the zip archives are read. If a rom has an
+	incorrect CRC or size, but its name matches, it is kept
+	if no valid alternative exists.
 
 	Sample files are identified only by their names. This
-	limits the possible operations. Essentially advscan can
-	report only missing samples.
+	limits possible operations; essentially advscan can only
+	report missing samples.
 
-	Garbage files are identified by their size and crc.
+	Garbage files are identified by their size and CRC.
 
-	All the others files are identified with this algorithm:
+	All other files are identified using this algorithm:
 
-	* If the name is like *.sam, *.wav it's considered an
+	* If the name matches *.sam or *.wav, it is considered an
 		unknown binary file.
-	* If the name is like *.doc, *.txt, *.nfo,
-		*.diz, readme.* it's considered a text file.
-	* If the size is a power of 2 it's considered an
+	* If the name matches *.doc, *.txt, *.nfo,
+		*.diz or readme.*, it is considered a text file.
+	* If the file size is a power of 2, it is considered an
 		unknown binary file.
-	* Otherwise it's considered a text file.
+	* Otherwise, it is considered a text file.
 
 Configuration
-	To run advscan you need two files. The rom information
+	Running advscan requires two files: the rom information
 	file and the configuration file.
 
-	The rom information file is the file that contains the
-	information of all the roms used by the emulator. It can
-	be made with the command:
+	The rom information file contains details on all roms used
+	by the emulator. It can be created with the command:
 
 		:mame -listxml > info.xml
 
-	This file is expected as input of advscan. So, you can use
-	this command:
+	This file is passed to advscan via standard input:
 
 		:advscan [options] < info.xml
 
-	Or combine the two commands together:
+	Or by piping the two commands together:
 
 		:mame -listxml | advscan [options]
 
 	The configuration file is a text file that describes your
-	directories structure. You can use absolute path or
-	relative path. Relative path is relative to the current
-	directory from where you run advscan.
+	directory structure. You can use absolute or relative paths.
+	A relative path is relative to the current directory from
+	which you run advscan.
 
 	In Unix the PATH separator is `:'. In DOS and Windows the PATH
-	separator is `;'. The following options are expressed with the
+	separator is `;'. The following options are shown using the
 	Unix format.
 
 	=rom PATH:PATH...
-		List of paths where the roms are placed. These are
-		the zip archives, which are modified and fixed.
+		List of paths where roms are located. These are
+		the zip archives that will be modified and fixed.
 
 	=rom_new PATH
-		Single directory where the new created zip archives are
-		placed. It's STRONGLY suggested to put this path
-		ALSO in the `rom' specification. Otherwise at the
-		next run the zip archives are recreated.
+		Single directory where newly created zip archives are
+		placed. It is STRONGLY recommended to include this path
+		ALSO in the `rom' option. Otherwise, newly created
+		archives will not be found on subsequent runs and will
+		be recreated.
 
 	=rom_import PATH:PATH...
-		List of directory trees where other roms files are
-		placed. These are used for importing rom file missing
-		in rompath. These files are only read and never
-		modified in any way. It's very useful to insert
-		here any rom directories of any other arcade
-		emulators. When a new game will be supported the rom
-		archive will be made automatically.
+		List of directory trees where other rom files are
+		located. These are used to import rom files missing
+		from the main rom directories. These files are only
+		read and never modified in any way. This is very useful
+		for specifying rom directories of other arcade
+		emulators. When a new game is supported, the rom
+		archive will be created automatically.
 
 	=rom_unknown PATH
-		Single directory where unknown rom zip archives will be
-		moved. In this directory is inserted any rom file
-		removed from the rom zip archives. However, any rom
-		file is automatically deleted by advscan if it's
-		duplicated in an archive listed on the `rom' or
-		`rom_import' options.
+		Single directory where unknown rom zip archives are
+		moved. Any rom file removed from the rom zip archives
+		is placed in this directory. However, a rom file is
+		automatically deleted by advscan if a duplicate exists
+		in an archive listed in the `rom' or `rom_import' options.
 
 	=sample PATH:PATH...
-		List of paths where the samples are placed. These
-		are the zip archives, which are modified and fixed.
+		List of paths where samples are located. These
+		are the zip archives that will be modified and fixed.
 
 	=sample_unknown PATH
-		Single path where unknown sample zip archives will
-		be moved. In this directory is inserted any sample
-		file removed from the sample zip archives.
+		Single path where unknown sample zip archives are
+		moved. Any sample file removed from the sample zip
+		archives is placed in this directory.
 
 	=disk PATH:PATH...
-		List of paths where the disks are placed. These
-		are the chd archives.
+		List of paths where disks are located. These
+		are the chd files.
 
 	=disk_unknown PATH
-		Single path where unknown disk chd archives will
+		Single path where unknown disk chd files will
 		be moved.
 
-	If the -c option is not specified the configuration file
+	If the -c option is not specified, the configuration file
 	is read from ./advscan.rc.
 
-	The files advscan.rc.linux and advscan.rc.dos are two
-	examples of configuration files.
+	The files advscan.rc.linux and advscan.rc.dos provide two
+	example configuration files.
 
 Damaged Files
-	If a damaged .zip or .chd file is detected, it's renamed
-	with a new name appending the extension ".damaged".
-	For .chd file it may happen that the file is a disk image
-	with an old format.
+	If a damaged .zip or .chd file is detected, it is renamed
+	by appending the extension ".damaged".
+	For a .chd file, this may happen if the file is a disk image
+	in an older or unsupported format.
 
-	If the rename operation isn't possible the program aborts.
+	If the rename operation is not possible, the program aborts.
 
-	Please note that the program doesn't execute an
-	extensive test to detect damaged files.
+	Please note that the program does not perform an
+	exhaustive test to detect damaged files.
 
 Filters
-	As default advscan uses all the rom definitions, including also
-	unplayable games. If you prefere you can use only a subset
-	of the roms defined with the --filter option.
+	By default, advscan uses all rom definitions, also including
+	unplayable games. If you prefer, you can use only a subset
+	of roms by specifying the --filter option.
 
-	The filters available are:
-		working - Use only working roms. A working rom is a rom
-			reported working or a rom needed by another working
-			rom. A rom is reported working if it isn't marked
-			with the "preliminary" flag in the driver, video or
-			sound. This should be the preferred filter which only
-			store playable games.
-		preliminary - Use only roms which are not in the "working"
+	The available filters are:
+		working - Use only working roms. A working rom is one
+			reported as working or required by another working
+			game. A rom is considered working if it is not marked
+			with the "preliminary" flag in driver, video or
+			sound. This is the recommended filter to keep only
+			playable games.
+		preliminary - Use only roms that are not in the "working"
 			subset.
 		working_parent - Use only working parent roms from the
-			"working" subset excluding clones. If a parent rom
-			is not working but it has a working clone, both
-			the parent and the clone are used.
+			"working" subset, excluding clones. If a parent rom
+			is not working but has a working clone, both
+			the parent and the clone are included.
 			This is the preferred filter if you want only one
-			working game for any parent/clones group.
-		working_clone - Use only roms which  are in the "working"
+			working game for each parent/clone set.
+		working_clone - Use only roms that are in the "working"
 			subset but not in the "working_parent" subset.
 
 	For example, if you want to keep preliminary and working roms in
-	different directories, you can setup two different advscan.rc files
-	with different directories but sharing the `rom_unknown' dir to allow
-	automatic rom moving between the two sets.
-	If this is your configuration, to update your romset, you need to
-	run advscan three times:
+	different directories, you can set up two different advscan.rc files
+	pointing to different directories but sharing the `rom_unknown' dir
+	to allow automatic transfer between the two sets.
+	In this configuration, updating your romset requires running
+	advscan three times:
 
-		on working set - To export preliminary roms in the
+		on working set - To export preliminary roms to the
 			rom_unknown dir.
 		on preliminary set - To import preliminary roms and export
-			working roms in the rom_unknown dir.
-		on working set - To import working rom from the
+			working roms to the rom_unknown dir.
+		on working set - To import working roms from the
 			rom_unknown dir.
 
 	For example:
@@ -378,15 +368,15 @@ Filters
 		advscan -R -c advscan-wrk.rc -f working < advmame.xml > rom_wrk.log
 
 Report Format
-	The report generated with the -p option contains some text
-	tag explained here:
+	The report generated with the -p option uses the following
+	status tags:
 
 	=rom_good
 		A recognized good rom. The rom is recognized by its
-		name, crc and size.
+		name, CRC and size.
 
 	=rom_bad
-		A recognized bad rom with an incorrect size or crc.
+		A recognized bad rom with an incorrect size or CRC.
 		The rom is recognized by its name.
 
 	=rom_miss
@@ -398,11 +388,11 @@ Report Format
 
 	=nodump_good
 		A fake "NO GOOD DUMP KNOWN" rom. The rom is
-		recognized by its name, size and crc.
+		recognized by its name, size and CRC.
 
 	=nodump_miss
-		A missing "NO GOOD DUMP KNOWN" rom. It's the normal
-		condition, a no dump rom must be missing.
+		A missing "NO GOOD DUMP KNOWN" rom. This is the
+		expected state, as a "no dump" rom should be missing.
 
 	=nodump_bad
 		A recognized bad "NO GOOD DUMP KNOWN" rom. The rom is
@@ -423,33 +413,30 @@ Report Format
 
 	=garbage
 		A recognized garbage file. A garbage file is an
-		advertising text file added generally by a rom
-		site. The file is recognized by its name, size and
-		crc.
+		advertising text file commonly added by rom
+		sites. The file is recognized by its name, size and
+		CRC.
 
 Examples
-	For the generic use you need to run advscan with the
-	options:
+	For typical usage, run advscan with:
 
 		:advscan -R < info.xml
 
 	This command will fix your rom collection (without removing
-	the precious text files).
+	accompanying text files).
 
-	To check in advance all the operations that will be done
-	you can use the command:
+	To preview all operations in advance without modifying files:
 
 		:advscan -R -n < info.xml
 
-	which only show the operations.
+	which only displays the planned operations.
 
-	To only generate an extensive report of your rom set you
-	can use the command:
+	To generate a comprehensive report of your rom set:
 
 		:advscan -r -p < info.xml > report.txt
 
-	To increase the verbosity of the printed information you
-	can add the -v switch.
+	To increase the verbosity of the printed information,
+	add the -v switch.
 
 Copyright
 	This file is Copyright (C) 2003, 2004, 2008 Andrea Mazzoleni, Filipe Estima

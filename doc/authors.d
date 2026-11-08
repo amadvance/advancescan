@@ -2,7 +2,7 @@ Name
 	authors - AdvanceSCAN Authors
 
 Authors
-	The author of AdvanceSCAN and releated utilities is
+	The author of AdvanceSCAN and related utilities is
 	Andrea Mazzoleni.
 
 	You can contact me sending an email at:

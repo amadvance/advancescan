@@ -4,25 +4,23 @@ advdiff \- AdvanceSCAN Diff Utility
 .SH SYNOPSIS 
 advdiff [\-i, \-\-info] ORIG_INFO DEST_INFO
 .PD 0
-.PP
 .PD
 .SH DESCRIPTION 
 This utility prints all the games contained in the
 DEST_INFO file and not contained in ORIG_INFO file.
-A game is considered contained if all his roms are present
+A game is considered contained if all its roms are present
 in a game with the same name.
 .PP
 The DEST_INFO and ORIG_INFO files are the rom information
 files generated with the \-listinfo/\-listxml or \-gameinfo
 options of the emulators.
 .PP
-You can use this utility to create differential romset.
+You can use this utility to create a differential romset.
 For example you can use this command:
 .PP
 .RS 4
 advdiff mame.lst raine.lst > raine_diff.lst
 .PD 0
-.PP
 .PD
 .RE
 .PP
@@ -36,12 +34,11 @@ For example you can use this command:
 .RS 4
 advdiff mame79.xml mame80.xml > mame79\-80.xmlt
 .PD 0
-.PP
 .PD
 .RE
 .PP
 to create the list of roms needed to upgrade the MAME
-romset from the version 0.79 version to the version 0.80.
+romset from version 0.79 to version 0.80.
 .SH OPTIONS 
 .TP
 .B \-i, \-\-info
