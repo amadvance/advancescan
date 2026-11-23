@@ -33,6 +33,7 @@ protected:
 	unsigned size;
 	crc_t crc;
 	bool nodump;
+	unsigned order; // position in the information file
 public:
 	rom();
 	rom(const std::string& Aname, const unsigned Asize, const crc_t Acrc, bool Anodump);
@@ -50,6 +51,9 @@ public:
 
 	bool nodump_get() const { return nodump; }
 	void nodump_set(bool Anodump);
+
+	unsigned order_get() const { return order; }
+	void order_set(unsigned Aorder);
 
 	bool operator==(const rom& A) const;
 };

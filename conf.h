@@ -32,9 +32,14 @@ class config {
 	filepath sampleunknownpath;
 	filepath diskunknownpath;
 	filepath romnewpath;
+	bool rom_merged;
 public:
-	config(const std::string& file, bool need_rom, bool need_sample, bool need_disk, bool need_change);
+	config();
 	~config();
+
+	void load(const std::string& file, bool need_rom, bool need_sample, bool need_disk, bool need_change);
+
+	bool rom_merged_get() const { return rom_merged; }
 
 	const filepath_container& rompath_get() const { return rompath; }
 	const filepath_container& romreadonlytree_get() const { return romreadonlytree; }

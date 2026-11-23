@@ -22,11 +22,18 @@
 
 #include "game.h"
 
+#include <algorithm>
+#include <map>
+#include <set>
+#include <vector>
+
 using namespace std;
 
 game::game()
 {
 	resource = false;
+	order = 0;
+	merge_root = false;
 	working = true;
 	working_subset = false;
 	working_parent_subset = false;
@@ -36,6 +43,8 @@ game::game(const string& Aname)
 	: name(Aname)
 {
 	resource = false;
+	order = 0;
+	merge_root = false;
 	working = true;
 	working_subset = false;
 	working_parent_subset = false;
@@ -43,6 +52,7 @@ game::game(const string& Aname)
 
 game::game(const game& A)
 	: rs(A.rs),
+	mrs(A.mrs),
 	ss(A.ss),
 	ds(A.ds),
 	rzs(A.rzs), 
@@ -56,6 +66,10 @@ game::game(const game& A)
 	year(A.year), 
 	manufacturer(A.manufacturer),
 	resource(A.resource),
+	order(A.order),
+	merge_root(A.merge_root),
+	merge_parent(A.merge_parent),
+	merge_son(A.merge_son),
 	working(A.working),
 	working_subset(A.working_subset),
 	working_parent_subset(A.working_parent_subset),
@@ -70,6 +84,18 @@ game::~game()
 bool game::is_romset_required() const
 {
 	for(rom_by_name_set::const_iterator i=rs_get().begin();i!=rs_get().end();++i)
+		if (i->size_get() != 0 && !i->nodump_get())
+			return true;
+	return false;
+}
+
+bool game::is_zipset_required() const
+{
+	// in the merged format the roms of a clone are in the zip of the parent
+	if (merge_parent.length())
+		return false;
+
+	for(rom_by_name_set::const_iterator i=zs_get().begin();i!=zs_get().end();++i)
 		if (i->size_get() != 0 && !i->nodump_get())
 			return true;
 	return false;
@@ -259,6 +285,11 @@ void game::resource_set(bool Aresource)
 	resource = Aresource;
 }
 
+void game::order_set(unsigned Aorder)
+{
+	order = Aorder;
+}
+
 /**
  * Remove roms by name.
  */
@@ -302,13 +333,13 @@ void game::ss_remove_name(const sample_by_name_set& A) const {
 }
 
 /**
- * Remove disk by name.
+ * Remove disk by name and sha1.
  */
 void game::ds_remove_name(const disk_by_name_set& A) const {
 	disk_by_name_set B;
 	for(disk_by_name_set::const_iterator i=ds_get().begin();i!=ds_get().end();++i) {
 		disk_by_name_set::const_iterator j = A.find(*i);
-		if (j == A.end()) {
+		if (j == A.end() || !(j->sha1_get() == i->sha1_get())) {
 			B.insert(*i);
 		}
 	}
@@ -567,16 +598,163 @@ void gamearchive::load(istream& f)
 	}
 }
 
-void gamearchive::filter(filter_proc* p)
+/**
+ * Filter the game list.
+ * \param p Filter function. Games for which it returns false are removed.
+ * \param keep_parent If set, the parents of all the clones kept are also kept,
+ * even if removed by the filter. Used in the merged format where the roms
+ * of the clones are stored in the zip of the parent.
+ */
+void gamearchive::filter(filter_proc* p, bool keep_parent)
 {
-	iterator i;
+	set<string> keep;
 
-	i = map.begin();
+	for(const_iterator i=begin();i!=end();++i) {
+		if (p(*i))
+			keep.insert(i->name_get());
+	}
+
+	if (keep_parent) {
+		set<string> parent;
+		for(set<string>::const_iterator i=keep.begin();i!=keep.end();++i) {
+			const_iterator g = find(*i);
+			set<string> visited;
+			visited.insert(g->name_get());
+			while (g->cloneof_get().length()) {
+				const_iterator j = find(g->cloneof_get());
+				if (j == end() || j->resource_get() || visited.count(j->name_get()))
+					break;
+				visited.insert(j->name_get());
+				parent.insert(j->name_get());
+				g = j;
+			}
+		}
+		keep.insert(parent.begin(), parent.end());
+	}
+
+	iterator i = map.begin();
 	while (i != map.end()) {
 		iterator j = i;
 		++i;
-		if (!p(*j)) {
+		if (keep.find(j->name_get()) == keep.end()) {
 			map.erase(j);
+		}
+	}
+}
+
+static bool game_by_order_less(const game* A, const game* B)
+{
+	if (A->order_get() != B->order_get())
+		return A->order_get() < B->order_get();
+	return A->name_get() < B->name_get();
+}
+
+static bool rom_by_order_less(const rom& A, const rom& B)
+{
+	if (A.order_get() != B.order_get())
+		return A.order_get() < B.order_get();
+	return file_compare(A.name_get(), B.name_get()) < 0;
+}
+
+/**
+ * Convert the rom sets to the merged format.
+ *
+ * The roms of the clones are stored in the zip of the parent, in a
+ * subdirectory with the same name of the clone. The parent roms are stored
+ * without subdirectory.
+ * A clone rom with the same crc and size of a rom already present in the parent,
+ * or in a previous clone, isn't stored again. The clones are processed
+ * in the order of the information file.
+ *
+ * Must be called after load() and filter().
+ */
+void gamearchive::merge()
+{
+	typedef std::map<string, vector<const game*> > family_map;
+	family_map family;
+
+	// find the root parent of every clone
+	for(const_iterator i=begin();i!=end();++i) {
+		if (i->resource_get())
+			continue;
+
+		const game* root = &*i;
+		set<string> visited;
+		visited.insert(root->name_get());
+		while (root->cloneof_get().length()) {
+			const_iterator j = find(root->cloneof_get());
+			if (j == end()) {
+				if (root == &*i)
+					cerr << "Missing definition of cloneof '" << root->cloneof_get() << "' for game '" << root->name_get() << "'." << endl;
+				break;
+			}
+			if (j->resource_get())
+				break;
+			if (visited.count(j->name_get())) {
+				cerr << "Circular definition of cloneof '" << root->cloneof_get() << "' for game '" << root->name_get() << "'." << endl;
+				break;
+			}
+			visited.insert(j->name_get());
+			root = &*j;
+		}
+
+		if (root != &*i)
+			family[root->name_get()].push_back(&*i);
+	}
+
+	// every game not merged in another has its own zip
+	for(const_iterator i=begin();i!=end();++i) {
+		i->merge_root = false;
+		i->merge_parent = string();
+		i->merge_son.clear();
+		i->mrs.clear();
+	}
+
+	for(family_map::iterator f=family.begin();f!=family.end();++f) {
+		for(vector<const game*>::const_iterator c=f->second.begin();c!=f->second.end();++c) {
+			(*c)->merge_parent = f->first;
+		}
+	}
+
+	for(const_iterator i=begin();i!=end();++i) {
+		if (i->merge_parent.length())
+			continue;
+
+		i->merge_root = true;
+		i->mrs = i->rs;
+
+		family_map::iterator f = family.find(i->name_get());
+		if (f == family.end())
+			continue;
+
+		// roms already stored
+		rom_by_crc_set stored;
+		for(rom_by_name_set::const_iterator j=i->rs.begin();j!=i->rs.end();++j) {
+			if (!j->nodump_get())
+				stored.insert(*j);
+		}
+
+		vector<const game*>& clone = f->second;
+		sort(clone.begin(), clone.end(), game_by_order_less);
+
+		for(vector<const game*>::const_iterator c=clone.begin();c!=clone.end();++c) {
+			i->merge_son.insert(i->merge_son.end(), (*c)->name_get());
+
+			vector<rom> rl((*c)->rs.begin(), (*c)->rs.end());
+			sort(rl.begin(), rl.end(), rom_by_order_less);
+
+			for(vector<rom>::const_iterator j=rl.begin();j!=rl.end();++j) {
+				rom r = *j;
+				r.name_set((*c)->name_get() + "/" + j->name_get());
+
+				if (!j->nodump_get()) {
+					if (stored.find(*j) != stored.end())
+						continue;
+					stored.insert(*j);
+				}
+
+				i->mrs.insert(r);
+			}
 		}
 	}
 }

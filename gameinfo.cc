@@ -40,11 +40,14 @@ extern "C" void info_ext_unget(void* _arg, char c)
 
 bool gamearchive::load_info_internal()
 {
+	unsigned game_order = 0;
+	unsigned rom_order = 0;
 	info_t token = info_token_get();
 	while (token!=info_eof) {
 		if (token != info_symbol) return false;
 		if (strcmp(info_text_get(), "game")==0 || strcmp(info_text_get(), "resource")==0 || strcmp(info_text_get(), "machine")==0) {
 			game g;
+			g.order_set(game_order++);
 			g.resource_set(strcmp(info_text_get(), "resource")==0);
 			if (info_token_get() != info_open) return false;
 			token = info_token_get();
@@ -75,6 +78,7 @@ bool gamearchive::load_info_internal()
 				} else if (strcmp(info_text_get(), "rom")==0) {
 					if (info_token_get() != info_open)  return false;
 					rom r;
+					r.order_set(rom_order++);
 					token = info_token_get();
 					while (token != info_close) {
 						if (token != info_symbol) return false;

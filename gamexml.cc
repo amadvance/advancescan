@@ -67,6 +67,8 @@ struct state_t {
 	disk* d;
 	game* g; /**< Curren game in the loading process. */
 	game_by_name_set* a; /**< Game archive. */
+	unsigned game_order; /**< Counter of the games loaded. */
+	unsigned rom_order; /**< Counter of the roms loaded. */
 
 };
 
@@ -87,6 +89,7 @@ static void process_game(struct state_t* state, enum token_t t, const char* s, u
 {
 	if (t == token_open) {
 		state->g = new game;
+		state->g->order_set(state->game_order++);
 	} else if (t == token_close) {
 		state->a->insert(*state->g);
 		delete state->g;
@@ -202,6 +205,7 @@ static void process_rom(struct state_t* state, enum token_t t, const char* s, un
 {
 	if (t == token_open) {
 		state->r = new rom;
+		state->r->order_set(state->rom_order++);
 	} else if (t == token_close) {
 		if (!state->g) {
 			process_error(state, 0, "invalid state");
@@ -521,6 +525,8 @@ void gamearchive::load_xml(istream& is)
 	state.d = 0;
 	state.g = 0;
 	state.a = &map;
+	state.game_order = 0;
+	state.rom_order = 0;
 
 	XML_SetUserData(state.parser, &state);
 	XML_SetElementHandler(state.parser, start_handler, end_handler);

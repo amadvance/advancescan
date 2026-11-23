@@ -33,6 +33,7 @@ typedef std::list<std::string> string_container;
 
 class game {
 	mutable rom_by_name_set rs; // rom set
+	mutable rom_by_name_set mrs; // merged rom set, the content of the zip in the merged format
 	mutable sample_by_name_set ss; // sample set
 	mutable disk_by_name_set ds; // disk set
 
@@ -49,12 +50,20 @@ class game {
 	std::string year;
 	std::string manufacturer;
 	bool resource;
+	unsigned order; // position in the information file
+
+	// merged format
+	mutable bool merge_root; // the game has its own zip containing the merged rom set
+	mutable std::string merge_parent; // the game roms are in the zip of this other game
+	mutable string_container merge_son; // games with the roms in the zip of this game, in the information file order
 
 	mutable bool working;
 	mutable bool working_subset;
 	mutable bool working_parent_subset;
 
 	mutable string_container rom_son;
+
+	friend class gamearchive;
 public:
 	game();
 	game(const std::string& name);
@@ -69,6 +78,7 @@ public:
 	void year_set(const std::string& Ayear);
 	void manufacturer_set(const std::string& Amanufacturer);
 	void resource_set(bool Aresource);
+	void order_set(unsigned Aorder);
 
 	const std::string& name_get() const { return name; }
 	const std::string& cloneof_get() const { return cloneof; }
@@ -78,6 +88,11 @@ public:
 	const std::string& year_get() const { return year; }
 	const std::string& manufacturer_get() const { return manufacturer; }
 	bool resource_get() const { return resource; }
+	unsigned order_get() const { return order; }
+
+	bool merge_root_get() const { return merge_root; }
+	const std::string& merge_parent_get() const { return merge_parent; }
+	const string_container& merge_son_get() const { return merge_son; }
 
 	void working_set(bool Aworking) const;
 	bool working_get() const { return working; }
@@ -106,7 +121,15 @@ public:
 
 	string_container& rom_son_get() const { return rom_son; }
 
+	/**
+	 * Rom set stored in the zip named as the game.
+	 * In the split format it's the rom set of the game.
+	 * In the merged format it's the rom set of the game and of all its clones.
+	 */
+	const rom_by_name_set& zs_get() const { return merge_root ? mrs : rs; }
+
 	bool is_romset_required() const;
+	bool is_zipset_required() const;
 	bool is_sampleset_required() const { return ss_get().begin() != ss_get().end(); }
 	bool is_diskset_required() const { return ds_get().begin() != ds_get().end(); }
 
@@ -181,7 +204,8 @@ public:
 	bool has_working_clone_with_rom(const game& A) const;
 
 	void load(std::istream& f);
-	void filter(filter_proc* p);
+	void filter(filter_proc* p, bool keep_parent);
+	void merge();
 };
 
 #endif

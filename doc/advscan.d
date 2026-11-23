@@ -27,11 +27,16 @@ Description
 	and any other MAME derivative emulator.
 
 	The goal of advscan is to maintain a complete and accurate
-	rom and sample collection using the split format.
+	rom and sample collection using the split or the merged format.
 
 	Split format means that each game has its own zip archive,
 	containing only the rom files that are not already present in
 	the parent zip archive (if one exists).
+
+	Merged format means that each parent game has its own zip
+	archive, containing the rom files of the parent and of all
+	its clones. Clones don't have their own zip archive.
+	See the `rom_format' option for details.
 
 	advscan has these features:
 
@@ -53,7 +58,6 @@ Description
 	but also has these limitations:
 
 	* Supports only zipped roms and samples.
-	* Supports only roms organized in the split format.
 	* Supports only .chd files in game subdirectories.
 
 Getting Started
@@ -125,11 +129,13 @@ Options
 	-b, --add-bin
 		Add, rename and replace necessary files in existing
 		zip archives. No new zip archives are created; only
-		already present zip files are modified. No files are
-		deleted. However, files may be overwritten. Any
-		overwritten file is saved to the `rom_unknown' or
-		`sample_unknown' directory in a zip archive with the
-		same name as the original.
+		already present zip files are modified. Files may be
+		overwritten. Any overwritten file is saved to the
+		`rom_unknown' or `sample_unknown' directory in a zip
+		archive with the same name as the original.
+		A file with the CRC and size of a rom, but with a
+		different name, is renamed. Any additional copy of
+		a rom is deleted, because it's identical to the rom.
 
 	-d, --del-zip
 		Remove any unknown zip or chd archive. Any removed
@@ -142,6 +148,9 @@ Options
 		`sample_unknown' directory in a zip archive with the
 		same name as the original. Only binary files are
 		removed; all text files are kept.
+		A file with the CRC and size of a rom of the zip archive
+		is never considered unknown, even if it has a different
+		name.
 
 	-g, --del-garbage
 		Remove any garbage files from zip archives. A garbage
@@ -308,11 +317,58 @@ Configuration
 		Single path where unknown disk chd files will
 		be moved.
 
+	=rom_format split | merged
+		Format of the rom zip archives. The default is `split'.
+		See the MERGED FORMAT section for details.
+
 	If the -c option is not specified, the configuration file
 	is read from ./advscan.rc.
 
 	The files advscan.rc.linux and advscan.rc.dos provide two
 	example configuration files.
+
+Merged Format
+	By default, advscan uses the split format. In the `split'
+	format each game has its own zip archive, containing only the
+	rom files that are not already present in the parent, or in the
+	bios, zip archive.
+
+	With the `rom_format merged' option, advscan uses the merged
+	format. In the merged format each parent game has its own zip
+	archive, containing the rom files of the parent and of all its
+	clones. The zip archive is named as the parent.
+	Bios and devices keep their own zip archive, and their
+	roms are not stored in the zip archive of the parent.
+	The zip archives of the clones are considered unknown,
+	and with the -d option they are moved to the `rom_unknown'
+	directory, after their roms have been copied in the zip archive
+	of the parent.
+
+	In the merged zip archive the file names are always the following:
+
+	* The roms of the parent are stored with their name
+		and without any directory.
+	* The roms of a clone are stored in a directory with
+		the same name of the clone, like `clone/rom'.
+	* A clone rom with the same CRC and size of a rom of the
+		parent, or of a previous clone, is not stored again.
+		Clones are processed in the same order of the rom
+		information file. So, the rom is stored only once
+		with the name used by the first clone.
+	* Two or more roms of the parent with the same CRC and
+		size are stored with all their names.
+
+	The `rom_format' option applies only to roms. Samples
+	and disks are always managed in the same way. Disks
+	are always stored in the directory of the game, as in
+	the split format, because the emulator searches them
+	only in the directories of the game and of its parents.
+
+	To convert a rom collection from the split format to the
+	merged format, or vice versa, change the `rom_format' option
+	and run:
+
+		:advscan -R < info.xml
 
 Damaged Files
 	If a damaged .zip or .chd file is detected, it is renamed
@@ -348,6 +404,13 @@ Filters
 		working_clone - Use only roms that are in the "working"
 			subset but not in the "working_parent" subset.
 
+	In the merged format, if a clone is selected by the filter,
+	its parent is always included, because the parent zip archive
+	contains the roms of the clone. The roms of the clones not
+	selected by the filter are instead considered unknown files
+	of the parent zip archive.
+	The `working_clone' filter is not useful in the merged format.
+
 	For example, if you want to keep preliminary and working roms in
 	different directories, you can set up two different advscan.rc files
 	pointing to different directories but sharing the `rom_unknown' dir
@@ -381,6 +444,16 @@ Report Format
 
 	=rom_miss
 		A missing rom.
+
+	=rom_misnamed
+		A file with the CRC and size of a rom, but stored
+		with a different name. The rom is considered present,
+		and with the -b option the file is renamed.
+
+	=rom_duplicate
+		An additional copy of a rom, already present with the
+		correct name, or with another `rom_misnamed' file.
+		With the -b option the file is deleted.
 
 	=disk_bad
 		A recognized bad disk with an incorrect hash.
@@ -437,6 +510,82 @@ Examples
 
 	To increase the verbosity of the printed information,
 	add the -v switch.
+
+Target Set
+	The target set is the list of files that advscan expects to
+	find for each game. It's computed from the rom information
+	file, and it depends on the `rom_format' option.
+
+	These rules are common to the split and merged formats:
+
+	* A rom is identified by its CRC and size, not by its name.
+		A rom is present if a file with its CRC and size is in
+		the zip archive, with any name. Such a file is never
+		unknown. If the name is wrong it's reported as
+		`rom_misnamed', and renamed by the -b option.
+		Any additional copy is reported as `rom_duplicate', and
+		deleted by the -b option. If there are more copies with
+		a wrong name, they are used in name order: the first ones
+		are renamed, one for each rom with that CRC and size,
+		and the others are deleted.
+	* The `romof' attribute defines the chain of a game: its parent,
+		and then the bios or device of the parent. A rom with the
+		same CRC and size of a rom of a game in the chain is merged,
+		and it's not part of the target set, because it's stored
+		by the other game.
+	* Bios and devices always have their own zip archive. Their roms
+		are never stored in the zip archive of another game.
+	* A rom with size zero, or marked as `nodump', is never required.
+		A game with only such roms doesn't require a zip archive.
+	* Samples follow the same rules, using the `sampleof' chain
+		and identifying the samples by name.
+	* Disks follow the same rules, identifying the disks by name
+		and SHA1. A clone disk with the same name of a parent disk,
+		but with a different SHA1, is part of the target set.
+		Disks are always stored in a directory named as the game.
+	* A missing or circular definition in the `romof' or `cloneof'
+		chain is reported, and the chain ends there.
+	* The target set is computed after the filter selection, see the
+		FILTERS section.
+
+	A file in a zip archive that doesn't match any rom of the target
+	set is unknown. Unknown files are classified with these rules,
+	common to the split and merged formats, and for roms and samples:
+
+	* Binary, if the name matches *.sam or *.wav. Otherwise text,
+		if the name matches *.txt, *.doc, *.nfo, *.diz or readme.*.
+		Otherwise binary, if the size is zero or a power of 2.
+		Otherwise text. The names are matched case insensitive
+		and including any directory.
+	* Garbage, if it's text, and its name, size and CRC match
+		a known advertising file.
+	* A binary file can be used as a rom of another zip archive
+		by the -a and -b options. It's removed by the -u option,
+		and saved in the `rom_unknown' directory.
+	* A text file is never used as a rom. It's removed only by
+		the -t option, and saved in the `rom_unknown' directory.
+	* A garbage file is never used as a rom. It's removed only by
+		the -g option, and permanently deleted.
+	* Unknown files are reported with the -v option, with the
+		tags `binary', `text' and `garbage'.
+	* A disk that doesn't match any disk of the target set is
+		unknown, and it's moved to the `disk_unknown' directory
+		by the -d option.
+
+	The differences between the two formats are the following:
+
+	* In the split format each game has its own zip archive,
+		containing its target set. The rom names don't contain
+		any directory.
+	* In the merged format only the games that are not clones
+		have their own zip archive. It contains the target set of
+		the game, and of all its clones, stored as `clone/rom'.
+		A rom with the same CRC and size of a rom already stored
+		is not stored again. Bios and devices are never merged in
+		the zip archive of the parent, and a game with a `cloneof'
+		of a bios or device keeps its own zip archive.
+	* In the merged format a filter selecting a clone also
+		selects its parent.
 
 Copyright
 	This file is Copyright (C) 2003, 2004, 2008 Andrea Mazzoleni, Filipe Estima

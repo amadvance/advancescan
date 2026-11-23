@@ -55,9 +55,15 @@ static void expand_tree(const string& path, filepath_container& ds)
 	closedir(dir);
 }
 
-config::config(const string& file, bool need_rom, bool need_sample, bool need_disk, bool need_change)
+config::config()
+{
+	rom_merged = false;
+}
+
+void config::load(const string& file, bool need_rom, bool need_sample, bool need_disk, bool need_change)
 {
 	string cfg;
+	bool has_rom_format = false;
 
 	if (file.length())
 		cfg = file;
@@ -153,6 +159,16 @@ config::config(const string& file, bool need_rom, bool need_sample, bool need_di
 			if (arg.find(DIR_SEP) != string::npos)
 				throw error() << "Multiple path specification in option `rom_new' in file " << cfg;
 			romnewpath.file_set(file_adjust(arg));
+		} else if (tag == "rom_format") {
+			if (has_rom_format)
+				throw error() << "Double specification of option `rom_format' in file " << cfg;
+			if (arg == "split")
+				rom_merged = false;
+			else if (arg == "merged")
+				rom_merged = true;
+			else
+				throw error() << "Invalid value `" << arg << "' for option `rom_format' in file " << cfg << ", valid values are `split' and `merged'";
+			has_rom_format = true;
 		} else {
 			throw error() << "Unknown option `" << tag << "' in file " << cfg;
 		}

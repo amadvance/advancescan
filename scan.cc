@@ -30,6 +30,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <map>
 #include <sstream>
 
 using namespace std;
@@ -127,6 +128,7 @@ struct rom_stat_t {
 	rom_by_name_set nodump_equal; // nodump present
 	rom_bad_container nodump_bad; // nodump present bat wrong
 	rom_by_name_set nodump_miss; // nodump missing
+	rom_by_name_set family; // file with the crc and size of a rom of the zip, but with a different name
 };
 
 void stat_rom_zip(
@@ -136,7 +138,7 @@ void stat_rom_zip(
 	const analyze& ana)
 {
 	// setup
-	rom_by_name_set b = gam.rs_get();
+	rom_by_name_set b = gam.zs_get();
 
 	for(ziprom::const_iterator z=zd.begin();z!=zd.end();++z) {
 		// search for name
@@ -191,6 +193,79 @@ void stat_rom_zip(
 			result.nodump_miss.insert(*i);
 		} else {
 			result.rom_miss.insert(*i);
+		}
+	}
+}
+
+/**
+ * Set of the crc and size of all the files in a zip.
+ */
+rom_by_crc_set zip_crc_set(const ziprom& z)
+{
+	rom_by_crc_set r;
+	for(ziprom::const_iterator i=z.begin();i!=z.end();++i) {
+		r.insert(rom(i->name_get(), i->uncompressed_size_get(), i->crc_get(), false));
+	}
+	return r;
+}
+
+/**
+ * Move from the unknown files to the family
+ * set all the files with the crc and size of a rom of the zip.
+ * These files are only stored with a different name, and they are never removed
+ * as unknown files.
+ */
+void stat_rom_family(const game& gam, rom_stat_t& result)
+{
+	rom_by_crc_set known;
+	for(rom_by_name_set::const_iterator i=gam.zs_get().begin();i!=gam.zs_get().end();++i) {
+		if (!i->nodump_get())
+			known.insert(*i);
+	}
+
+	rom_by_name_set* unk[3] = { &result.unk_binary, &result.unk_text, &result.unk_garbage };
+	for(unsigned k=0;k<3;++k) {
+		rom_by_name_set tmp;
+		for(rom_by_name_set::const_iterator i=unk[k]->begin();i!=unk[k]->end();++i) {
+			if (known.find(*i) != known.end())
+				result.family.insert(*i);
+			else
+				tmp.insert(*i);
+		}
+		*unk[k] = tmp;
+	}
+}
+
+/**
+ * Check if all the roms of a game are present in a zip, comparing only crc and size.
+ * Nodump roms are ignored.
+ */
+bool rom_present_by_crc(const game& g, const rom_by_crc_set& present)
+{
+	for(rom_by_name_set::const_iterator i=g.rs_get().begin();i!=g.rs_get().end();++i) {
+		if (!i->nodump_get() && present.find(*i) == present.end())
+			return false;
+	}
+	return true;
+}
+
+/**
+ * Add the zip in the list of zips of the game.
+ * In the merged format, the zip is added also to all the clones
+ * stored in it. The zip is good for a game if all the roms of the game
+ * are present, comparing only crc and size. For the clones the
+ * zip size is not counted, because it's already counted for the parent.
+ */
+void rom_zip_status(const ziprom& z, const game& g, const gamearchive& gar, unsigned size)
+{
+	rom_by_crc_set present = zip_crc_set(z);
+
+	g.rzs_add(infopath(z.file_get(), rom_present_by_crc(g, present), size, z.is_readonly()));
+
+	for(string_container::const_iterator i=g.merge_son_get().begin();i!=g.merge_son_get().end();++i) {
+		gamearchive::const_iterator c = gar.find(game(*i));
+		if (c != gar.end()) {
+			c->rzs_add(infopath(z.file_get(), rom_present_by_crc(*c, present), 0, z.is_readonly()));
 		}
 	}
 }
@@ -276,6 +351,7 @@ void rom_add(
 	const operation& oper,
 	ziprom& z,
 	const game& g, 
+	const gamearchive& gar,
 	const ziparchive& zar,
 	gamerom_by_crc_multiset& rcb,
 	output& out) 
@@ -287,7 +363,7 @@ void rom_add(
 	rom_by_name_set miss_shared;
 
 	// split the roms in shared and unique
-	for(rom_by_name_set::iterator i=g.rs_get().begin();i!=g.rs_get().end();++i) {
+	for(rom_by_name_set::iterator i=g.zs_get().begin();i!=g.zs_get().end();++i) {
 		pair<gamerom_by_crc_multiset::iterator,gamerom_by_crc_multiset::iterator> range;
 
 		range = rcb.equal_range(gamerom("",*i));
@@ -389,14 +465,7 @@ void rom_add(
 			if (stat(path.c_str(), &fst) != 0)
 				throw error() << "Failed stat file " << z.file_get();
 
-			// if no rom is missing
-			if (miss_unique.empty() && miss_shared.empty()) {
-				// add zip to directory list of game as good
-				g.rzs_add(infopath(z.file_get(), true, fst.st_size, z.is_readonly()));
-			} else {
-				// add zip to directory list of game as bad
-				g.rzs_add(infopath(z.file_get(), false, fst.st_size, z.is_readonly()));
-			}
+			rom_zip_status(z, g, gar, fst.st_size);
 		}
 	}
 }
@@ -425,17 +494,20 @@ bool rom_scan_add(
 		for(rom_by_name_set::iterator j=rremove.begin();j!=rremove.end();++j) {
 			// compare crc, size
 			if (s_crc == j->crc_get() && s_size == j->size_get()) {
+				string name = j->name_get();
+
+				// remove from the remove bag, also if only printing,
+				// to not use the same file twice
+				rremove.erase(j);
+
 				if (oper.active_fix() && !z.is_readonly()) {
 					// rename the rom
-					z.rename(j->name_get(), s_name, reject);
+					z.rename(name, s_name, reject);
 					added = true;
-
-					// remove from the remove bag
-					rremove.erase(j);
 				}
 				if (oper.output_fix()) {
 					out.title("rom_zip", title, z.file_get());
-					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << j->name_get() << "\n";
+					out.cmd_rom(s_add, s_cmd, s_name, s_size, s_crc) << " " << name << "\n";
 				}
 				found = true;
 
@@ -532,6 +604,7 @@ void rom_scan(
 	ziprom& z,
 	ziprom& reject,
 	const game& gam,
+	const gamearchive& gar,
 	const ziparchive& zar,
 	output& out,
 	const analyze& ana)
@@ -544,6 +617,20 @@ void rom_scan(
 	rom_stat_t st;
 	stat_rom_zip(z, gam, st, ana);
 
+	// files that can be renamed to fix missing or wrong roms,
+	// the unknown binary files and the files with a different name
+	// but with the crc and size of a rom of the zip
+	stat_rom_family(gam, st);
+	rom_by_name_set bag = st.unk_binary;
+	bag.insert(st.family.begin(), st.family.end());
+
+	// crc and size of the roms present with the correct name,
+	// or that will be present after the fix
+	rom_by_crc_set present;
+	for(rom_by_name_set::iterator i=st.rom_equal.begin();i!=st.rom_equal.end();++i) {
+		present.insert(*i);
+	}
+
 	// for any missing rom
 	rom_by_name_set tmp_rom_miss; // missing rom
 	for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
@@ -555,11 +642,14 @@ void rom_scan(
 			"rom_good", "add",
 			z, reject, found, title,
 			i->name_get(), i->size_get(), i->crc_get(), 
-			st.unk_binary, zar, out)) {
+			bag, zar, out)) {
 
 			st.rom_equal.insert(*i);
 			added = true;
 		}
+
+		if (found)
+			present.insert(*i);
 
 		if (!added) {
 			// rom is missing
@@ -579,17 +669,47 @@ void rom_scan(
 			"rom_good", "add",
 			z, reject, found, title,
 			i->name_get(), i->size_get(), i->crc_get(), 
-			st.unk_binary, zar, out)) {
+			bag, zar, out)) {
 
 			st.rom_equal.insert(i->r);
 			added = true;
 		}
+
+		if (found)
+			present.insert(i->r);
 
 		if (!added)
 			// if not found insert in wrong rom
 			tmp_rom_bad.insert(tmp_rom_bad.end(), *i);
 	}
 	st.rom_bad = tmp_rom_bad;
+
+	// split the remaining files of the bag
+	rom_by_name_set tmp_unk_binary;
+	rom_by_name_set tmp_family;
+	for(rom_by_name_set::iterator i=bag.begin();i!=bag.end();++i) {
+		if (st.family.find(*i) != st.family.end())
+			tmp_family.insert(*i);
+		else
+			tmp_unk_binary.insert(*i);
+	}
+	st.unk_binary = tmp_unk_binary;
+	st.family = tmp_family;
+
+	// delete the files with a different name
+	// if the same crc and size is present with the correct name.
+	// They are exact copies, and they are not saved in the reject zip.
+	for(rom_by_name_set::iterator i=st.family.begin();i!=st.family.end();++i) {
+		if (present.find(*i) == present.end())
+			continue;
+		if (oper.active_fix() && !z.is_readonly()) {
+			z.remove(i->name_get());
+		}
+		if (oper.output_fix()) {
+			out.title("rom_zip", title, z.file_get());
+			out.cmd_rom("duplicate", "remove", *i) << "\n";
+		}
+	}
 
 	for(rom_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
 		if (oper.active_remove_binary() && !z.is_readonly()) {
@@ -635,16 +755,7 @@ void rom_scan(
 		if (stat(path.c_str(), &fst) != 0)
 			throw error() << "Failed stat file " << z.file_get();
 
-		// if no rom is missing or wrong. Ignore nodump.
-		if (st.rom_miss.empty()
-		    && st.rom_bad.empty()
-		  ) {
-			// add zip to directory list of game as good
-			gam.rzs_add(infopath(z.file_get(), true, fst.st_size, z.is_readonly()));
-		} else {
-			// add zip to directory list of game as bad
-			gam.rzs_add(infopath(z.file_get(), false, fst.st_size, z.is_readonly()));
-		}
+		rom_zip_status(z, gam, gar, fst.st_size);
 	}
 
 	// update the reject zip
@@ -928,8 +1039,43 @@ void rom_report(
 	rom_stat_t st;
 	stat_rom_zip(z, gam, st, ana);
 
+	// files with the crc and size of a rom, but with a different name
+	rom_by_name_set misnamed; // file that will be renamed to a missing or wrong rom
+	rom_by_name_set duplicate; // file that will be deleted, because the rom is present
+	stat_rom_family(gam, st);
+
+	// number of missing or wrong roms for each crc and size
+	map<rom, unsigned, rom_by_crc_less> need;
+	for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
+		++need[*i];
+	}
+	for(rom_bad_container::iterator i=st.rom_bad.begin();i!=st.rom_bad.end();++i) {
+		++need[i->r];
+	}
+
+	// as in rom_scan(), the files are used in name order to fix the
+	// missing or wrong roms, and all the others are duplicates
+	for(rom_by_name_set::iterator i=st.family.begin();i!=st.family.end();++i) {
+		map<rom, unsigned, rom_by_crc_less>::iterator j = need.find(*i);
+		if (j != need.end() && j->second > 0) {
+			--j->second;
+			misnamed.insert(*i);
+		} else {
+			duplicate.insert(*i);
+		}
+	}
+
+	// a rom stored with a different name is not missing
+	rom_by_crc_set zip_crc = zip_crc_set(z);
+	rom_by_name_set tmp_rom_miss;
+	for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
+		if (zip_crc.find(*i) == zip_crc.end())
+			tmp_rom_miss.insert(*i);
+	}
+	st.rom_miss = tmp_rom_miss;
+
 	// print the report
-	if (!st.rom_miss.empty() || !st.rom_bad.empty()
+	if (!st.rom_miss.empty() || !st.rom_bad.empty() || !misnamed.empty() || !duplicate.empty()
 		|| (verbose && (!st.nodump_miss.empty() || !st.nodump_bad.empty() || !st.nodump_equal.empty() || !st.unk_text.empty() || !st.unk_binary.empty() || !st.unk_garbage.empty()))
 	) {
 		bool title = false;
@@ -938,6 +1084,14 @@ void rom_report(
 
 		for(rom_by_name_set::iterator i=st.rom_miss.begin();i!=st.rom_miss.end();++i) {
 			out.state_rom("rom_miss", *i) << "\n";
+		}
+
+		for(rom_by_name_set::iterator i=misnamed.begin();i!=misnamed.end();++i) {
+			out.state_rom("rom_misnamed", *i) << "\n";
+		}
+
+		for(rom_by_name_set::iterator i=duplicate.begin();i!=duplicate.end();++i) {
+			out.state_rom("rom_duplicate", *i) << "\n";
 		}
 
 		for(rom_by_name_set::iterator i=st.nodump_miss.begin();i!=st.nodump_miss.end();++i) {
@@ -1166,14 +1320,14 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, game
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find(game(file_basename(i->file_get())));
 
-			if (g == gar.end() || !g->is_romset_required()) {
+			if (g == gar.end() || !g->is_zipset_required()) {
 				// insert in the unknown set, processed later
 				unknown.insert(unknown.end(), filepath(i->file_get()));
 			} else {
 				ziprom reject(cfg.romunknownpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknown, false);
 
 				try {
-					rom_scan(oper, *i, reject, *g, zar, out, ana);
+					rom_scan(oper, *i, reject, *g, gar, zar, out, ana);
 				} catch (error& e) {
 					throw e << " scanning rom " << i->file_get();
 				}
@@ -1186,7 +1340,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, game
 	// add zips
 	if (oper.active_add() || oper.output_add()) {
 		for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
-			if (i->is_romset_required() && !i->has_usable_rom()) {
+			if (i->is_zipset_required() && !i->has_usable_rom()) {
 				string path = cfg.romnewpath_get().file_get() + "/" + i->name_get() + ".zip";
 
 				ziparchive::iterator j;
@@ -1199,7 +1353,7 @@ void all_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, game
 				}
 
 				try {
-					rom_add(oper, *j, *i, zar, rcb, out);
+					rom_add(oper, *j, *i, gar, zar, rcb, out);
 				} catch (error& e) {
 					throw e << " scanning rom " << j->file_get();
 				}
@@ -1237,13 +1391,13 @@ void set_rom_scan(const operation& oper, ziparchive& zar, gamearchive& gar, cons
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find(game(file_basename(i->file_get())));
 
-			if (g == gar.end() || !g->is_romset_required()) {
+			if (g == gar.end() || !g->is_zipset_required()) {
 				// ignored
 			} else {
 				ziprom reject(cfg.romunknownpath_get().file_get() + "/" + g->name_get() + ".zip", zip_unknown, false);
 
 				try {
-					rom_scan(oper, *i, reject, *g, zar, out, ana);
+					rom_scan(oper, *i, reject, *g, gar, zar, out, ana);
 				} catch (error& e) {
 					throw e << " scanning rom " << i->file_get();
 				}
@@ -1418,7 +1572,7 @@ void report_rom_zip(const ziparchive& zar, gamearchive& gar, output& out, bool v
 		if (i->type_get() == zip_own) {
 			gamearchive::iterator g = gar.find(game(file_basename(i->file_get())));
 
-			if (g == gar.end() || !g->is_romset_required()) {
+			if (g == gar.end() || !g->is_zipset_required()) {
 				// ignore
 			} else {
 				rom_report(*i, *g, out, verbose, ana);
@@ -1806,7 +1960,7 @@ bool filter_working_clone(const game& g)
 	return g.working_subset_get() && !g.working_parent_subset_get();
 }
 
-void filt(gamearchive& gar, const string& filter)
+void filt(gamearchive& gar, const string& filter, bool keep_parent)
 {
 	filter_proc* p;
 	if (filter == "preliminary")
@@ -1823,7 +1977,7 @@ void filt(gamearchive& gar, const string& filter)
 		throw error() << "Invalid filter " << filter;
 	}
 
-	gar.filter(p);
+	gar.filter(p, keep_parent);
 }
 
 // ----------------------------------------------------------------------------
@@ -2168,8 +2322,16 @@ void run(int argc, char* argv[])
 	// load the rom set
 	gar.load(cin);
 
-	// filter the rom set
-	filt(gar, filter);
+	// load the configuration
+	config cfg;
+	if (flag_rom || flag_sample || flag_disk)
+		cfg.load(cfg_file, flag_rom, flag_sample, flag_disk, flag_change);
+
+	// the merged format is used only operating on roms
+	bool flag_merged = flag_rom && cfg.rom_merged_get();
+
+	// filter the rom set, in the merged format keep the parents of the clones
+	filt(gar, filter, flag_merged);
 
 	if (gar.begin() == gar.end())
 		throw error() << "Empty information file";
@@ -2193,9 +2355,22 @@ void run(int argc, char* argv[])
 	if (flag_bbs)
 		bbs(gar, cout);
 
-	if (flag_rom || flag_sample || flag_disk) {
-		config cfg(cfg_file, flag_rom, flag_sample, flag_disk, flag_change);
+	// convert to the merged format, after the commands that use the rom set of each game
+	if (flag_merged) {
+		gar.merge();
 
+		// the crc/size rom set now contains the roms of the zips
+		rcb.clear();
+		for(gamearchive::const_iterator i=gar.begin();i!=gar.end();++i) {
+			if (!i->is_zipset_required())
+				continue;
+			for(rom_by_name_set::const_iterator j=i->zs_get().begin();j!=i->zs_get().end();++j) {
+				rcb.insert(gamerom(i->name_get(), j->name_get(), j->size_get(), j->crc_get(), j->nodump_get()));
+			}
+		}
+	}
+
+	if (flag_rom || flag_sample || flag_disk) {
 		output out(cout);
 		analyze ana(gar);
 

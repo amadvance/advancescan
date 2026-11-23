@@ -9,3 +9,5 @@ rom_unknown c:\mame\unknown
 sample c:\mame\samples
 sample_unknown c:\mame\unknown
 
+# Format of the rom zip archives: split (default) or merged
+#rom_format merged

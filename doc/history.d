@@ -1,7 +1,17 @@
 Name
 	advscan - History For AdvanceSCAN
 
-AdvanceSCAN Version 2.0 2025/01
+AdvanceSCAN Version 2.0 (WIP)
+	) Added support for rom sets in the merged format with the new
+		`rom_format' option.
+	) A rom is now considered present if a file with its CRC and size
+		is in the zip archive, whatever its name. Files with the
+		wrong name are reported as `rom_misnamed', and additional
+		copies as `rom_duplicate'. Such files are never removed
+		as unknown by the -u option. With the -b option the
+		misnamed files are renamed, and the duplicates deleted.
+	) Fixed the handling of a clone disk with the same name of a parent
+		disk, but with a different hash.
 	) Added support for disk CHDs in game subdirectories.
 	) Fixed SHA-1 hash for CHD version 5 and support both raw and overall hash.
 	) Ignore missing definitions of sampleof. Recent MAMEs have a lot of them.

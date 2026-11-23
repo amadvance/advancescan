@@ -32,15 +32,16 @@ rom::rom()
 	size = 0;
 	crc = 0;
 	nodump = false;
+	order = 0;
 }
 
 rom::rom(const string& Aname, unsigned Asize, crc_t Acrc, bool Anodump)
-	: name(Aname), size(Asize), crc(Acrc), nodump(Anodump)
+	: name(Aname), size(Asize), crc(Acrc), nodump(Anodump), order(0)
 {
 }
 
 rom::rom(const rom& A)
-	: name(A.name), size(A.size), crc(A.crc), nodump(A.nodump)
+	: name(A.name), size(A.size), crc(A.crc), nodump(A.nodump), order(A.order)
 {
 }
 
@@ -66,6 +67,11 @@ void rom::size_set(unsigned Asize)
 void rom::nodump_set(bool Anodump)
 {
 	nodump = Anodump;
+}
+
+void rom::order_set(unsigned Aorder)
+{
+	order = Aorder;
 }
 
 bool rom::operator==(const rom& A) const

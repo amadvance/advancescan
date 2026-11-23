@@ -3,9 +3,13 @@
                             =======================
 
 
-ADVANCESCAN VERSION 2.0 2025/01
-===============================
+ADVANCESCAN VERSION 2.0 (WIP)
+=============================
 
+* Added support for rom sets in the merged format with the new
+  `rom_format' option.
+* Fixed the handling of a clone disk with the same name of a parent
+  disk, but with a different hash.
 * Added support for disk CHDs in game subdirectories.
 * Fixed SHA-1 hash for CHD version 5 and support both raw and overall hash.
 * Ignore missing definitions of sampleof. Recent MAMEs have a lot of them.
