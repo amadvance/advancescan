@@ -24,12 +24,24 @@
 
 using namespace std;
 
-ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly)
+ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly), readonly_warned(false)
 {
 }
 
-ziprom::ziprom(const ziprom& A) : zip(A), type(A.type), readonly(A.readonly)
+ziprom::ziprom(const ziprom& A) : zip(A), type(A.type), readonly(A.readonly), readonly_warned(A.readonly_warned)
 {
+}
+
+/**
+ * Print a warning, only the first time, that the zip is not modified because it's read-only.
+ */
+void ziprom::readonly_warning() const
+{
+	if (readonly_warned)
+		return;
+	readonly_warned = true;
+
+	cerr << "warning: read-only zip " << file_get() << " not modified\n";
 }
 
 ziprom::~ziprom()

@@ -74,6 +74,24 @@ void read_dir(const string& path, filepath_container& ds, bool recursive, const 
 	}
 }
 
+/**
+ * Check if an operation has to modify a zip.
+ * If the zip is read-only, it's never modified, and a warning is printed
+ * if the operation is executed or printed.
+ * \param active If the operation is executed.
+ * \param output If the operation is printed.
+ */
+bool zip_modify(bool active, bool output, const ziprom& z)
+{
+	if (z.is_readonly()) {
+		if (active || output)
+			z.readonly_warning();
+		return false;
+	}
+
+	return active;
+}
+
 void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_error, bool rename_error) {
 	filepath_container ds;
 
@@ -402,7 +420,7 @@ void rom_add(
 			ziprom::const_iterator k;
 			ziparchive::const_iterator j = zar.find_exclude(z, i->size_get(), i->crc_get(), k);
 			if (j!=zar.end()) {
-				if (oper.active_add() && !z.is_readonly()) {
+				if (zip_modify(oper.active_add(), oper.output_add(), z)) {
 					z.add(k, i->name_get());
 					good.insert(*i);
 					added = true;
@@ -440,7 +458,7 @@ void rom_add(
 				ziprom::const_iterator k;
 				ziparchive::const_iterator j = zar.find_exclude(z, i->size_get(), i->crc_get(), k);
 				if (j!=zar.end()) {
-					if (oper.active_add() && !z.is_readonly()) {
+					if (zip_modify(oper.active_add(), oper.output_add(), z)) {
 						z.add(k, i->name_get());
 						good.insert(*i);
 						added = true;
@@ -511,7 +529,7 @@ bool rom_scan_add(
 				// to not use the same file twice
 				rremove.erase(j);
 
-				if (oper.active_fix() && !z.is_readonly()) {
+				if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 					// rename the rom
 					z.rename(name, s_name, reject);
 					added = true;
@@ -536,7 +554,7 @@ bool rom_scan_add(
 				string name = j->name_get();
 				if (s_name != name) {
 					// the name must be different (it always be)
-					if (oper.active_fix() && !z.is_readonly()) {
+					if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 						// add the rom
 						// (this operation is safe, because the zip iterator is a list)
 						z.add(j, s_name, reject);
@@ -565,14 +583,14 @@ bool rom_scan_add(
 				string name = j->name_get();
 				if (s_name != name) {
 					// the name must be different (it may not be)
-					if (oper.active_fix() && !z.is_readonly()) {
+					if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 						// add the rom
 						// (this operation is safe, because the zip iterator is a list)
 						z.add(j, s_name, reject);
 						added = true;
 					}
 				} else {
-					if (oper.active_fix() && !z.is_readonly()) {
+					if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 						// swap the roms
 						z.swap(s_name, reject, j);
 						added = true;
@@ -595,7 +613,7 @@ bool rom_scan_add(
 		ziprom::const_iterator k;
 		ziparchive::const_iterator j = zar.find_exclude(z, s_size, s_crc, k);
 		if (j!=zar.end()) {
-			if (oper.active_fix() && !z.is_readonly()) {
+			if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 				z.add(k, s_name, reject);
 				added = true;
 			}
@@ -713,7 +731,7 @@ void rom_scan(
 	for(rom_by_name_set::iterator i=st.family.begin();i!=st.family.end();++i) {
 		if (present.find(*i) == present.end())
 			continue;
-		if (oper.active_fix() && !z.is_readonly()) {
+		if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 			z.remove(i->name_get());
 		}
 		if (oper.output_fix()) {
@@ -723,7 +741,7 @@ void rom_scan(
 	}
 
 	for(rom_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
-		if (oper.active_remove_binary() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_binary(), oper.output_remove_binary(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_remove_binary()) {
@@ -733,7 +751,7 @@ void rom_scan(
 	}
 
 	for(rom_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
-		if (oper.active_remove_text() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_text(), oper.output_remove_text(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_remove_text()) {
@@ -743,7 +761,7 @@ void rom_scan(
 	}
 
 	for(rom_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
-		if (oper.active_remove_garbage() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_garbage(), oper.output_remove_garbage(), z)) {
 			z.remove(i->name_get());
 		}
 		if (oper.output_remove_garbage()) {
@@ -802,7 +820,7 @@ void sample_scan(
 				// compare name without dir
 				if (file_compare(i->name_get(), file_name(j->name_get()))==0) {
 					// found rom with different name
-					if (oper.active_fix() && !z.is_readonly()) {
+					if (zip_modify(oper.active_fix(), oper.output_fix(), z)) {
 						z.add(j->name_get(), i->name_get());
 						st.sample_equal.insert(*i);
 						added = true;
@@ -824,7 +842,7 @@ void sample_scan(
 	st.sample_miss = tmp_rom_miss;
 
 	for(sample_by_name_set::iterator i=st.unk_binary.begin();i!=st.unk_binary.end();++i) {
-		if (oper.active_remove_binary() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_binary(), oper.output_remove_binary(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_remove_binary()) {
@@ -834,7 +852,7 @@ void sample_scan(
 	}
 
 	for(sample_by_name_set::iterator i=st.unk_text.begin();i!=st.unk_text.end();++i) {
-		if (oper.active_remove_text() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_text(), oper.output_remove_text(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_remove_text()) {
@@ -844,7 +862,7 @@ void sample_scan(
 	}
 
 	for(sample_by_name_set::iterator i=st.unk_garbage.begin();i!=st.unk_garbage.end();++i) {
-		if (oper.active_remove_garbage() && !z.is_readonly()) {
+		if (zip_modify(oper.active_remove_garbage(), oper.output_remove_garbage(), z)) {
 			z.remove(i->name_get());
 		}
 		if (oper.output_remove_garbage()) {
@@ -950,7 +968,7 @@ void rom_move(
 	}
 
 	for(rom_by_name_set::iterator i=remove.begin();i!=remove.end();++i) {
-		if (oper.active_move() && !z.is_readonly()) {
+		if (zip_modify(oper.active_move(), oper.output_move(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_move()) {
@@ -989,7 +1007,7 @@ void sample_move(
 	}
 
 	for(rom_by_name_set::iterator i=remove.begin();i!=remove.end();++i) {
-		if (oper.active_move() && !z.is_readonly()) {
+		if (zip_modify(oper.active_move(), oper.output_move(), z)) {
 			z.remove(i->name_get(), reject);
 		}
 		if (oper.output_move()) {

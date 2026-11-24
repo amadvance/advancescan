@@ -33,6 +33,7 @@ enum zip_type {
 class ziprom : public zip {
 	zip_type type;
 	bool readonly;
+	mutable bool readonly_warned; // if the read-only warning was already printed
 
 	void move(const std::string& zipintname_src, ziprom& dst, const std::string& zipintname_dst);
 
@@ -43,6 +44,7 @@ public:
 	~ziprom();
 
 	bool is_readonly() const { return readonly; }
+	void readonly_warning() const;
 	zip_type type_get() const { return type; }
 
 	void open();

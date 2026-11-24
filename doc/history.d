@@ -10,6 +10,8 @@ AdvanceSCAN Version 2.0 (WIP)
 		copies as `rom_duplicate'. Such files are never removed
 		as unknown by the -u option. With the -b option the
 		misnamed files are renamed, and the duplicates deleted.
+	) Print a warning if a zip archive is not modified because it's
+		read-only.
 	) Fixed the handling of a clone disk with the same name of a parent
 		disk, but with a different hash.
 	) Added support for disk CHDs in game subdirectories.

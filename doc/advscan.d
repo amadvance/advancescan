@@ -276,6 +276,10 @@ Configuration
 	=rom PATH:PATH...
 		List of paths where roms are located. These are
 		the zip archives that will be modified and fixed.
+		Zip archives without write permission are never
+		modified, but they are still used as a source of roms.
+		If an operation is required on them, a warning is
+		printed and the operation is skipped.
 
 	=rom_new PATH
 		Single directory where newly created zip archives are
@@ -303,6 +307,8 @@ Configuration
 	=sample PATH:PATH...
 		List of paths where samples are located. These
 		are the zip archives that will be modified and fixed.
+		As for roms, zip archives without write permission
+		are never modified.
 
 	=sample_unknown PATH
 		Single path where unknown sample zip archives are
