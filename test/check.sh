@@ -61,8 +61,8 @@ fix() {
 	return 0
 }
 
-rm -rf $BENCH/rom $BENCH/import $BENCH/unknown
-mkdir -p $BENCH/rom $BENCH/import $BENCH/unknown || fail "mkdir"
+rm -rf $BENCH/rom $BENCH/import $BENCH/unknown $BENCH/empty
+mkdir -p $BENCH/rom $BENCH/import $BENCH/unknown $BENCH/empty || fail "mkdir"
 cp $SRC/rom/*.zip $BENCH/rom || fail "cp"
 cp $SRC/import/*.zip $BENCH/import || fail "cp"
 # the source dir may be read-only, like in make distcheck, and advscan doesn't modify read-only zips
@@ -83,6 +83,11 @@ fix merged_fix.lst merged
 compare merged_fix.lst merged_fix.lst
 report merged.lst merged
 compare merged.lst merged.lst
+
+# the files removed are saved in the unknown dir, without overwriting
+# the ones with the same name saved before
+report merged_unknown.lst unknown
+compare merged_unknown.lst merged_unknown.lst
 
 # convert back to the split format, it must be equal at the first fix
 fix split_back_fix.lst split

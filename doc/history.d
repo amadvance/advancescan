@@ -12,6 +12,9 @@ AdvanceSCAN Version 2.0 (WIP)
 		misnamed files are renamed, and the duplicates deleted.
 	) Print a warning if a zip archive is not modified because it's
 		read-only.
+	) Fixed the overwrite of a file saved in the `rom_unknown' directory
+		with another file with the same name. Now the second file
+		is saved in a directory named as its CRC.
 	) Fixed the handling of a clone disk with the same name of a parent
 		disk, but with a different hash.
 	) Added support for disk CHDs in game subdirectories.

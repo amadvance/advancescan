@@ -60,11 +60,13 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	test/merge.xml \
 	test/split.rc \
 	test/merged.rc \
+	test/unknown.rc \
 	test/split_dirty.lst \
 	test/split_fix.lst \
 	test/split.lst \
 	test/merged_fix.lst \
 	test/merged.lst \
+	test/merged_unknown.lst \
 	test/split_back_fix.lst \
 	test/rom/game.zip \
 	test/rom/gamea.zip \

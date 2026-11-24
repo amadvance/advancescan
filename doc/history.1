@@ -14,6 +14,13 @@ copies as \`rom_duplicate\'. Such files are never removed
 as unknown by the \-u option. With the \-b option the
 misnamed files are renamed, and the duplicates deleted.
 .IP \(bu
+Print a warning if a zip archive is not modified because it\'s
+read\-only.
+.IP \(bu
+Fixed the overwrite of a file saved in the \`rom_unknown\' directory
+with another file with the same name. Now the second file
+is saved in a directory named as its CRC.
+.IP \(bu
 Fixed the handling of a clone disk with the same name of a parent
 disk, but with a different hash.
 .IP \(bu

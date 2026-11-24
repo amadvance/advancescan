@@ -303,6 +303,11 @@ Configuration
 		is placed in this directory. However, a rom file is
 		automatically deleted by advscan if a duplicate exists
 		in an archive listed in the `rom' or `rom_import' options.
+		A file already saved in this directory is never
+		overwritten. If a file with the same CRC and size is
+		already saved, the file is not saved again. If a different
+		file with the same name is already saved, the file is
+		saved in a directory named as its CRC, like `crc/name'.
 
 	=sample PATH:PATH...
 		List of paths where samples are located. These

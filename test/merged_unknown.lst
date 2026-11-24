@@ -1,0 +1,23 @@
+rom_zip bench/unknown/gamea.zip
+rom_miss         1024 e12f7721 shared.bin  
+rom_bad          4096 ddec05ed a1.bin       [    4096 f3a61095]
+
+game_rom_bad gamea
+game_rom_miss game
+game_rom_miss gameb
+game_rom_miss other
+game_rom_miss solo
+game_rom_miss testbios
+game_rom_miss testdev
+
+Rom 'gamea' requires missing rom 'game'.
+
+Rom 'gamea' requires missing rom 'testbios'.
+
+Rom 'gamea' has an incomplete zip 'bench/unknown/gamea.zip'.
+
+All the roms are for working drivers.
+All the roms are without duplicates.
+Roms with an incomplete zip must be redownloaded.
+Missing roms must be added, otherwise other roms may not work.
+

@@ -22,6 +22,9 @@
 
 #include "ziprom.h"
 
+#include <iomanip>
+#include <sstream>
+
 using namespace std;
 
 ziprom::ziprom(const string& Apath, zip_type Atype, bool Areadonly) : zip(Apath), type(Atype), readonly(Areadonly), readonly_warned(false)
@@ -147,22 +150,47 @@ void ziprom::remove(const string& zipintname, ziprom& reject)
 	}
 }
 
+/**
+ * Move a file in the reject zip.
+ * A file in the reject zip is never overwritten, to never lose any data.
+ * If the reject zip already contains a file with the same crc and size, the file is only removed.
+ * If the reject zip already contains a file with the same name, but with a different crc or size,
+ * the file is stored in a directory named as its crc, like "crc/name".
+ */
 void ziprom::move(const string& zipintname_src, ziprom& reject, const string& zipintname_dst)
 {
 	load();
 	reject.load();
 
-	reject.remove(zipintname_dst);
-
-	cerr << "log: " << "move " << file_get() << "/" << zipintname_src << " to " << reject.file_get() << "/" << zipintname_dst << endl;
-
 	ziprom::iterator i = find(zipintname_src);
 	if (i==end())
 		throw error() << "Failed move of " << zipintname_src << " in zip " << file_get();
 
-	ziprom::iterator j = reject.insert(*i, zipintname_dst);
+	// if the same data is already saved, with any name, don't save it again
+	for(ziprom::iterator k=reject.begin();k!=reject.end();++k) {
+		if (k->crc_get() == i->crc_get() && k->uncompressed_size_get() == i->uncompressed_size_get()) {
+			cerr << "log: " << "remove " << file_get() << "/" << zipintname_src << " already saved as " << reject.file_get() << "/" << k->name_get() << endl;
+			erase(i);
+			return;
+		}
+	}
+
+	// if the name is used by a different file, use a directory named as the crc
+	string name = zipintname_dst;
+	if (reject.find(name) != reject.end()) {
+		ostringstream os;
+		os << hex << setw(8) << setfill('0') << i->crc_get() << "/" << zipintname_dst;
+		name = os.str();
+
+		// a file with the same crc and name but with a different size, practically impossible
+		reject.remove(name);
+	}
+
+	cerr << "log: " << "move " << file_get() << "/" << zipintname_src << " to " << reject.file_get() << "/" << name << endl;
+
+	ziprom::iterator j = reject.insert(*i, name);
 	if (j==end())
-		throw error() << "Failed add of " << zipintname_dst << " in zip " << reject.file_get();
+		throw error() << "Failed add of " << name << " in zip " << reject.file_get();
 
 	erase(i);
 }
