@@ -57,6 +57,7 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	test/testd.xml \
 	test/testd.lst \
 	test/check.sh \
+	test/gen.py \
 	test/merge.xml \
 	test/split.rc \
 	test/merged.rc \
