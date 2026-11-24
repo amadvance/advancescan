@@ -55,7 +55,24 @@ EXTRA_DIST = advscan.rc.linux advscan.rc.dos \
 	test/test.xml \
 	test/test.lst \
 	test/testd.xml \
-	test/testd.lst
+	test/testd.lst \
+	test/check.sh \
+	test/merge.xml \
+	test/split.rc \
+	test/merged.rc \
+	test/split_dirty.lst \
+	test/split_fix.lst \
+	test/split.lst \
+	test/merged_fix.lst \
+	test/merged.lst \
+	test/split_back_fix.lst \
+	test/rom/game.zip \
+	test/rom/gamea.zip \
+	test/rom/junk.zip \
+	test/rom/other.zip \
+	test/rom/solo.zip \
+	test/rom/testbios.zip \
+	test/import/pack.zip
 
 noinst_HEADERS = \
 	snprintf.c \
@@ -106,18 +123,22 @@ man_MANS = doc/advscan.1 doc/advdiff.1
 
 clean-local:
 	rm -f advscan.exe advscan.rc advdiff.exe
-	rm -f check.lst checkd.lst
+
+distclean-local:
+	rm -rf bench/
 
 maintainer-clean-local:
 	rm -f README AUTHORS HISTORY INSTALL doc/copying.txt
 	rm -f doc/*.hh
 
 check-local:
-	rm -f check.lst checkd.lst
-	./advscan -e < $(srcdir)/test/test.xml > check.lst
-	cmp check.lst $(srcdir)/test/test.lst
-	./advdiff $(srcdir)/test/test.xml $(srcdir)/test/testd.xml > checkd.lst
-	cmp checkd.lst $(srcdir)/test/testd.lst
+	rm -rf bench/
+	mkdir bench
+	./advscan -e < $(srcdir)/test/test.xml > bench/check.lst
+	cmp bench/check.lst $(srcdir)/test/test.lst
+	./advdiff $(srcdir)/test/test.xml $(srcdir)/test/testd.xml > bench/checkd.lst
+	cmp bench/checkd.lst $(srcdir)/test/testd.lst
+	$(SHELL) $(srcdir)/test/check.sh $(srcdir) ./advscan
 	echo Success!
 
 # Rules for documentation

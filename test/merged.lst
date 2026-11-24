@@ -1,0 +1,22 @@
+rom_zip bench/rom/game.zip
+nodump_miss      1024 00000000 nd.bin      
+text              123 88e60510 readme.txt  
+rom_good         2048 38097f3c g1.bin      
+rom_good         2048 61e40949 g2.bin      
+rom_good         4096 ddec05ed gamea/a1.bin
+rom_good         2048 e14af864 gameb/g2.bin
+rom_good         1024 e12f7721 gameb/shared.bin
+
+game_rom_good game
+game_rom_good gamea
+game_rom_good gameb
+game_rom_good other
+game_rom_good solo
+game_rom_good testbios
+game_rom_good testdev
+
+All the roms are for working drivers.
+All the roms are complete.
+All the dependencies are satisfied.
+All the roms are without duplicates.
+

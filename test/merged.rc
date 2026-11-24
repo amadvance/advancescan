@@ -1,0 +1,5 @@
+rom bench/rom
+rom_new bench/rom
+rom_import bench/import
+rom_unknown bench/unknown
+rom_format merged

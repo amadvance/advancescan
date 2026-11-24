@@ -30,6 +30,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <list>
 #include <map>
 #include <sstream>
 
@@ -40,9 +41,20 @@ void read_dir(const string& path, filepath_container& ds, bool recursive, const 
 	if (!dir)
 		throw error() << "Failed open on dir " << path;
 
+	// read the names in order, to not depend on the filesystem order
+	list<string> names;
 	struct dirent* ent = readdir(dir);
 	while (ent) {
-		string subpath = path + "/" + ent->d_name;
+		names.push_back(ent->d_name);
+		ent = readdir(dir);
+	}
+
+	closedir(dir);
+
+	names.sort();
+
+	for(list<string>::const_iterator i=names.begin();i!=names.end();++i) {
+		string subpath = path + "/" + *i;
 		struct stat st;
 
 		if (stat(subpath.c_str(), &st)!=0)
@@ -50,19 +62,16 @@ void read_dir(const string& path, filepath_container& ds, bool recursive, const 
 
 		if (S_ISDIR(st.st_mode)) {
 			if (recursive) {
-				if (strcmp(ent->d_name, ".")!=0 && strcmp(ent->d_name, "..")!=0) {
+				if (*i != "." && *i != "..") {
 					read_dir(subpath.c_str(), ds, recursive, ext);
 				}
 			}
 		} else {
-			if (file_compare(file_ext(ent->d_name), ext) == 0) {
+			if (file_compare(file_ext(*i), ext) == 0) {
 				ds.insert(ds.end(), filepath(subpath.c_str()));
 			}
 		}
-		ent = readdir(dir);
 	}
-
-	closedir(dir);
 }
 
 void read_zip(const string& path, ziparchive& zar, zip_type type, bool ignore_error, bool rename_error) {
@@ -378,6 +387,7 @@ void rom_add(
 	}
 
 	// for any unique missig rom
+	bool unique_found = false; // if at least one unique rom was found, also if only printing
 	rom_by_name_set tmp_miss;
 	for(rom_by_name_set::iterator i=miss_unique.begin();i!=miss_unique.end();++i) {
 		bool found = false;
@@ -402,6 +412,7 @@ void rom_add(
 					out.cmd_rom("rom_good", "add", *i) << " " << k->parentname_get() << "/" << k->name_get() << "\n";
 				}
 				found = true;
+				unique_found = true;
 			}
 		}
 
@@ -412,7 +423,7 @@ void rom_add(
 	miss_unique = tmp_miss;
 
 	// if all the roms are shared or at least one unique rom was found
-	if (miss_unique.empty() || !good.empty()) {
+	if (miss_unique.empty() || unique_found) {
 
 		// for any shared missig rom
 		rom_by_name_set tmp_miss;

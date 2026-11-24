@@ -1,0 +1,30 @@
+rom_zip bench/rom/game.zip
+rom_misnamed     2048 61e40949 G2.BAD      
+rom_duplicate     2048 38097f3c g1copy.bin  
+nodump_miss      1024 00000000 nd.bin      
+text              123 88e60510 readme.txt  
+binary           1024 1c3da02c bios.bin    
+rom_good         2048 38097f3c g1.bin      
+
+rom_zip bench/rom/gamea.zip
+rom_misnamed     4096 ddec05ed a1.good     
+rom_bad          4096 ddec05ed a1.bin       [    4096 f3a61095]
+rom_good         1024 e12f7721 shared.bin  
+
+rom_zip bench/rom/solo.zip
+rom_misnamed     3000 9ea68785 S3.DAT      
+rom_good          512 77f588f4 s1.bin      
+
+game_rom_good game
+game_rom_good gamea
+game_rom_good other
+game_rom_good solo
+game_rom_good testbios
+game_rom_miss gameb
+game_rom_miss testdev
+
+All the roms are for working drivers.
+All the roms are complete.
+All the dependencies are satisfied.
+All the roms are without duplicates.
+

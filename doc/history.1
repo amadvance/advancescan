@@ -7,6 +7,13 @@ advscan \- History For AdvanceSCAN
 Added support for rom sets in the merged format with the new
 \`rom_format\' option.
 .IP \(bu
+A rom is now considered present if a file with its CRC and size
+is in the zip archive, whatever its name. Files with the
+wrong name are reported as \`rom_misnamed\', and additional
+copies as \`rom_duplicate\'. Such files are never removed
+as unknown by the \-u option. With the \-b option the
+misnamed files are renamed, and the duplicates deleted.
+.IP \(bu
 Fixed the handling of a clone disk with the same name of a parent
 disk, but with a different hash.
 .IP \(bu

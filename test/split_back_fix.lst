@@ -1,0 +1,13 @@
+rom_zip bench/rom/game.zip
+[remove]     binary           4096 ddec05ed gamea/a1.bin
+[remove]     binary           2048 e14af864 gameb/g2.bin
+[remove]     binary           1024 e12f7721 gameb/shared.bin
+
+rom_zip bench/rom/gamea.zip
+[add]        rom_good         4096 ddec05ed a1.bin       bench/rom/game.zip/gamea/a1.bin
+[add]        rom_good         1024 e12f7721 shared.bin   bench/rom/game.zip/gameb/shared.bin
+
+rom_zip bench/rom/gameb.zip
+[add]        rom_good         2048 e14af864 g2.bin       bench/rom/game.zip/gameb/g2.bin
+[add]        rom_good         1024 e12f7721 shared.bin   bench/rom/game.zip/gameb/shared.bin
+

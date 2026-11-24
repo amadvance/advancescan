@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<mame build="test">
+	<machine name="testbios" isbios="yes">
+		<description>testbios</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="bios.bin" size="1024" crc="1c3da02c"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="testdev" isdevice="yes" runnable="no">
+		<description>testdev</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="dev.bin" size="512" crc="306d6711"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="game" romof="testbios">
+		<description>game</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="bios.bin" size="1024" crc="1c3da02c"/>
+		<rom name="g1.bin" size="2048" crc="38097f3c"/>
+		<rom name="g2.bin" size="2048" crc="61e40949"/>
+		<rom name="nd.bin" size="1024" status="nodump"/>
+		<device_ref name="testdev"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="gameb" cloneof="game" romof="game">
+		<description>gameb</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="bios.bin" size="1024" crc="1c3da02c"/>
+		<rom name="g1.bin" size="2048" crc="38097f3c"/>
+		<rom name="g2.bin" size="2048" crc="e14af864"/>
+		<rom name="shared.bin" size="1024" crc="e12f7721"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="gamea" cloneof="game" romof="game">
+		<description>gamea</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="bios.bin" size="1024" crc="1c3da02c"/>
+		<rom name="g1.bin" size="2048" crc="38097f3c"/>
+		<rom name="g2.bin" size="2048" crc="61e40949"/>
+		<rom name="a1.bin" size="4096" crc="ddec05ed"/>
+		<rom name="shared.bin" size="1024" crc="e12f7721"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="other" cloneof="testbios" romof="testbios">
+		<description>other</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="bios.bin" size="1024" crc="1c3da02c"/>
+		<rom name="o1.bin" size="1024" crc="d41d5beb"/>
+		<driver status="good"/>
+	</machine>
+	<machine name="solo">
+		<description>solo</description>
+		<year>2000</year>
+		<manufacturer>Test</manufacturer>
+		<rom name="s1.bin" size="512" crc="77f588f4"/>
+		<rom name="s2.bin" size="512" crc="77f588f4"/>
+		<rom name="s3.bin" size="3000" crc="9ea68785"/>
+		<driver status="good"/>
+	</machine>
+</mame>

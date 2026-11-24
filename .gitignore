@@ -1,6 +1,11 @@
 # archives
 *.zip
 *.tar.gz
+!test/rom/*.zip
+!test/import/*.zip
+
+# test
+bench/
 
 # objects
 *.o

@@ -1,0 +1,22 @@
+rom_zip bench/rom/game.zip
+[add]        rom_good         2048 61e40949 g2.bin       G2.BAD
+[remove]     duplicate        2048 38097f3c g1copy.bin  
+[remove]     binary           1024 1c3da02c bios.bin    
+
+rom_zip bench/rom/gamea.zip
+[add]        rom_good         4096 ddec05ed a1.bin       a1.good
+
+rom_zip bench/rom/solo.zip
+[add]        rom_good          512 77f588f4 s2.bin       s1.bin
+[add]        rom_good         3000 9ea68785 s3.bin       S3.DAT
+
+rom_zip bench/rom/gameb.zip
+[add]        rom_good         2048 e14af864 g2.bin       bench/import/pack.zip/dir/gameb_g2.rom
+[add]        rom_good         1024 e12f7721 shared.bin   bench/rom/gamea.zip/shared.bin
+
+rom_zip bench/rom/testdev.zip
+[add]        rom_good          512 306d6711 dev.bin      bench/import/pack.zip/dev.bin
+
+rom_zip bench/rom/junk.zip
+[remove]     binary            256 69cfb421 junk.bin    
+
