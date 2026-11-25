@@ -419,13 +419,14 @@ bool gamearchive::game_working_parent_subset_compute(const game& g)
 		result = true;
 	}
 
-	if (!result) {
-		for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
-			gamearchive::iterator j = find(*i);
-			if (j!=end()) {
-				result = game_working_parent_subset_compute(*j);
-				if (result)
-					break;
+	for(string_container::const_iterator i=g.rom_son_get().begin();i!=g.rom_son_get().end();++i) {
+		gamearchive::iterator j = find(*i);
+		if (j!=end()) {
+			// a game with romof but without cloneof is not a real clone,
+			// like "gngknight", and it's always processed as a parent
+			if (!result || j->cloneof_get().length() == 0) {
+				if (game_working_parent_subset_compute(*j))
+					result = true;
 			}
 		}
 	}
